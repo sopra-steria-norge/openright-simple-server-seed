@@ -1,4 +1,4 @@
-# OpenRight JEE Server Example
+# JaxWS Jersey Server Example
 
 Example hello world services using JAX-RS and Jersey
 
