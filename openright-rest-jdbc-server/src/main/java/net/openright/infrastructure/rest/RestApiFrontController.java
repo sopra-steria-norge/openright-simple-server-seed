@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public abstract class RestApiController extends HttpServlet {
+public abstract class RestApiFrontController extends HttpServlet {
 	private static class NotFoundController implements GetController, PostController {
 		@Override
 		public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

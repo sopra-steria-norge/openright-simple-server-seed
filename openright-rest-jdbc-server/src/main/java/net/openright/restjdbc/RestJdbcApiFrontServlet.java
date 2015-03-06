@@ -7,10 +7,10 @@ import net.openright.infrastructure.rest.GetController;
 import net.openright.infrastructure.rest.JsonGetController;
 import net.openright.infrastructure.rest.JsonPostController;
 import net.openright.infrastructure.rest.PostController;
-import net.openright.infrastructure.rest.RestApiController;
+import net.openright.infrastructure.rest.RestApiFrontController;
 import net.openright.restjdbc.orders.OrdersApiController;
 
-public class RestJdbcApiFrontServlet extends RestApiController {
+public class RestJdbcApiFrontServlet extends RestApiFrontController {
 	
 	private OrdersApiController ordersController = new OrdersApiController();
 
