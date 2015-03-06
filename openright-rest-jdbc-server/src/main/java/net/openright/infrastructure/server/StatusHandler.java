@@ -1,101 +1,42 @@
 package net.openright.infrastructure.server;
 
-import java.io.IOException;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.health.HealthCheckRegistry;
+import com.codahale.metrics.jvm.FileDescriptorRatioGauge;
+import com.codahale.metrics.jvm.GarbageCollectorMetricSet;
+import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
+import com.codahale.metrics.jvm.ThreadStatesGaugeSet;
+import com.codahale.metrics.servlets.AdminServlet;
+import com.codahale.metrics.servlets.HealthCheckServlet;
+import com.codahale.metrics.servlets.MetricsServlet;
 
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.Server;
+public class StatusHandler extends ServletContextHandler {
+	
+	public StatusHandler() {
+		setContextPath("/status");
+		
+		addServlet(new ServletHolder(new AdminServlet()), "/admin/*");
 
-public class StatusHandler implements Handler {
-
-	@Override
-	public void start() throws Exception {
-		// TODO Auto-generated method stub
-
+		setAttribute(MetricsServlet.METRICS_REGISTRY, createMetricsRegistry());
+        setAttribute(HealthCheckServlet.HEALTH_CHECK_REGISTRY, createHealthRegistry());
 	}
 
-	@Override
-	public void stop() throws Exception {
-		// TODO Auto-generated method stub
-
+	private Object createMetricsRegistry() {
+        MetricRegistry metricRegistry = new MetricRegistry();
+        metricRegistry.register("jvm/gc", new GarbageCollectorMetricSet());
+        metricRegistry.register("jvm/memory", new MemoryUsageGaugeSet());
+        metricRegistry.register("jvm/thread-states", new ThreadStatesGaugeSet());
+        metricRegistry.register("jvm/fd/usage", new FileDescriptorRatioGauge());
+		return metricRegistry;
 	}
 
-	@Override
-	public boolean isRunning() {
-		// TODO Auto-generated method stub
-		return false;
+	private Object createHealthRegistry() {
+        HealthCheckRegistry healthCheckRegistry = new HealthCheckRegistry();
+		return healthCheckRegistry;
 	}
-
-	@Override
-	public boolean isStarted() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isStarting() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isStopping() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isStopped() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isFailed() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void addLifeCycleListener(Listener listener) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void removeLifeCycleListener(Listener listener) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void handle(String target, Request baseRequest,
-			HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setServer(Server server) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Server getServer() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void destroy() {
-		// TODO Auto-generated method stub
-
-	}
-
+	
+	
 }

@@ -1,5 +1,8 @@
 package net.openright.restjdbc;
 
+import java.io.File;
+
+import net.openright.infrastructure.server.ServerUtil;
 import net.openright.infrastructure.server.StatusHandler;
 import net.openright.infrastructure.util.LogUtil;
 
@@ -12,6 +15,7 @@ public class RestJdbcApplicationServer {
 	 private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(RestJdbcApplicationServer.class);
 
 	public static void main(String[] args) throws Exception {
+		new File("logs").mkdirs();
 		LogUtil.setupLogging("logging-restjdbc.xml");
 		
 		new RestJdbcApplicationServer().run(args);
@@ -34,7 +38,9 @@ public class RestJdbcApplicationServer {
 		handlers.addHandler(new ShutdownHandler("sgds", false, true));
 		handlers.addHandler(new StatusHandler());
 		handlers.addHandler(new RestJdbcWebAppContext("/myapp"));
-		return handlers;
+        
+		return ServerUtil.createStatisticsHandler(
+				ServerUtil.createRequestLogHandler(handlers));
 	}
 
 	
