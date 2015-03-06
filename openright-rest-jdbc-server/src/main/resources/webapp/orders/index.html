@@ -1,1 +1,10 @@
-Orders
+<h2>Orders</h2>
+
+<script>
+$(function() {
+    if (!window.location.hash || window.location.hash === "#orders") {
+        window.location.hash = "orders/list";
+    }
+    displayCurrentLocation();
+});
+</script>

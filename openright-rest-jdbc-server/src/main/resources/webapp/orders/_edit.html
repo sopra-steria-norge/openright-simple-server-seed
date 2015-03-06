@@ -1,0 +1,25 @@
+<form id="orderForm">
+	<input type="number" name="order[id]" required placeholder="Order id" value=1 />
+	<input type="text" name="order[title]" required placeholder="Title" value=test />
+
+    <h3>Submit</h3>
+    <p>
+        <button>Submit question</button>
+    </p>
+</form>
+
+<script src="/myapp/vendor/jquery.serialize-object.min.js"></script>
+<script src="/myapp/js/orderRepository.js"></script>
+
+<script type="text/javascript">
+$(function() {
+    $("#orderForm").submit(function(e) {
+        e.preventDefault();
+        var form = $("form#orderForm").serializeObject();
+        orderRepository.save(form.order).then(function() {
+        	window.location.hash = "orders";
+        });
+    });
+});
+
+</script>
