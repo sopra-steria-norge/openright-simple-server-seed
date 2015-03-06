@@ -1,19 +1,81 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="ISO-8859-1">
-<title>Insert title here</title>
+	<title>Webshop</title>
+	
+<style type="text/css">
+nav {
+    background-color: #333;
+    margin: 0;
+    overflow: hidden;
+}
+
+nav ul{
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline-block;
+    list-style-type: none;
+    color: #aaa;
+    padding: 0.5em 0.5em;
+    line-height: 2em;
+    text-decoration: none;
+}
+
+nav ul li.active {
+    background-color:#FF0;
+}
+
+section#content {
+    background-color:#FF0;
+}
+</style>
 </head>
 <body>
+	<header>
+		<h1>Webshop</h1>
+	</header>
 
 	<nav>
 		<ul>
-			<li>Menu item 1</li>
-			<li>Menu item 1</li>
+			<li>Orders</li>
+			<li class="active">Products</li>
 		</ul>
 	</nav>
 
-<h1>This is the title</h1>
+	<section id="content">
+	Loading contents...
+	</section>
+<script type="text/x-handlebars-template" id="loading-template">
+<div>Loading...</div>
+</script>
+
 
 </body>
+<script src="/myapp/vendor/jquery.js"></script>
+<script src="/myapp/vendor/handlebars.min.js"></script>
+<script type="text/javascript">
+var loadingTemplate = Handlebars.compile($("#loading-template").html());
+
+$(function() {
+    $(window).bind('hashchange', displayCurrentLocation);
+    if (!window.location.hash) {
+        window.location.hash = "orders";
+    }
+    displayCurrentLocation();
+});
+
+var displayCurrentLocation = function() {
+    $("#content").html(loadingTemplate());
+
+	var parts = window.location.hash.substring(1).split(/\//);
+	var partial = "/myapp/" + parts[0] + "/";
+	if (parts[1]) partial += ("_" + parts[1] + ".html");
+    $.get(partial).then(function(html) {
+        $("#content").html(html);
+    });
+}
+</script>
 </html>
