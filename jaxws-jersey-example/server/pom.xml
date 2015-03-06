@@ -20,13 +20,6 @@
 			<artifactId>openright-jee-server</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>net.openright.jee.server</groupId>
-			<artifactId>openright-jee-webapp</artifactId>
-			<classifier>tests</classifier>
-			<scope>test</scope>
-		</dependency>
-
 		<!-- Our own webapp -->
 		<dependency>
 			<groupId>net.openright.jee.server.example</groupId>
