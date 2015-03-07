@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>net.openright.jee.server.example</groupId>
-		<artifactId>openright-jaxws-jersey-example</artifactId>
+		<artifactId>openright-jee-server-example</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
-
-	<artifactId>jaxws-jersey-example-server-deploy-rpm</artifactId>
-	<name>OpenRight Example JaxWS Jersey Server Deploy RPM</name>
+	
+	<artifactId>rpm-package-example</artifactId>
+	<name>OpenRight RPM Package Example</name>
 	<packaging>pom</packaging>
 
 	<dependencies>
@@ -41,8 +41,8 @@
 		<rpm.distribution.name>openright</rpm.distribution.name>
 
 		<!-- RPM build parametere -->
-		<rpm.app.name>openright-jaxws-jersey-example</rpm.app.name>
-		<rpm.server.starter.class>net.openright.jee.server.example.Starter</rpm.server.starter.class>
+		<rpm.app.name>openright-rpm-package-example</rpm.app.name>
+		<rpm.server.starter.class>net.openright.java.server.jaxws.example.Starter</rpm.server.starter.class>
 		<rpm.server.default.port>10080</rpm.server.default.port>
 		<rpm.server.default.contextpath>/example</rpm.server.default.contextpath>
 		<rpm.server.default.security.realm>example-test-realm</rpm.server.default.security.realm>

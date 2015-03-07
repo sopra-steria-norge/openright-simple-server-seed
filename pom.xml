@@ -18,6 +18,7 @@
 
 	<modules>
 	    <module>jaxws-jersey-example</module>
+		<module>rpm-package-example</module>
 	</modules>
 
 	<dependencyManagement>

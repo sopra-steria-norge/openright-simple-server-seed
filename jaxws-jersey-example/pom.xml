@@ -18,7 +18,6 @@
 	<modules>
 	    <module>webapp</module>
 		<module>server</module>
-		<module>package</module>
 	</modules>
 
 	<dependencyManagement>
