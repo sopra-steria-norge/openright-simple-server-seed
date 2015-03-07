@@ -1,5 +1,10 @@
 package net.openright.restjdbc.orders;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@EqualsAndHashCode
+@ToString
 public class Order {
 
 	private String title;

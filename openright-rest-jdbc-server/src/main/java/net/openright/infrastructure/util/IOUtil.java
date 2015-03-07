@@ -12,11 +12,12 @@ public class IOUtil {
         File file = new File(filename);
         if (file.exists()) return;
 
-        try (FileOutputStream output = new FileOutputStream(file)) {
-            try (InputStream input = IOUtil.class.getResourceAsStream("/" + filename)) {
-                if (input == null) {
-                    throw new IllegalArgumentException("Can't find /" + filename + " in classpath");
-                }
+        try (InputStream input = IOUtil.class.getResourceAsStream("/" + filename)) {
+        	if (input == null) {
+        		throw new IllegalArgumentException("Can't find /" + filename + " in classpath");
+        	}
+
+        	try (FileOutputStream output = new FileOutputStream(file)) {
                 copy(input, output);
             }
         } catch (IOException e) {
