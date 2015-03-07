@@ -16,8 +16,9 @@
 	<packaging>pom</packaging>
 
 	<modules>
-	    <module>server</module>
-		<module>webapp</module>
+	    <module>webapp</module>
+		<module>server</module>
+		<module>package</module>
 	</modules>
 
 	<dependencyManagement>
