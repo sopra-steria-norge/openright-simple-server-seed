@@ -1,8 +1,10 @@
-package net.openright.jee.server.example;
+package net.openright.java.server.jaxws.example;
 
 
 import java.io.IOException;
 
+import net.openright.java.server.jaxws.example.ExampleServerJettyWebAppContext;
+import net.openright.java.server.jaxws.example.Starter;
 import net.openright.jee.container.jetty.JettyWebAppContext;
 
 import org.eclipse.jetty.util.resource.ResourceCollection;

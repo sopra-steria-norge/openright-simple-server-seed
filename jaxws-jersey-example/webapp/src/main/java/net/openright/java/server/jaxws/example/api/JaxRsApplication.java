@@ -1,4 +1,4 @@
-package net.openright.jee.server.example.api;
+package net.openright.java.server.jaxws.example.api;
 
 import javax.ws.rs.ApplicationPath;
 

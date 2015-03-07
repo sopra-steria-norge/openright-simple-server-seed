@@ -1,4 +1,4 @@
-package net.openright.jee.server.example;
+package net.openright.java.server.jaxws.example;
 
 
 import java.io.File;
