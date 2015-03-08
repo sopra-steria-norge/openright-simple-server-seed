@@ -21,22 +21,32 @@
 		</dependency>
 	</dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>io.repaint.maven</groupId>
-				<artifactId>tiles-maven-plugin</artifactId>
-				<version>2.1</version>
-				<extensions>true</extensions>
-				<configuration>
-					<tiles>
-						<tile>net.openright.java.server.deploy.rpm:openright-deploy-rpm:pom:1.0.0-SNAPSHOT</tile>
-					</tiles>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
+	<profiles>
+	  <profile>
+		  <id>deploy-rpm</id>
+		  <activation>
+            <file>
+              <exists>/bin/rpm</exists>
+            </file>
+          </activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>io.repaint.maven</groupId>
+						<artifactId>tiles-maven-plugin</artifactId>
+						<version>2.1</version>
+						<extensions>true</extensions>
+						<configuration>
+							<tiles>
+								<tile>net.openright.java.server.deploy.rpm:openright-deploy-rpm:pom:1.0.0-SNAPSHOT</tile>
+							</tiles>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+			
+	  </profile>
+	</profiles>
 
 	<properties>
 		<rpm.distribution.name>openright</rpm.distribution.name>
