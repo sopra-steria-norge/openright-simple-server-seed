@@ -21,7 +21,7 @@ yum: `sudo yum install <rpm file name>`
 
 Install JDK 1.8 or higher first.
 
-## Using alien
+## using alien
 `sudo alien -i --scripts <rpm file name>`
 
 # Installation using YUM with repository
