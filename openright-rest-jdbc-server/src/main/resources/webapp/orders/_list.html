@@ -20,9 +20,6 @@ var orderTemplate = Handlebars.compile($("#orderTemplate").html());
 $(function() {
     orderRepository.list().then(function(data) {
         $("#ordersList").html(orderTemplate(data.orders));
-    }).fail(function(e, textStatus, error) {
-    	// TODO: Better error display
-    	$("#error").text("Whoops: " + error);
     });
 
     $("#ordersList").on("click", "a", function(e) {
