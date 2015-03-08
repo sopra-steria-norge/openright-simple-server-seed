@@ -13,6 +13,7 @@
 	<packaging>pom</packaging>
 
 	<dependencies>
+	        <!-- The server artifact to be packaged -->
 		<dependency>
 			<groupId>net.openright.jee.server.example</groupId>
 			<artifactId>jaxws-jersey-example-server</artifactId>
