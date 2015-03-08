@@ -14,6 +14,7 @@ Install JDK 1.8 or higher before proceeding.
 
 ##using RPM or YUM locally
 rpm: `sudo rpm -ivh <rpm file name>`
+
 yum: `sudo yum install <rpm file name>`
 
 # Installation on Ubuntu
