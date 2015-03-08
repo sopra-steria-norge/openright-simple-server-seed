@@ -1,6 +1,5 @@
 package net.openright.restjdbc.orders;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -16,13 +15,9 @@ import org.json.JSONObject;
 
 public class OrdersApiController implements JsonController {
 
-	private List<Order> orders = new ArrayList<>();
 	private DatabaseTable table;
 
 	public OrdersApiController(Database database) {
-		orders.add(new Order(4211, "My order"));
-		orders.add(new Order(123, "Your order"));
-		
 		this.table = database.table("orders");
 	}
 
@@ -46,13 +41,11 @@ public class OrdersApiController implements JsonController {
 		postOrder(toOrder(jsonObject));
 	}
 
-	boolean postOrder(Order order) {
+	void postOrder(Order order) {
 		table.insertValues(row -> {
 			row.put("id", order.getId());
 			row.put("title", order.getTitle());
 		});
-		
-		return orders.add(order);
 	}
 
 	private Order toOrder(JSONObject jsonObject) {
