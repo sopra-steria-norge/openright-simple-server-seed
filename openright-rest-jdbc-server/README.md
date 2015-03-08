@@ -17,45 +17,46 @@ This guide covers development and deployment scenarios with an application build
 * Deploying a cluster of servers
 
 ![Deployment diagram](http://g.gravizo.com/g?
-actor User
-
-cloud {
-   User -> [HTTP]
-}
-
-package "Application" {
-	() "Big IP"
-	
-	package "Proxy tier" {
-	  node "Nginx 1"
-	  node "Nginx 2"
-	  HTTP -down- [Big IP]
-	  [Big IP]  -down- [Nginx 1]
-	  [Big IP]  -down- [Nginx 2]
-	}
-	 
-	package "Application tier" {
-	  node "Jetty 1"
-	  node "Jetty 2"
-	  node "Jetty 3"
-	  [Nginx 1] -- [Jetty 1]
-	  [Nginx 2] -- [Jetty 1]
-	  [Nginx 1] -- [Jetty 2]
-	  [Nginx 2] -- [Jetty 2]
-	  [Nginx 1] -- [Jetty 3]
-	  [Nginx 2] -- [Jetty 3]
-	} 
-	
-	package "Data tier" {
-	  database "pgsql 1"
-	  database "pgsql 2"
-	  [Jetty 1] -- [pgsql 1]
-	  [Jetty 2] -- [pgsql 1]
-	  [Jetty 3] -- [pgsql 1]
-	  [pgsql 1] .right.> [pgsql 2] : replication
-	}
-}
-@enduml
+  @startuml;
+  actor User;
+  
+  cloud {
+     User -> [HTTP];
+  }
+  
+  package "Application" {
+    () "Big IP";
+    
+    package "Proxy tier" {
+      node "Nginx 1";
+      node "Nginx 2";
+      HTTP -down- [Big IP];
+      [Big IP]  -down- [Nginx 1];
+      [Big IP]  -down- [Nginx 2];
+    }
+     
+    package "Application tier" {
+      node "Jetty 1";
+      node "Jetty 2";
+      node "Jetty 3";
+      [Nginx 1] -- [Jetty 1];
+      [Nginx 2] -- [Jetty 1];
+      [Nginx 1] -- [Jetty 2];
+      [Nginx 2] -- [Jetty 2];
+      [Nginx 1] -- [Jetty 3];
+      [Nginx 2] -- [Jetty 3];
+    } 
+    
+    package "Data tier" {
+      database "pgsql 1";
+      database "pgsql 2";
+      [Jetty 1] -- [pgsql 1];
+      [Jetty 2] -- [pgsql 1];
+      [Jetty 3] -- [pgsql 1];
+      [pgsql 1] .right.> [pgsql 2] : replication;
+    }
+  }
+  @enduml;
 )
 
 Getting started developing
@@ -95,46 +96,48 @@ Development quick guide
 ------------------------------
 
 ![Component diagram](http://g.gravizo.com/g?
-skinparam componentStyle uml2
-
-package "Application" {
-node Client {
-  [Frame] -> [Product]
-  [Frame] -down-> [Orders]
-  package "Product" {
-    [product view 1.html] -down-> [ProductController.js]
-    [product view 2.html] -down-> [ProductController.js]
-    [ProductController.js]
+  @startuml;
+  skinparam componentStyle uml2;
+  
+  package "Application" {
+    node Client {
+      [Frame] -> [Product];
+      [Frame] -down-> [Orders];
+      package "Product" {
+        [product view 1.html] -down-> [ProductController.js];
+        [product view 2.html] -down-> [ProductController.js];
+        [ProductController.js];
+      }
+      package "Orders";
+      [ProductController.js] -down-> [jQuery.AJAX];
+      [Orders] -down-> [jQuery.AJAX];
+    }
+    
+    node Server {
+      [Database.java];
+      [jQuery.AJAX] -> [FrontController];
+      [FrontController] -down-> [OrderServer];
+      folder "ProductServer" {
+        [FrontController] -down-> [ProductController];
+        [Product domain];
+        [ProductController] -down-> [ProductRepository];
+        [ProductRepository] --> [Database.java];
+      }
+      [OrderServer] -> [Database.java];
+      folder "OrderServer" {
+        [Order domain];
+        [OrderController];
+        [OrderRepository];
+      }
+    }
+    
+    [Database.java] -down-> [Database];
+    database Database {
+      folder "Products table";
+      folder "Orders table";
+    }
   }
-  package "Orders"
-  [ProductController.js] -down-> [jQuery.AJAX]
-  [Orders] -down-> [jQuery.AJAX]
-}
-
-node Server {
-  [Database.java]
-  [jQuery.AJAX] -> [FrontController]
-  [FrontController] -down-> [OrderServer]
-  folder "ProductServer" {
-    [FrontController] -down-> [ProductController]
-    [Product domain]
-    [ProductController] -down-> [ProductRepository]
-    [ProductRepository] --> [Database.java]
-  }
-  [OrderServer] -> [Database.java]
-  folder "OrderServer" {
-    [Order domain]
-    [OrderController]
-    [OrderRepository]
-  }
-}
-
-[Database.java] -down-> [Database]
-database Database {
-  folder "Products table"
-  folder "Orders table"
-}
-}
+  @enduml;
 )
 
 ### Adding view
@@ -183,20 +186,22 @@ E.g. a new view to list users.
 ### Publishing messages with an HTTP feed
 
 ![Feeds](http://g.gravizo.com/g?
-node Client
-Client --> HTTP
-
-node Server {
-  HTTP --> [FeedController] <<<&rss> rss>>
-  [FeedController] --> [Repository]
-  HTTP --> [Controller]
-  Controller --> [FeedCache]
-  Controller --> [FeedGateway]
-  [FeedGateway] --> HTTP
-}
-
-database Database
-[Repository] --> [Database]
+  @startuml;
+  node Client;
+  Client --> HTTP;
+  
+  node Server {
+    HTTP --> [FeedController] <<<&rss> rss>>;
+    [FeedController] --> [Repository];
+    HTTP --> [Controller];
+    Controller --> [FeedC;ache];
+    Controller --> [FeedG;ateway];
+    [FeedGateway] --> HTTP;
+  }
+  
+  database Database;
+  [Repository] --> [Database];
+  @enduml;
 )
 
 1. Starting with the XML endpoint
@@ -271,12 +276,12 @@ Creating a virtualized server ecosystem with Vagrant (TODO)
 2. Create the database server: `cd pgsql-01-prime; vagrant up`
 3. Create the database backup server `cd pgsql-02-standby; vagrant up`
 4. Create the app servers:
-	* `cd app-01; vagrant up`
-	* `cd app-02; vagrant up`
-	* `cd app-03; vagrant up`
+  * `cd app-01; vagrant up`
+  * `cd app-02; vagrant up`
+  * `cd app-03; vagrant up`
 5. Create the proxy servers:
-	* `cd web-01; vagrant up`
-	* `cd web-02; vagrant up`
+  * `cd web-01; vagrant up`
+  * `cd web-02; vagrant up`
 6. Going to http://web-01 or http://web-02 will access the application.
 7. The application should gracefully handle traffic as long as at least one app server is up
    * `cd app-01; vagrant destroy`
