@@ -10,8 +10,17 @@ var ajax = {
 	        contentType: "application/json; charset=utf-8"
 	    });
 	}
-
 };
+
+$(document).ajaxError(function( event, jqxhr, settings, thrownError) {
+	console.log( event, jqxhr, settings, thrownError);
+	if (jqxhr.status >= 500) {
+		notify("error", "A terrible error occurred", "We are very sorry and looking into it");
+	} else {
+		notify("warning", "Problems", thrownError);
+	}
+});
+
 
 var orderRepository = {
   list: function() {

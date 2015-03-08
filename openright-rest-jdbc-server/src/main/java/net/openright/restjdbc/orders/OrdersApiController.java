@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import net.openright.infrastructure.db.Database;
 import net.openright.infrastructure.db.Database.DatabaseTable;
 import net.openright.infrastructure.rest.JsonController;
+import net.openright.infrastructure.rest.RequestException;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -42,6 +43,13 @@ public class OrdersApiController implements JsonController {
 	}
 
 	void postOrder(Order order) {
+		if (order.getTitle().equals("null")) {
+			throw new RuntimeException("Null title is invalid");
+		}
+		if (order.getTitle().contains("foul")) {
+			throw new RequestException("No foul language in orders, please!");
+		}
+		
 		table.insertValues(row -> {
 			row.put("id", order.getId());
 			row.put("title", order.getTitle());
