@@ -10,22 +10,23 @@ See example for some, the rpm deploy package for more.
 
 # Installation on Redhat/Centos/Fedora
 
-Install JDK 1.8 or higher before proceeding.
+Install JDK 1.8 or higher first.
 
-##using RPM or YUM locally
+## using rpm or yum locally
 rpm: `sudo rpm -ivh <rpm file name>`
 
 yum: `sudo yum install <rpm file name>`
 
 # Installation on Ubuntu
 
-Install JDK 1.8 or higher before proceeding.
+Install JDK 1.8 or higher first.
 
 ## Using alien
 `sudo alien -i --scripts <rpm file name>`
 
-# Using YUM with repository
+# Installation using YUM with repository
 Works out-of-the-box on redhat/centos/fedora (may be used on debian distros if installing yum).
+
 `sudo yum install openright-rpm-package-example`
 
 Assumes the artefact is available in a configured YUM repository.  
