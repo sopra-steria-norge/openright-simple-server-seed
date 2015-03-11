@@ -16,26 +16,27 @@ This guide covers development and deployment scenarios with an application build
 * Deploying on an existing application server
 * Deploying a cluster of servers
 
-![Deployment diagram](http://g.gravizo.com/g?
+<img src='http://g.gravizo.com/g?
+![Deployment diagram]%28http://g.gravizo.com/g?;
   @startuml;
   actor User;
-  
-  cloud {
+  ;
+  cloud {;
      User -> [HTTP];
-  }
-  
-  package "Application" {
-    () "Big IP";
-    
-    package "Proxy tier" {
+  };
+  ;
+  package "Application" {;
+    %28%29 "Big IP";
+    ;
+    package "Proxy tier" {;
       node "Nginx 1";
       node "Nginx 2";
       HTTP -down- [Big IP];
       [Big IP]  -down- [Nginx 1];
       [Big IP]  -down- [Nginx 2];
-    }
-     
-    package "Application tier" {
+    };
+     ;
+    package "Application tier" {;
       node "Jetty 1";
       node "Jetty 2";
       node "Jetty 3";
@@ -45,19 +46,20 @@ This guide covers development and deployment scenarios with an application build
       [Nginx 2] -- [Jetty 2];
       [Nginx 1] -- [Jetty 3];
       [Nginx 2] -- [Jetty 3];
-    } 
-    
-    package "Data tier" {
+    } ;
+    ;
+    package "Data tier" {;
       database "pgsql 1";
       database "pgsql 2";
       [Jetty 1] -- [pgsql 1];
       [Jetty 2] -- [pgsql 1];
       [Jetty 3] -- [pgsql 1];
       [pgsql 1] .right.> [pgsql 2] : replication;
-    }
-  }
+    };
+  };
   @enduml;
-)
+%29
+'>
 
 Getting started developing
 --------------------------------
