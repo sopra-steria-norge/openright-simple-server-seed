@@ -178,22 +178,20 @@ E.g. a new view to list users.
 ### Publishing messages with an HTTP feed
 
 ![Feeds](http://g.gravizo.com/g?
-  @startuml;
+@startuml;
   node Client;
   Client --> HTTP;
-  
-  node Server {
+  node Server {;
     HTTP --> [FeedController] <<<&rss> rss>>;
     [FeedController] --> [Repository];
     HTTP --> [Controller];
-    Controller --> [FeedC;ache];
-    Controller --> [FeedG;ateway];
+    Controller --> [FeedCache];
+    Controller --> [FeedGateway];
     [FeedGateway] --> HTTP;
-  }
-  
+  };
   database Database;
   [Repository] --> [Database];
-  @enduml;
+@enduml
 )
 
 1. Starting with the XML endpoint
