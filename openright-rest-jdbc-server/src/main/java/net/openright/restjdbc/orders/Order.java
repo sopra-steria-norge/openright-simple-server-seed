@@ -1,10 +1,7 @@
 package net.openright.restjdbc.orders;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import java.util.Objects;
 
-@EqualsAndHashCode
-@ToString
 public class Order {
 
 	private String title;
@@ -14,13 +11,36 @@ public class Order {
 		this.id = id;
 		this.title = title;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
-	
+
 	public String getTitle() {
 		return title;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this) {
+			return true;
+		}
+		if (obj instanceof Order) {
+			Order other = (Order) obj;
+			return Objects.equals(id, other.id)
+					&& Objects.equals(title, other.title);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, title);
+	}
+
+	@Override
+	public String toString() {
+		return "Order {id = " + Objects.toString(id) + ", title = "
+				+ Objects.toString(title, "no title set") + "}";
+	}
 }
