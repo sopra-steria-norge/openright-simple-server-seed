@@ -17,41 +17,7 @@ This guide covers development and deployment scenarios with an application build
 * Deploying a cluster of servers
 
 <img src='http://g.gravizo.com/g?
-  @startuml;
-  actor User;
-  cloud {;
-     User -> [HTTP];
-  };
-  package "Application" {;
-    %28%29 "Big IP";
-    package "Proxy tier" {;
-      node "Nginx 1";
-      node "Nginx 2";
-      HTTP -down- [Big IP];
-      [Big IP]  -down- [Nginx 1];
-      [Big IP]  -down- [Nginx 2];
-    }    ;
-    package "Application tier" {;
-      node "Jetty 1";
-      node "Jetty 2";
-      node "Jetty 3";
-      [Nginx 1] -- [Jetty 1];
-      [Nginx 2] -- [Jetty 1];
-      [Nginx 1] -- [Jetty 2];
-      [Nginx 2] -- [Jetty 2];
-      [Nginx 1] -- [Jetty 3];
-      [Nginx 2] -- [Jetty 3];
-    } ;
-    package "Data tier" {;
-      database "pgsql 1";
-      database "pgsql 2";
-      [Jetty 1] -- [pgsql 1];
-      [Jetty 2] -- [pgsql 1];
-      [Jetty 3] -- [pgsql 1];
-      [pgsql 1] .right.> [pgsql 2] : replication;
-    };
-  };
-  @enduml;
+%40startuml%3B%0A%20%20actor%20User%3B%0A%20%20cloud%20%7B%3B%0A%20%20%20%20%20User%20-%3E%20%5BHTTP%5D%3B%0A%20%20%7D%3B%0A%20%20package%20%22Application%22%20%7B%3B%0A%20%20%20%20%2528%2529%20%22Big%20IP%22%3B%0A%20%20%20%20package%20%22Proxy%20tier%22%20%7B%3B%0A%20%20%20%20%20%20node%20%22Nginx%201%22%3B%0A%20%20%20%20%20%20node%20%22Nginx%202%22%3B%0A%20%20%20%20%20%20HTTP%20-down-%20%5BBig%20IP%5D%3B%0A%20%20%20%20%20%20%5BBig%20IP%5D%20%20-down-%20%5BNginx%201%5D%3B%0A%20%20%20%20%20%20%5BBig%20IP%5D%20%20-down-%20%5BNginx%202%5D%3B%0A%20%20%20%20%7D%20%3B%0A%20%20%20%20package%20%22Application%20tier%22%20%7B%3B%0A%20%20%20%20%20%20node%20%22Jetty%201%22%3B%0A%20%20%20%20%20%20node%20%22Jetty%202%22%3B%0A%20%20%20%20%20%20node%20%22Jetty%203%22%3B%0A%20%20%20%20%20%20%5BNginx%201%5D%20--%20%5BJetty%201%5D%3B%0A%20%20%20%20%20%20%5BNginx%202%5D%20--%20%5BJetty%201%5D%3B%0A%20%20%20%20%20%20%5BNginx%201%5D%20--%20%5BJetty%202%5D%3B%0A%20%20%20%20%20%20%5BNginx%202%5D%20--%20%5BJetty%202%5D%3B%0A%20%20%20%20%20%20%5BNginx%201%5D%20--%20%5BJetty%203%5D%3B%0A%20%20%20%20%20%20%5BNginx%202%5D%20--%20%5BJetty%203%5D%3B%0A%20%20%20%20%7D%20%3B%0A%20%20%20%20package%20%22Data%20tier%22%20%7B%3B%0A%20%20%20%20%20%20database%20%22pgsql%201%22%3B%0A%20%20%20%20%20%20database%20%22pgsql%202%22%3B%0A%20%20%20%20%20%20%5BJetty%201%5D%20--%20%5Bpgsql%201%5D%3B%0A%20%20%20%20%20%20%5BJetty%202%5D%20--%20%5Bpgsql%201%5D%3B%0A%20%20%20%20%20%20%5BJetty%203%5D%20--%20%5Bpgsql%201%5D%3B%0A%20%20%20%20%20%20%5Bpgsql%201%5D%20.right.%3E%20%5Bpgsql%202%5D%20%3A%20replication%3B%0A%20%20%20%20%7D%3B%0A%20%20%7D%3B%0A%20%20%40enduml%3B
 '>
 
 Getting started developing
