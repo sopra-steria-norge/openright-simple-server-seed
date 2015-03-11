@@ -16,8 +16,8 @@ This guide covers development and deployment scenarios with an application build
 * Deploying on an existing application server
 * Deploying a cluster of servers
 
-```
-  @startuml;
+![Alt text](http://g.gravizo.com/g?
+@startuml;
   actor User;
   cloud {;
      User -> [HTTP];
@@ -51,8 +51,9 @@ This guide covers development and deployment scenarios with an application build
       [pgsql 1] .right.> [pgsql 2] : replication;
     };
   };
-  @enduml;
-```
+  @enduml
+  )
+
 Getting started developing
 --------------------------------
 ### Prerequisites
@@ -90,24 +91,22 @@ Development quick guide
 ------------------------------
 
 ![Component diagram](http://g.gravizo.com/g?
-  @startuml;
+@startuml;
   skinparam componentStyle uml2;
-  
-  package "Application" {
-    node Client {
+  package "Application" {;
+    node Client {;
       [Frame] -> [Product];
       [Frame] -down-> [Orders];
-      package "Product" {
+      package "Product" {;
         [product view 1.html] -down-> [ProductController.js];
         [product view 2.html] -down-> [ProductController.js];
         [ProductController.js];
-      }
+      };
       package "Orders";
       [ProductController.js] -down-> [jQuery.AJAX];
       [Orders] -down-> [jQuery.AJAX];
-    }
-    
-    node Server {
+    };
+    node Server {;
       [Database.java];
       [jQuery.AJAX] -> [FrontController];
       [FrontController] -down-> [OrderServer];
@@ -116,22 +115,21 @@ Development quick guide
         [Product domain];
         [ProductController] -down-> [ProductRepository];
         [ProductRepository] --> [Database.java];
-      }
+      };
       [OrderServer] -> [Database.java];
-      folder "OrderServer" {
+      folder "OrderServer" {;
         [Order domain];
         [OrderController];
         [OrderRepository];
-      }
-    }
-    
+      };
+    };
     [Database.java] -down-> [Database];
-    database Database {
+    database Database {;
       folder "Products table";
       folder "Orders table";
-    }
-  }
-  @enduml;
+    };
+  };
+@enduml;
 )
 
 ### Adding view
