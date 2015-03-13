@@ -1,2 +1,0 @@
-# OpenRight Java Server Examples
-
