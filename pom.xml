@@ -1,7 +1,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.openright</groupId>
-  <artifactId>openright-rest-jdbc-server</artifactId>
+  <artifactId>openright-simple-server-seed</artifactId>
   <version>1.0.0</version>
 
   <dependencies>
