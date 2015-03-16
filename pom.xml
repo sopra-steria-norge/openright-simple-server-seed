@@ -83,7 +83,7 @@
             <configuration>
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>net.openright.restjdbc.RestJdbcApplicationServer
+                  <mainClass>net.openright.simpleserverseed.application.ApplicationServer
                   </mainClass>
                 </transformer>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>

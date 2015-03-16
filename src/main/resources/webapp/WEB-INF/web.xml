@@ -7,7 +7,7 @@
 
 	<servlet>
 		<servlet-name>apiFrontServlet</servlet-name>
-		<servlet-class>net.openright.restjdbc.RestJdbcApiFrontServlet</servlet-class>
+		<servlet-class>net.openright.simpleserverseed.application.ApiFrontServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>

@@ -1,3 +1,4 @@
 /logging-restjdbc.xml
 /dependency-reduced-pom.xml
 /restjdbc.properties
+/target/
