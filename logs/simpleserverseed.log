@@ -1,164 +1,98 @@
-2015-03-16 09:47:37,959 [main] DEBUG n.o.s.i.config.SeedAppConfigFile - Reloading src\main\resources\simpleserverseed.properties
-2015-03-16 09:47:38,336 [main] INFO  o.f.c.i.dbsupport.DbSupportFactory - Database: jdbc:postgresql://localhost:5432/restjdbc (PostgreSQL 9.4)
-2015-03-16 09:47:38,339 [main] DEBUG org.flywaydb.core.Flyway - DDL Transactions Supported: true
-2015-03-16 09:47:38,346 [main] DEBUG org.flywaydb.core.Flyway - Schema: public
-2015-03-16 09:47:38,350 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Scanning for classpath resources at 'db/restjdbc' (Prefix: '', Suffix: '.sql')
-2015-03-16 09:47:38,351 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Scanning URL: file:/D:/Users/olillevi/Documents/GitHub/openright-simple-server-seed/target/classes/db/restjdbc
-2015-03-16 09:47:38,352 [main] DEBUG o.f.c.internal.util.FeatureDetector - JBoss VFS v2 available: false
-2015-03-16 09:47:38,354 [main] DEBUG o.f.c.i.u.s.c.FileSystemClassPathLocationScanner - Scanning starting at classpath root in filesystem: D:\Users\olillevi\Documents\GitHub\openright-simple-server-seed\target\classes\
-2015-03-16 09:47:38,354 [main] DEBUG o.f.c.i.u.s.c.FileSystemClassPathLocationScanner - Scanning for resources in path: D:\Users\olillevi\Documents\GitHub\openright-simple-server-seed\target\classes\db\restjdbc (db/restjdbc)
-2015-03-16 09:47:38,355 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Found resource: db/restjdbc/V001__CreateTableOrders.sql
-2015-03-16 09:47:38,360 [main] DEBUG o.f.c.internal.util.FeatureDetector - Spring Jdbc available: false
-2015-03-16 09:47:38,362 [main] DEBUG o.f.core.internal.command.DbValidate - Validating migrations ...
-2015-03-16 09:47:38,366 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Scanning for classpath resources at 'db/restjdbc' (Prefix: 'V', Suffix: '.sql')
-2015-03-16 09:47:38,366 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Scanning URL: file:/D:/Users/olillevi/Documents/GitHub/openright-simple-server-seed/target/classes/db/restjdbc
-2015-03-16 09:47:38,366 [main] DEBUG o.f.c.internal.util.FeatureDetector - JBoss VFS v2 available: false
-2015-03-16 09:47:38,367 [main] DEBUG o.f.c.i.u.s.c.FileSystemClassPathLocationScanner - Scanning starting at classpath root in filesystem: D:\Users\olillevi\Documents\GitHub\openright-simple-server-seed\target\classes\
-2015-03-16 09:47:38,367 [main] DEBUG o.f.c.i.u.s.c.FileSystemClassPathLocationScanner - Scanning for resources in path: D:\Users\olillevi\Documents\GitHub\openright-simple-server-seed\target\classes\db\restjdbc (db/restjdbc)
-2015-03-16 09:47:38,367 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Found resource: db/restjdbc/V001__CreateTableOrders.sql
-2015-03-16 09:47:38,373 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Scanning for classes at 'db/restjdbc' (Implementing: 'org.flywaydb.core.api.migration.jdbc.JdbcMigration')
-2015-03-16 09:47:38,374 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Scanning URL: file:/D:/Users/olillevi/Documents/GitHub/openright-simple-server-seed/target/classes/db/restjdbc
-2015-03-16 09:47:38,375 [main] DEBUG o.f.c.internal.util.FeatureDetector - JBoss VFS v2 available: false
-2015-03-16 09:47:38,375 [main] DEBUG o.f.c.i.u.s.c.FileSystemClassPathLocationScanner - Scanning starting at classpath root in filesystem: D:\Users\olillevi\Documents\GitHub\openright-simple-server-seed\target\classes\
-2015-03-16 09:47:38,375 [main] DEBUG o.f.c.i.u.s.c.FileSystemClassPathLocationScanner - Scanning for resources in path: D:\Users\olillevi\Documents\GitHub\openright-simple-server-seed\target\classes\db\restjdbc (db/restjdbc)
-2015-03-16 09:47:38,375 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Filtering out resource: db/restjdbc/V001__CreateTableOrders.sql (filename: V001__CreateTableOrders.sql)
-2015-03-16 09:47:38,397 [main] INFO  o.f.core.internal.command.DbValidate - Validated 1 migration (execution time 00:00.034s)
-2015-03-16 09:47:38,401 [main] DEBUG o.f.core.internal.command.DbSchemas - Schema "public" already exists. Skipping schema creation.
-2015-03-16 09:47:38,422 [main] DEBUG o.f.core.internal.dbsupport.Table - Locking table "public"."schema_version"...
-2015-03-16 09:47:38,423 [main] DEBUG o.f.core.internal.dbsupport.Table - Lock acquired for table "public"."schema_version"
-2015-03-16 09:47:38,431 [main] INFO  o.f.core.internal.command.DbMigrate - Current version of schema "public": 001
-2015-03-16 09:47:38,435 [main] INFO  o.f.core.internal.command.DbMigrate - Schema "public" is up to date. No migration necessary.
-2015-03-16 09:47:38,436 [main] DEBUG jndi - SAVE jdbc/restjdbc in null
-2015-03-16 09:47:38,440 [main] DEBUG jndi - InitialContextFactory.getInitialContext()
-2015-03-16 09:47:38,451 [main] DEBUG jndi - supportDeepBinding=false
-2015-03-16 09:47:38,452 [main] DEBUG jndi - Created initial context delegate for local namespace:org.eclipse.jetty.jndi.local.localContextRoot@4d49af10
-2015-03-16 09:47:38,453 [main] DEBUG jndi - InitialContextFactory.getInitialContext()
-2015-03-16 09:47:38,454 [main] DEBUG jndi - Created initial context delegate for local namespace:org.eclipse.jetty.jndi.local.localContextRoot@4450d156
-2015-03-16 09:47:38,455 [main] DEBUG jndi - Looking up name="__"
-2015-03-16 09:47:38,456 [main] DEBUG jndi - supportDeepBinding=false
-2015-03-16 09:47:38,456 [main] DEBUG jndi - Adding binding with key=__ obj=org.eclipse.jetty.jndi.NamingContext@4461c7e3[name=__,parent=org.eclipse.jetty.jndi.local.localContextRoot$NamingRoot@351d0846,bindings.size=0] for context=null as __: org.eclipse.jetty.jndi.NamingContext:org.eclipse.jetty.jndi.NamingContext@4461c7e3[name=__,parent=org.eclipse.jetty.jndi.local.localContextRoot$NamingRoot@351d0846,bindings.size=0]
-2015-03-16 09:47:38,457 [main] DEBUG jndi - Subcontext __ created
-2015-03-16 09:47:38,457 [main] DEBUG jndi - Looking up name="jdbc"
-2015-03-16 09:47:38,457 [main] DEBUG jndi - supportDeepBinding=false
-2015-03-16 09:47:38,457 [main] DEBUG jndi - Adding binding with key=jdbc obj=org.eclipse.jetty.jndi.NamingContext@77e4c80f[name=jdbc,parent=org.eclipse.jetty.jndi.NamingContext@4461c7e3,bindings.size=0] for context=__ as jdbc: org.eclipse.jetty.jndi.NamingContext:org.eclipse.jetty.jndi.NamingContext@77e4c80f[name=jdbc,parent=org.eclipse.jetty.jndi.NamingContext@4461c7e3,bindings.size=0]
-2015-03-16 09:47:38,457 [main] DEBUG jndi - Subcontext jdbc created
-2015-03-16 09:47:38,458 [main] DEBUG jndi - Removing binding with key=restjdbc
-2015-03-16 09:47:38,458 [main] DEBUG jndi - Adding binding with key=restjdbc obj=jdbc/restjdbc for context=jdbc as restjdbc: org.eclipse.jetty.plus.jndi.EnvEntry:jdbc/restjdbc
-2015-03-16 09:47:38,458 [main] DEBUG jndi - Bound object to restjdbc
-2015-03-16 09:47:38,458 [main] DEBUG jndi - Looking up name="jdbc"
-2015-03-16 09:47:38,459 [main] DEBUG jndi - supportDeepBinding=false
-2015-03-16 09:47:38,459 [main] DEBUG jndi - Adding binding with key=jdbc obj=org.eclipse.jetty.jndi.NamingContext@7fe8ea47[name=jdbc,parent=org.eclipse.jetty.jndi.local.localContextRoot$NamingRoot@351d0846,bindings.size=0] for context=null as jdbc: org.eclipse.jetty.jndi.NamingContext:org.eclipse.jetty.jndi.NamingContext@7fe8ea47[name=jdbc,parent=org.eclipse.jetty.jndi.local.localContextRoot$NamingRoot@351d0846,bindings.size=0]
-2015-03-16 09:47:38,459 [main] DEBUG jndi - Subcontext jdbc created
-2015-03-16 09:47:38,459 [main] DEBUG jndi - Removing binding with key=restjdbc
-2015-03-16 09:47:38,459 [main] DEBUG jndi - Adding binding with key=restjdbc obj=HikariDataSource (HikariPool-0) for context=jdbc as restjdbc: com.zaxxer.hikari.HikariDataSource:HikariDataSource (HikariPool-0)
-2015-03-16 09:47:38,459 [main] DEBUG jndi - Bound object to restjdbc
-2015-03-16 09:47:38,766 [HikariCP connection filler (pool HikariPool-0)] DEBUG HikariPool - After fill pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:47:40,106 [main] INFO  n.o.s.application.ApplicationServer - Started server http://172.17.5.168:8000/myapp
-2015-03-16 09:48:05,020 [qtp1426329391-20] DEBUG jndi - InitialContextFactory.getInitialContext()
-2015-03-16 09:48:05,021 [qtp1426329391-20] DEBUG jndi - Created initial context delegate for local namespace:org.eclipse.jetty.jndi.local.localContextRoot@1159b04
-2015-03-16 09:48:05,021 [qtp1426329391-20] DEBUG jndi - Looking up name="jdbc/restjdbc"
-2015-03-16 09:48:05,022 [qtp1426329391-20] DEBUG jndi - Looking up name="restjdbc"
-2015-03-16 09:48:08,011 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:48:08,016 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:48:38,012 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:48:38,012 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:49:08,011 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:49:08,011 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:49:38,012 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:49:38,014 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:50:08,013 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:50:08,013 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:51:23,125 [main] DEBUG n.o.s.i.config.SeedAppConfigFile - Reloading src\main\resources\simpleserverseed.properties
-2015-03-16 09:51:23,435 [main] INFO  o.f.c.i.dbsupport.DbSupportFactory - Database: jdbc:postgresql://localhost:5432/restjdbc (PostgreSQL 9.4)
-2015-03-16 09:51:23,441 [main] DEBUG org.flywaydb.core.Flyway - DDL Transactions Supported: true
-2015-03-16 09:51:23,452 [main] DEBUG org.flywaydb.core.Flyway - Schema: public
-2015-03-16 09:51:23,456 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Scanning for classpath resources at 'db/restjdbc' (Prefix: '', Suffix: '.sql')
-2015-03-16 09:51:23,458 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Scanning URL: file:/D:/Users/olillevi/Documents/GitHub/openright-simple-server-seed/target/classes/db/restjdbc
-2015-03-16 09:51:23,458 [main] DEBUG o.f.c.internal.util.FeatureDetector - JBoss VFS v2 available: false
-2015-03-16 09:51:23,459 [main] DEBUG o.f.c.i.u.s.c.FileSystemClassPathLocationScanner - Scanning starting at classpath root in filesystem: D:\Users\olillevi\Documents\GitHub\openright-simple-server-seed\target\classes\
-2015-03-16 09:51:23,460 [main] DEBUG o.f.c.i.u.s.c.FileSystemClassPathLocationScanner - Scanning for resources in path: D:\Users\olillevi\Documents\GitHub\openright-simple-server-seed\target\classes\db\restjdbc (db/restjdbc)
-2015-03-16 09:51:23,462 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Found resource: db/restjdbc/V001__CreateTableOrders.sql
-2015-03-16 09:51:23,467 [main] DEBUG o.f.c.internal.util.FeatureDetector - Spring Jdbc available: false
-2015-03-16 09:51:23,470 [main] DEBUG o.f.core.internal.command.DbValidate - Validating migrations ...
-2015-03-16 09:51:23,472 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Scanning for classpath resources at 'db/restjdbc' (Prefix: 'V', Suffix: '.sql')
-2015-03-16 09:51:23,473 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Scanning URL: file:/D:/Users/olillevi/Documents/GitHub/openright-simple-server-seed/target/classes/db/restjdbc
-2015-03-16 09:51:23,473 [main] DEBUG o.f.c.internal.util.FeatureDetector - JBoss VFS v2 available: false
-2015-03-16 09:51:23,473 [main] DEBUG o.f.c.i.u.s.c.FileSystemClassPathLocationScanner - Scanning starting at classpath root in filesystem: D:\Users\olillevi\Documents\GitHub\openright-simple-server-seed\target\classes\
-2015-03-16 09:51:23,473 [main] DEBUG o.f.c.i.u.s.c.FileSystemClassPathLocationScanner - Scanning for resources in path: D:\Users\olillevi\Documents\GitHub\openright-simple-server-seed\target\classes\db\restjdbc (db/restjdbc)
-2015-03-16 09:51:23,474 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Found resource: db/restjdbc/V001__CreateTableOrders.sql
-2015-03-16 09:51:23,480 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Scanning for classes at 'db/restjdbc' (Implementing: 'org.flywaydb.core.api.migration.jdbc.JdbcMigration')
-2015-03-16 09:51:23,480 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Scanning URL: file:/D:/Users/olillevi/Documents/GitHub/openright-simple-server-seed/target/classes/db/restjdbc
-2015-03-16 09:51:23,481 [main] DEBUG o.f.c.internal.util.FeatureDetector - JBoss VFS v2 available: false
-2015-03-16 09:51:23,481 [main] DEBUG o.f.c.i.u.s.c.FileSystemClassPathLocationScanner - Scanning starting at classpath root in filesystem: D:\Users\olillevi\Documents\GitHub\openright-simple-server-seed\target\classes\
-2015-03-16 09:51:23,481 [main] DEBUG o.f.c.i.u.s.c.FileSystemClassPathLocationScanner - Scanning for resources in path: D:\Users\olillevi\Documents\GitHub\openright-simple-server-seed\target\classes\db\restjdbc (db/restjdbc)
-2015-03-16 09:51:23,481 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Filtering out resource: db/restjdbc/V001__CreateTableOrders.sql (filename: V001__CreateTableOrders.sql)
-2015-03-16 09:51:23,509 [main] INFO  o.f.core.internal.command.DbValidate - Validated 1 migration (execution time 00:00.037s)
-2015-03-16 09:51:23,513 [main] DEBUG o.f.core.internal.command.DbSchemas - Schema "public" already exists. Skipping schema creation.
-2015-03-16 09:51:23,538 [main] DEBUG o.f.core.internal.dbsupport.Table - Locking table "public"."schema_version"...
-2015-03-16 09:51:23,540 [main] DEBUG o.f.core.internal.dbsupport.Table - Lock acquired for table "public"."schema_version"
-2015-03-16 09:51:23,550 [main] INFO  o.f.core.internal.command.DbMigrate - Current version of schema "public": 001
-2015-03-16 09:51:23,554 [main] INFO  o.f.core.internal.command.DbMigrate - Schema "public" is up to date. No migration necessary.
-2015-03-16 09:51:23,556 [main] DEBUG jndi - SAVE jdbc/restjdbc in null
-2015-03-16 09:51:23,560 [main] DEBUG jndi - InitialContextFactory.getInitialContext()
-2015-03-16 09:51:23,569 [main] DEBUG jndi - supportDeepBinding=false
-2015-03-16 09:51:23,570 [main] DEBUG jndi - Created initial context delegate for local namespace:org.eclipse.jetty.jndi.local.localContextRoot@345965f2
-2015-03-16 09:51:23,571 [main] DEBUG jndi - InitialContextFactory.getInitialContext()
-2015-03-16 09:51:23,571 [main] DEBUG jndi - Created initial context delegate for local namespace:org.eclipse.jetty.jndi.local.localContextRoot@279ad2e3
-2015-03-16 09:51:23,572 [main] DEBUG jndi - Looking up name="__"
-2015-03-16 09:51:23,573 [main] DEBUG jndi - supportDeepBinding=false
-2015-03-16 09:51:23,573 [main] DEBUG jndi - Adding binding with key=__ obj=org.eclipse.jetty.jndi.NamingContext@58134517[name=__,parent=org.eclipse.jetty.jndi.local.localContextRoot$NamingRoot@4450d156,bindings.size=0] for context=null as __: org.eclipse.jetty.jndi.NamingContext:org.eclipse.jetty.jndi.NamingContext@58134517[name=__,parent=org.eclipse.jetty.jndi.local.localContextRoot$NamingRoot@4450d156,bindings.size=0]
-2015-03-16 09:51:23,573 [main] DEBUG jndi - Subcontext __ created
-2015-03-16 09:51:23,574 [main] DEBUG jndi - Looking up name="jdbc"
-2015-03-16 09:51:23,574 [main] DEBUG jndi - supportDeepBinding=false
-2015-03-16 09:51:23,575 [main] DEBUG jndi - Adding binding with key=jdbc obj=org.eclipse.jetty.jndi.NamingContext@4461c7e3[name=jdbc,parent=org.eclipse.jetty.jndi.NamingContext@58134517,bindings.size=0] for context=__ as jdbc: org.eclipse.jetty.jndi.NamingContext:org.eclipse.jetty.jndi.NamingContext@4461c7e3[name=jdbc,parent=org.eclipse.jetty.jndi.NamingContext@58134517,bindings.size=0]
-2015-03-16 09:51:23,575 [main] DEBUG jndi - Subcontext jdbc created
-2015-03-16 09:51:23,576 [main] DEBUG jndi - Removing binding with key=restjdbc
-2015-03-16 09:51:23,576 [main] DEBUG jndi - Adding binding with key=restjdbc obj=jdbc/restjdbc for context=jdbc as restjdbc: org.eclipse.jetty.plus.jndi.EnvEntry:jdbc/restjdbc
-2015-03-16 09:51:23,576 [main] DEBUG jndi - Bound object to restjdbc
-2015-03-16 09:51:23,576 [main] DEBUG jndi - Looking up name="jdbc"
-2015-03-16 09:51:23,576 [main] DEBUG jndi - supportDeepBinding=false
-2015-03-16 09:51:23,576 [main] DEBUG jndi - Adding binding with key=jdbc obj=org.eclipse.jetty.jndi.NamingContext@77e4c80f[name=jdbc,parent=org.eclipse.jetty.jndi.local.localContextRoot$NamingRoot@4450d156,bindings.size=0] for context=null as jdbc: org.eclipse.jetty.jndi.NamingContext:org.eclipse.jetty.jndi.NamingContext@77e4c80f[name=jdbc,parent=org.eclipse.jetty.jndi.local.localContextRoot$NamingRoot@4450d156,bindings.size=0]
-2015-03-16 09:51:23,576 [main] DEBUG jndi - Subcontext jdbc created
-2015-03-16 09:51:23,577 [main] DEBUG jndi - Removing binding with key=restjdbc
-2015-03-16 09:51:23,577 [main] DEBUG jndi - Adding binding with key=restjdbc obj=HikariDataSource (HikariPool-0) for context=jdbc as restjdbc: com.zaxxer.hikari.HikariDataSource:HikariDataSource (HikariPool-0)
-2015-03-16 09:51:23,577 [main] DEBUG jndi - Bound object to restjdbc
-2015-03-16 09:51:24,092 [HikariCP connection filler (pool HikariPool-0)] DEBUG HikariPool - After fill pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:51:25,297 [main] INFO  n.o.s.application.ApplicationServer - Started server http://172.17.5.168:8000/myapp
-2015-03-16 09:51:53,165 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:51:53,185 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:52:23,165 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:52:23,166 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:52:53,166 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:52:53,167 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:53:23,167 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:53:23,169 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:53:51,988 [qtp360067785-18] DEBUG jndi - InitialContextFactory.getInitialContext()
-2015-03-16 09:53:51,988 [qtp360067785-18] DEBUG jndi - Created initial context delegate for local namespace:org.eclipse.jetty.jndi.local.localContextRoot@77c93103
-2015-03-16 09:53:51,988 [qtp360067785-18] DEBUG jndi - Looking up name="jdbc/restjdbc"
-2015-03-16 09:53:51,988 [qtp360067785-18] DEBUG jndi - Looking up name="restjdbc"
-2015-03-16 09:53:53,168 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:53:53,169 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:54:23,168 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:54:23,168 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:54:53,169 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:54:53,170 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:55:23,169 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:55:23,170 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:55:53,171 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:55:53,173 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:56:23,170 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:56:23,171 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:56:53,171 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:56:53,172 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:57:23,172 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:57:23,173 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:57:53,172 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:57:53,173 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:58:23,173 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:58:23,173 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:58:53,174 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:58:53,176 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:59:23,174 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:59:23,175 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:59:53,175 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
-2015-03-16 09:59:53,175 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:01:38,786 [main] DEBUG n.o.s.i.config.SeedAppConfigFile - Reloading src\main\resources\simpleserverseed.properties
+2015-03-16 10:01:39,191 [main] INFO  o.f.c.i.dbsupport.DbSupportFactory - Database: jdbc:postgresql://localhost:5432/restjdbc (PostgreSQL 9.4)
+2015-03-16 10:01:39,196 [main] DEBUG org.flywaydb.core.Flyway - DDL Transactions Supported: true
+2015-03-16 10:01:39,208 [main] DEBUG org.flywaydb.core.Flyway - Schema: public
+2015-03-16 10:01:39,212 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Scanning for classpath resources at 'db/restjdbc' (Prefix: '', Suffix: '.sql')
+2015-03-16 10:01:39,214 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Scanning URL: file:/D:/Users/olillevi/Documents/GitHub/openright-simple-server-seed/target/classes/db/restjdbc
+2015-03-16 10:01:39,214 [main] DEBUG o.f.c.internal.util.FeatureDetector - JBoss VFS v2 available: false
+2015-03-16 10:01:39,216 [main] DEBUG o.f.c.i.u.s.c.FileSystemClassPathLocationScanner - Scanning starting at classpath root in filesystem: D:\Users\olillevi\Documents\GitHub\openright-simple-server-seed\target\classes\
+2015-03-16 10:01:39,216 [main] DEBUG o.f.c.i.u.s.c.FileSystemClassPathLocationScanner - Scanning for resources in path: D:\Users\olillevi\Documents\GitHub\openright-simple-server-seed\target\classes\db\restjdbc (db/restjdbc)
+2015-03-16 10:01:39,218 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Found resource: db/restjdbc/V001__CreateTableOrders.sql
+2015-03-16 10:01:39,225 [main] DEBUG o.f.c.internal.util.FeatureDetector - Spring Jdbc available: false
+2015-03-16 10:01:39,228 [main] DEBUG o.f.core.internal.command.DbValidate - Validating migrations ...
+2015-03-16 10:01:39,231 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Scanning for classpath resources at 'db/restjdbc' (Prefix: 'V', Suffix: '.sql')
+2015-03-16 10:01:39,231 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Scanning URL: file:/D:/Users/olillevi/Documents/GitHub/openright-simple-server-seed/target/classes/db/restjdbc
+2015-03-16 10:01:39,231 [main] DEBUG o.f.c.internal.util.FeatureDetector - JBoss VFS v2 available: false
+2015-03-16 10:01:39,232 [main] DEBUG o.f.c.i.u.s.c.FileSystemClassPathLocationScanner - Scanning starting at classpath root in filesystem: D:\Users\olillevi\Documents\GitHub\openright-simple-server-seed\target\classes\
+2015-03-16 10:01:39,232 [main] DEBUG o.f.c.i.u.s.c.FileSystemClassPathLocationScanner - Scanning for resources in path: D:\Users\olillevi\Documents\GitHub\openright-simple-server-seed\target\classes\db\restjdbc (db/restjdbc)
+2015-03-16 10:01:39,232 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Found resource: db/restjdbc/V001__CreateTableOrders.sql
+2015-03-16 10:01:39,239 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Scanning for classes at 'db/restjdbc' (Implementing: 'org.flywaydb.core.api.migration.jdbc.JdbcMigration')
+2015-03-16 10:01:39,239 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Scanning URL: file:/D:/Users/olillevi/Documents/GitHub/openright-simple-server-seed/target/classes/db/restjdbc
+2015-03-16 10:01:39,240 [main] DEBUG o.f.c.internal.util.FeatureDetector - JBoss VFS v2 available: false
+2015-03-16 10:01:39,241 [main] DEBUG o.f.c.i.u.s.c.FileSystemClassPathLocationScanner - Scanning starting at classpath root in filesystem: D:\Users\olillevi\Documents\GitHub\openright-simple-server-seed\target\classes\
+2015-03-16 10:01:39,242 [main] DEBUG o.f.c.i.u.s.c.FileSystemClassPathLocationScanner - Scanning for resources in path: D:\Users\olillevi\Documents\GitHub\openright-simple-server-seed\target\classes\db\restjdbc (db/restjdbc)
+2015-03-16 10:01:39,242 [main] DEBUG o.f.c.i.u.s.c.ClassPathScanner - Filtering out resource: db/restjdbc/V001__CreateTableOrders.sql (filename: V001__CreateTableOrders.sql)
+2015-03-16 10:01:39,267 [main] INFO  o.f.core.internal.command.DbValidate - Validated 1 migration (execution time 00:00.037s)
+2015-03-16 10:01:39,272 [main] DEBUG o.f.core.internal.command.DbSchemas - Schema "public" already exists. Skipping schema creation.
+2015-03-16 10:01:39,298 [main] DEBUG o.f.core.internal.dbsupport.Table - Locking table "public"."schema_version"...
+2015-03-16 10:01:39,299 [main] DEBUG o.f.core.internal.dbsupport.Table - Lock acquired for table "public"."schema_version"
+2015-03-16 10:01:39,308 [main] INFO  o.f.core.internal.command.DbMigrate - Current version of schema "public": 001
+2015-03-16 10:01:39,312 [main] INFO  o.f.core.internal.command.DbMigrate - Schema "public" is up to date. No migration necessary.
+2015-03-16 10:01:39,314 [main] DEBUG jndi - SAVE jdbc/restjdbc in null
+2015-03-16 10:01:39,318 [main] DEBUG jndi - InitialContextFactory.getInitialContext()
+2015-03-16 10:01:39,325 [main] DEBUG jndi - supportDeepBinding=false
+2015-03-16 10:01:39,325 [main] DEBUG jndi - Created initial context delegate for local namespace:org.eclipse.jetty.jndi.local.localContextRoot@345965f2
+2015-03-16 10:01:39,326 [main] DEBUG jndi - InitialContextFactory.getInitialContext()
+2015-03-16 10:01:39,327 [main] DEBUG jndi - Created initial context delegate for local namespace:org.eclipse.jetty.jndi.local.localContextRoot@279ad2e3
+2015-03-16 10:01:39,328 [main] DEBUG jndi - Looking up name="__"
+2015-03-16 10:01:39,328 [main] DEBUG jndi - supportDeepBinding=false
+2015-03-16 10:01:39,329 [main] DEBUG jndi - Adding binding with key=__ obj=org.eclipse.jetty.jndi.NamingContext@58134517[name=__,parent=org.eclipse.jetty.jndi.local.localContextRoot$NamingRoot@4450d156,bindings.size=0] for context=null as __: org.eclipse.jetty.jndi.NamingContext:org.eclipse.jetty.jndi.NamingContext@58134517[name=__,parent=org.eclipse.jetty.jndi.local.localContextRoot$NamingRoot@4450d156,bindings.size=0]
+2015-03-16 10:01:39,329 [main] DEBUG jndi - Subcontext __ created
+2015-03-16 10:01:39,329 [main] DEBUG jndi - Looking up name="jdbc"
+2015-03-16 10:01:39,329 [main] DEBUG jndi - supportDeepBinding=false
+2015-03-16 10:01:39,329 [main] DEBUG jndi - Adding binding with key=jdbc obj=org.eclipse.jetty.jndi.NamingContext@4461c7e3[name=jdbc,parent=org.eclipse.jetty.jndi.NamingContext@58134517,bindings.size=0] for context=__ as jdbc: org.eclipse.jetty.jndi.NamingContext:org.eclipse.jetty.jndi.NamingContext@4461c7e3[name=jdbc,parent=org.eclipse.jetty.jndi.NamingContext@58134517,bindings.size=0]
+2015-03-16 10:01:39,330 [main] DEBUG jndi - Subcontext jdbc created
+2015-03-16 10:01:39,333 [main] DEBUG jndi - Removing binding with key=restjdbc
+2015-03-16 10:01:39,333 [main] DEBUG jndi - Adding binding with key=restjdbc obj=jdbc/restjdbc for context=jdbc as restjdbc: org.eclipse.jetty.plus.jndi.EnvEntry:jdbc/restjdbc
+2015-03-16 10:01:39,333 [main] DEBUG jndi - Bound object to restjdbc
+2015-03-16 10:01:39,333 [main] DEBUG jndi - Looking up name="jdbc"
+2015-03-16 10:01:39,333 [main] DEBUG jndi - supportDeepBinding=false
+2015-03-16 10:01:39,334 [main] DEBUG jndi - Adding binding with key=jdbc obj=org.eclipse.jetty.jndi.NamingContext@77e4c80f[name=jdbc,parent=org.eclipse.jetty.jndi.local.localContextRoot$NamingRoot@4450d156,bindings.size=0] for context=null as jdbc: org.eclipse.jetty.jndi.NamingContext:org.eclipse.jetty.jndi.NamingContext@77e4c80f[name=jdbc,parent=org.eclipse.jetty.jndi.local.localContextRoot$NamingRoot@4450d156,bindings.size=0]
+2015-03-16 10:01:39,334 [main] DEBUG jndi - Subcontext jdbc created
+2015-03-16 10:01:39,334 [main] DEBUG jndi - Removing binding with key=restjdbc
+2015-03-16 10:01:39,334 [main] DEBUG jndi - Adding binding with key=restjdbc obj=HikariDataSource (HikariPool-0) for context=jdbc as restjdbc: com.zaxxer.hikari.HikariDataSource:HikariDataSource (HikariPool-0)
+2015-03-16 10:01:39,334 [main] DEBUG jndi - Bound object to restjdbc
+2015-03-16 10:01:39,672 [HikariCP connection filler (pool HikariPool-0)] DEBUG HikariPool - After fill pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:01:40,947 [main] INFO  n.o.s.application.ApplicationServer - Started server http://172.17.5.168:8000/myapp
+2015-03-16 10:01:52,539 [qtp360067785-19] DEBUG jndi - InitialContextFactory.getInitialContext()
+2015-03-16 10:01:52,539 [qtp360067785-19] DEBUG jndi - Created initial context delegate for local namespace:org.eclipse.jetty.jndi.local.localContextRoot@1159b04
+2015-03-16 10:01:52,539 [qtp360067785-19] DEBUG jndi - Looking up name="jdbc/restjdbc"
+2015-03-16 10:01:52,540 [qtp360067785-19] DEBUG jndi - Looking up name="restjdbc"
+2015-03-16 10:02:08,891 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:02:08,904 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:02:38,892 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:02:38,894 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:03:08,892 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:03:08,893 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:03:38,893 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:03:38,895 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:04:08,894 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:04:08,895 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:04:38,895 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:04:38,896 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:05:08,895 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:05:08,896 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:05:38,896 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:05:38,897 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:06:08,897 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:06:08,897 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:06:38,897 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:06:38,898 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:07:08,897 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:07:08,898 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:07:38,897 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:07:38,898 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:08:08,898 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:08:08,899 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:08:38,898 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:08:38,899 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:09:08,898 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:09:08,900 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:09:38,899 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:09:38,900 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:10:08,898 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:10:08,898 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:10:38,899 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:10:38,899 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:11:08,901 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - Before cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
+2015-03-16 10:11:08,902 [Hikari Housekeeping Timer (pool HikariPool-0)] DEBUG HikariPool - After cleanup pool stats HikariPool-0 (total=10, inUse=0, avail=10, waiting=0)
