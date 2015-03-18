@@ -15,16 +15,16 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 import com.zaxxer.hikari.HikariDataSource;
 
 
-public abstract class SeedAppConfigFile {
+public abstract class AppConfigFile {
 
-	private static Logger log = LoggerFactory.getLogger(SeedAppConfigFile.class);
+	private static Logger log = LoggerFactory.getLogger(AppConfigFile.class);
 
     private long nextCheckTime = 0;
     private long lastLoadTime = 0;
     private Properties properties = new Properties();
     private final File configFile;
 
-	public SeedAppConfigFile(String filename) {
+	public AppConfigFile(String filename) {
 		SLF4JBridgeHandler.removeHandlersForRootLogger();
 		SLF4JBridgeHandler.install();
 

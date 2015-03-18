@@ -2,11 +2,11 @@ package net.openright.simpleserverseed.application;
 
 import javax.sql.DataSource;
 
-import net.openright.simpleserverseed.infrastructure.config.SeedAppConfigFile;
+import net.openright.simpleserverseed.infrastructure.config.AppConfigFile;
 
-public class AppConfigFile extends SeedAppConfigFile implements AppConfig {
+public class SimpleseedAppConfigFile extends AppConfigFile implements SimpleseedAppConfig {
 
-	public AppConfigFile(String filename) {
+	public SimpleseedAppConfigFile(String filename) {
 		super(filename);
 	}
 

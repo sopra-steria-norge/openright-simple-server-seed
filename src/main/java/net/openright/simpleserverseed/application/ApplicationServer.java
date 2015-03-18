@@ -15,9 +15,9 @@ import org.eclipse.jetty.server.handler.ShutdownHandler;
 
 public class ApplicationServer {
 	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ApplicationServer.class);
-	private AppConfig config;
+	private SimpleseedAppConfig config;
 
-	public ApplicationServer(AppConfig config) {
+	public ApplicationServer(SimpleseedAppConfig config) {
 		this.config = config;
 	}
 
@@ -26,7 +26,7 @@ public class ApplicationServer {
 		LogUtil.setupLogging("logging-simpleserverseed.xml");
 		IOUtil.extractResourceFile("simpleserverseed.properties");
 		
-		new ApplicationServer(new AppConfigFile("src/main/resources/simpleserverseed.properties")).run(args);
+		new ApplicationServer(new SimpleseedAppConfigFile("src/main/resources/simpleserverseed.properties")).run(args);
 	}
 
 	private void run(String[] args) throws Exception {

@@ -8,7 +8,7 @@ import java.util.Random;
 
 import javax.sql.DataSource;
 
-import net.openright.simpleserverseed.application.AppConfigFile;
+import net.openright.simpleserverseed.application.SimpleseedAppConfigFile;
 import net.openright.simpleserverseed.infrastructure.db.PgsqlDatabase;
 
 import org.junit.Test;
@@ -16,7 +16,7 @@ import org.junit.Test;
 public class OrdersApiControllerTest {
 
 	private Random random = new Random();
-	private AppConfigFile config = new AppConfigFile("test-restjdbc.properties");
+	private SimpleseedAppConfigFile config = new SimpleseedAppConfigFile("test-restjdbc.properties");
 	private DataSource dataSource = config.createDataSource("restjdbc", "restjdbc_test");
 	private PgsqlDatabase database = new PgsqlDatabase(dataSource);
 

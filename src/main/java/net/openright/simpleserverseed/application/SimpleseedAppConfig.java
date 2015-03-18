@@ -3,7 +3,7 @@ package net.openright.simpleserverseed.application;
 import javax.sql.DataSource;
 
 
-public interface AppConfig {
+public interface SimpleseedAppConfig {
 
 	DataSource createDataSource();
 
