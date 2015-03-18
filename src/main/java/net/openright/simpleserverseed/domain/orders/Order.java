@@ -1,15 +1,18 @@
 package net.openright.simpleserverseed.domain.orders;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Order {
 
 	private String title;
 	private int id;
-
-	public Order(int id, String title) {
+	private List<OrderLine> orderLines;
+	
+	public Order(int id, String title, List<OrderLine> orderLines) {
 		this.id = id;
 		this.title = title;
+		this.orderLines = orderLines;
 	}
 
 	public int getId() {
@@ -18,6 +21,10 @@ public class Order {
 
 	public String getTitle() {
 		return title;
+	}
+	
+	public List<OrderLine> getOrderLines() {
+		return orderLines;
 	}
 
 	@Override
@@ -28,7 +35,7 @@ public class Order {
 		if (obj instanceof Order) {
 			Order other = (Order) obj;
 			return Objects.equals(id, other.id)
-					&& Objects.equals(title, other.title);
+					&& Objects.equals(title, other.title) && Objects.equals(orderLines, other.orderLines);
 		}
 		return false;
 	}
@@ -41,6 +48,7 @@ public class Order {
 	@Override
 	public String toString() {
 		return "Order {id = " + Objects.toString(id) + ", title = "
-				+ Objects.toString(title, "no title set") + "}";
+				+ Objects.toString(title, "no title set") + 
+				orderLines.toString() +	"}";
 	}
 }

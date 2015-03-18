@@ -1,5 +1,6 @@
 create table Orders (
-	id integer not null,
-	title text not null
+	id integer NOT NULL,
+	title text NOT NULL,
+	PRIMARY KEY (id)
 );
 
