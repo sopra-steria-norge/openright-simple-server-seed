@@ -7,4 +7,6 @@ public interface SimpleseedAppConfig {
 
 	DataSource createDataSource();
 
+	DataSource createTestDataSource();
+
 }

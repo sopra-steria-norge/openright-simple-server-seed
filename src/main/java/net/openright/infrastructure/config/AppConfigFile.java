@@ -31,18 +31,37 @@ public abstract class AppConfigFile {
 		this.configFile = new File(filename);
 	}
 
-	public DataSource createDataSource(String prefix, String defaultName) {
-		HikariDataSource dataSource = new HikariDataSource();
-		dataSource.setUsername(getProperty(prefix + ".db.username", defaultName));
-		dataSource.setPassword(getProperty(prefix + ".db.password", dataSource.getUsername()));
-		dataSource.setJdbcUrl(
-				getProperty(prefix + ".db.url", "jdbc:postgresql://localhost:5432/" + dataSource.getUsername()));
+	protected DataSource createDataSource(String prefix) {
+		DataSource dataSource = createDataSource(prefix, prefix);
 
 		Flyway flyway = new Flyway();
 		flyway.setDataSource(dataSource);
 		flyway.setLocations("classpath:db/" + prefix);
 		flyway.migrate();
 
+		return dataSource;
+	}
+
+	protected DataSource createTestDataSource(String prefix) {
+		DataSource dataSource = createDataSource(prefix, prefix + "_test");
+
+		Flyway flyway = new Flyway();
+		flyway.setDataSource(dataSource);
+		flyway.setLocations("classpath:db/" + prefix);
+		if ("true".equals(getProperty(prefix + ".db.test.clean", "false"))) {
+			flyway.clean();
+		}
+		flyway.migrate();
+
+		return dataSource;
+	}
+
+	private DataSource createDataSource(String prefix, String defaultName) {
+		HikariDataSource dataSource = new HikariDataSource();
+		dataSource.setUsername(getProperty(prefix + ".db.username", defaultName));
+		dataSource.setPassword(getProperty(prefix + ".db.password", dataSource.getUsername()));
+		dataSource.setJdbcUrl(
+				getProperty(prefix + ".db.url", "jdbc:postgresql://localhost:5432/" + dataSource.getUsername()));
 		return dataSource;
 	}
 

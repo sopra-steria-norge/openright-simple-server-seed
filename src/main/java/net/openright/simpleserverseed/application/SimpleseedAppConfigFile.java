@@ -12,8 +12,11 @@ public class SimpleseedAppConfigFile extends AppConfigFile implements Simpleseed
 
 	@Override
 	public DataSource createDataSource() {
-		return createDataSource("restjdbc", "restjdbc");
+		return createDataSource("restjdbc");
 	}
 
-
+	@Override
+	public DataSource createTestDataSource() {
+		return createTestDataSource("restjdbc");
+	}
 }

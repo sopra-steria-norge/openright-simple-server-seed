@@ -33,7 +33,6 @@ public class OrderLine {
 
 	@Override
 	public String toString() {
-		return "OrderLine {title = "
-				+ Objects.toString(title, "no title set") + "}";
+		return "OrderLine {title = " + Objects.toString(title, "no title set") + "}";
 	}
 }
