@@ -1,75 +1,39 @@
 package net.openright.simpleserverseed.domain.orders;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.openright.simpleserverseed.infrastructure.db.Database;
-import net.openright.simpleserverseed.infrastructure.db.Database.DatabaseTable;
+import net.openright.simpleserverseed.infrastructure.db.PgsqlDatabase;
 import net.openright.simpleserverseed.infrastructure.rest.JsonController;
-import net.openright.simpleserverseed.infrastructure.rest.RequestException;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class OrdersApiController implements JsonController {
 
-	private DatabaseTable table;
-	private OrderLineDAO orderLineDAO;
+	private OrdersRepository repository;
 
-	public OrdersApiController(Database database) {
-		this.table = database.table("orders");
-		orderLineDAO = new OrderLineDAO(database);
+	public OrdersApiController(PgsqlDatabase database) {
+		this.repository = new OrdersRepository(database);
 	}
 
 	@Override
 	public JSONObject getJSON(HttpServletRequest req) {
-		return new JSONObject().put("orders",
-				collect(getOrders().stream().map(this::toJSON)));
-	}
-
-	List<Order> getOrders() {
-		List<Order> orders = table.list(rs -> new Order(rs.getInt("id"), rs
-				.getString("title"), orderLineDAO.getOrderLines(rs.getInt("id"))));
-
-		return orders;
-	}
-
-	Order getOrder(int id) {
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("id", id + "");
-		Order order = table.list(
-				rs -> new Order(rs.getInt("id"), rs.getString("title"), orderLineDAO.getOrderLines(rs.getInt("id"))), map)
-				.get(0);
-		return order;
+		return new JSONObject()
+			.put("orders", collect(repository.list().stream().map(this::toJSON)));
 	}
 
 	@Override
 	public void postJSON(JSONObject jsonObject) {
-		postOrder(toOrder(jsonObject));
-	}
-
-	void postOrder(Order order) {
-		if (order.getTitle().equals("null")) {
-			throw new RuntimeException("Null title is invalid");
-		}
-		if (order.getTitle().contains("foul")) {
-			throw new RequestException("No foul language in orders, please!");
-		}
-
-		table.insertValues(row -> {
-			row.put("id", order.getId());
-			row.put("title", order.getTitle());
-			orderLineDAO.postOrderLines(order.getId(), order.getOrderLines());
-		});
+		repository.insert(toOrder(jsonObject));
 	}
 
 	private Order toOrder(JSONObject jsonObject) {
-		return new Order(jsonObject.getInt("id"), jsonObject.getString("title"), null);
+		Order order = new Order(jsonObject.getString("title"), new ArrayList<OrderLine>());
+		order.setId(jsonObject.getInt("id"));
+		return order;
 	}
 
 	private JSONArray collect(Stream<JSONObject> stream) {
@@ -77,8 +41,7 @@ public class OrdersApiController implements JsonController {
 	}
 
 	JSONObject toJSON(Order order) {
-		return new JSONObject().put("id", order.getId()).put("title",
-				order.getTitle());
+		return new JSONObject().put("id", order.getId()).put("title", order.getTitle());
 	}
 
 }

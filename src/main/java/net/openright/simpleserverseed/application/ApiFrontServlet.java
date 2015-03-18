@@ -9,7 +9,7 @@ import javax.servlet.ServletException;
 import javax.sql.DataSource;
 
 import net.openright.simpleserverseed.domain.orders.OrdersApiController;
-import net.openright.simpleserverseed.infrastructure.db.Database;
+import net.openright.simpleserverseed.infrastructure.db.PgsqlDatabase;
 import net.openright.simpleserverseed.infrastructure.rest.GetController;
 import net.openright.simpleserverseed.infrastructure.rest.JsonGetController;
 import net.openright.simpleserverseed.infrastructure.rest.JsonPostController;
@@ -24,9 +24,9 @@ public class ApiFrontServlet extends RestApiFrontController {
 
 	@Override
 	public void init() throws ServletException {
-		Database database ;
+		PgsqlDatabase database ;
 		try {
-			database = new Database((DataSource) new InitialContext().lookup("jdbc/restjdbc"));
+			database = new PgsqlDatabase((DataSource) new InitialContext().lookup("jdbc/restjdbc"));
 		} catch (NamingException e) {
 			throw new RuntimeException(e);
 		}

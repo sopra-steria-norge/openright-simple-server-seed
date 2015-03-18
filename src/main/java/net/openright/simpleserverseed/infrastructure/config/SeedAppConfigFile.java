@@ -41,8 +41,9 @@ public abstract class SeedAppConfigFile {
 		Flyway flyway = new Flyway();
 		flyway.setDataSource(dataSource);
 		flyway.setLocations("classpath:db/" + prefix);
+		flyway.clean();
 		flyway.migrate();
-		
+
 		return dataSource;
 	}
 

@@ -2,42 +2,54 @@ package net.openright.simpleserverseed.domain.orders;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import javax.sql.DataSource;
 
 import net.openright.simpleserverseed.application.AppConfigFile;
-import net.openright.simpleserverseed.infrastructure.db.Database;
+import net.openright.simpleserverseed.infrastructure.db.PgsqlDatabase;
 
 import org.junit.Test;
 
 public class OrdersApiControllerTest {
 
-	@Test
-	public void shouldRetrieveSavedOrders() throws Exception {
-		AppConfigFile config = new AppConfigFile(
-				"src/test/resources/test-simpleserverseed.properties");
-		DataSource dataSource = config.createDataSource("restjdbc",
-				"restjdbc_test");
-		Database database = new Database(dataSource);
-		OrdersApiController controller = new OrdersApiController(database);
+	private Random random = new Random();
+	private AppConfigFile config = new AppConfigFile("test-restjdbc.properties");
+	private DataSource dataSource = config.createDataSource("restjdbc", "restjdbc_test");
+	private PgsqlDatabase database = new PgsqlDatabase(dataSource);
 
-		cleanTestData(database);
+	@Test
+	public void shouldRetrieveSavedOrdersWithoutOrderLines() throws Exception {
+		OrdersRepository repository = new OrdersRepository(database);
 
 		Order order = sampleOrder();
-		controller.postOrder(order);
-		assertThat(controller.getOrders()).contains(order);
-	}
+		repository.insert(order);
+		assertThat(repository.list()).contains(order);
 
-	private void cleanTestData(Database database) {
-		database.executeOperation("delete from orderlines where id=1 or id=2");
-		database.executeOperation("delete from orders where id=13");
+		assertThat(repository.retrieve(order.getId()))
+			.isEqualToComparingFieldByField(order);
 	}
 
 	private Order sampleOrder() {
-		OrderLine orderLine1 = new OrderLine(1, "Gaming Laptop");
-		OrderLine orderLine2 = new OrderLine(2, "Gaming Mouse");
-		return new Order(13, "Travelling gamer", Arrays.asList(orderLine1,
-				orderLine2));
+		return new Order(sampleString(4), new ArrayList<OrderLine>());
 	}
+
+	private String sampleString(int numberOfWords) {
+		List<String> words = new ArrayList<String>();
+		for (int i = 0; i < numberOfWords; i++) {
+			words.add(sampleWord());
+		}
+		return String.join(" ", words);
+	}
+
+	private String sampleWord() {
+		return random(new String[] { "foo", "bar", "baz", "qux", "quux", "quuuux" });
+	}
+
+	private <T> T random(@SuppressWarnings("unchecked") T... alternatives) {
+		return alternatives[random.nextInt(alternatives.length)];
+	}
+
 }

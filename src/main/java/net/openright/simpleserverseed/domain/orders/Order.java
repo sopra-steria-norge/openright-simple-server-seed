@@ -6,13 +6,16 @@ import java.util.Objects;
 public class Order {
 
 	private String title;
-	private int id;
+	private Integer id;
 	private List<OrderLine> orderLines;
-	
-	public Order(int id, String title, List<OrderLine> orderLines) {
-		this.id = id;
+
+	public Order(String title, List<OrderLine> orderLines) {
 		this.title = title;
 		this.orderLines = orderLines;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public int getId() {
@@ -22,7 +25,7 @@ public class Order {
 	public String getTitle() {
 		return title;
 	}
-	
+
 	public List<OrderLine> getOrderLines() {
 		return orderLines;
 	}
@@ -48,7 +51,7 @@ public class Order {
 	@Override
 	public String toString() {
 		return "Order {id = " + Objects.toString(id) + ", title = "
-				+ Objects.toString(title, "no title set") + 
+				+ Objects.toString(title, "no title set") +
 				orderLines.toString() +	"}";
 	}
 }
