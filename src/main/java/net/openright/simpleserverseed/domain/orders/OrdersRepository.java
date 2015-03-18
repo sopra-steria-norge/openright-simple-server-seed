@@ -5,9 +5,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.openright.simpleserverseed.infrastructure.db.PgsqlDatabase;
-import net.openright.simpleserverseed.infrastructure.db.PgsqlDatabase.DatabaseTable;
-import net.openright.simpleserverseed.infrastructure.rest.RequestException;
+import net.openright.infrastructure.db.PgsqlDatabase;
+import net.openright.infrastructure.db.PgsqlDatabase.DatabaseTable;
+import net.openright.infrastructure.rest.RequestException;
 
 public class OrdersRepository {
 

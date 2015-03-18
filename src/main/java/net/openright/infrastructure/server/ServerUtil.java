@@ -1,4 +1,4 @@
-package net.openright.simpleserverseed.infrastructure.server;
+package net.openright.infrastructure.server;
 
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.NCSARequestLog;

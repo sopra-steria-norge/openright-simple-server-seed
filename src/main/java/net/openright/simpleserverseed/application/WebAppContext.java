@@ -1,6 +1,6 @@
 package net.openright.simpleserverseed.application;
 
-import net.openright.simpleserverseed.infrastructure.server.EmbeddedWebAppContext;
+import net.openright.infrastructure.server.EmbeddedWebAppContext;
 
 
 public class WebAppContext extends EmbeddedWebAppContext {

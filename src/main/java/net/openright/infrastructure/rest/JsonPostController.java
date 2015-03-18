@@ -1,4 +1,4 @@
-package net.openright.simpleserverseed.infrastructure.rest;
+package net.openright.infrastructure.rest;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,7 +18,7 @@ public class JsonPostController implements PostController {
 	public JsonPostController(JsonController jsonController) {
 		this.jsonController = jsonController;
 	}
-	
+
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		try (BufferedReader reader = req.getReader()) {

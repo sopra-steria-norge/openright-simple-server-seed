@@ -1,4 +1,4 @@
-package net.openright.simpleserverseed.infrastructure.util;
+package net.openright.infrastructure.util;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;

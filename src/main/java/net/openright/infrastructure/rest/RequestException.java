@@ -1,4 +1,4 @@
-package net.openright.simpleserverseed.infrastructure.rest;
+package net.openright.infrastructure.rest;
 
 public class RequestException extends RuntimeException {
 

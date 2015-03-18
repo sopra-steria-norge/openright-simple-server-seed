@@ -1,4 +1,4 @@
-package net.openright.simpleserverseed.infrastructure.server;
+package net.openright.infrastructure.server;
 
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -14,10 +14,10 @@ import com.codahale.metrics.servlets.HealthCheckServlet;
 import com.codahale.metrics.servlets.MetricsServlet;
 
 public class StatusHandler extends ServletContextHandler {
-	
+
 	public StatusHandler() {
 		setContextPath("/status");
-		
+
 		addServlet(new ServletHolder(new AdminServlet()), "/admin/*");
 
 		setAttribute(MetricsServlet.METRICS_REGISTRY, createMetricsRegistry());
@@ -37,6 +37,6 @@ public class StatusHandler extends ServletContextHandler {
         HealthCheckRegistry healthCheckRegistry = new HealthCheckRegistry();
 		return healthCheckRegistry;
 	}
-	
-	
+
+
 }

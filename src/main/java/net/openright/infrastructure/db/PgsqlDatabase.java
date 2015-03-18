@@ -1,4 +1,4 @@
-package net.openright.simpleserverseed.infrastructure.db;
+package net.openright.infrastructure.db;
 
 
 import java.sql.Connection;

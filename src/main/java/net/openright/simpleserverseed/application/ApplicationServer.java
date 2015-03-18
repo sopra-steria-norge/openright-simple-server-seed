@@ -2,10 +2,10 @@ package net.openright.simpleserverseed.application;
 
 import java.io.File;
 
-import net.openright.simpleserverseed.infrastructure.server.ServerUtil;
-import net.openright.simpleserverseed.infrastructure.server.StatusHandler;
-import net.openright.simpleserverseed.infrastructure.util.IOUtil;
-import net.openright.simpleserverseed.infrastructure.util.LogUtil;
+import net.openright.infrastructure.server.ServerUtil;
+import net.openright.infrastructure.server.StatusHandler;
+import net.openright.infrastructure.util.IOUtil;
+import net.openright.infrastructure.util.LogUtil;
 
 import org.eclipse.jetty.plus.jndi.EnvEntry;
 import org.eclipse.jetty.server.Handler;
@@ -25,7 +25,7 @@ public class ApplicationServer {
 		new File("logs").mkdirs();
 		LogUtil.setupLogging("logging-simpleserverseed.xml");
 		IOUtil.extractResourceFile("simpleserverseed.properties");
-		
+
 		new ApplicationServer(new SimpleseedAppConfigFile("src/main/resources/simpleserverseed.properties")).run(args);
 	}
 
@@ -35,11 +35,11 @@ public class ApplicationServer {
 
 	private void start() throws Exception {
 		new EnvEntry("jdbc/restjdbc", config.createDataSource());
-		
+
 		Server server = new Server(8000);
 		server.setHandler(createHandlers());
 		server.start();
-		
+
 		log.info("Started server " + server.getURI());
 	}
 
@@ -48,10 +48,10 @@ public class ApplicationServer {
 		handlers.addHandler(new ShutdownHandler("sgds", false, true));
 		handlers.addHandler(new WebAppContext("/myapp"));
 		handlers.addHandler(new StatusHandler());
-        
+
 		return ServerUtil.createStatisticsHandler(
 				ServerUtil.createRequestLogHandler(handlers));
 	}
 
-	
+
 }

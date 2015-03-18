@@ -8,18 +8,18 @@ import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.sql.DataSource;
 
+import net.openright.infrastructure.db.PgsqlDatabase;
+import net.openright.infrastructure.rest.GetController;
+import net.openright.infrastructure.rest.JsonGetController;
+import net.openright.infrastructure.rest.JsonPostController;
+import net.openright.infrastructure.rest.PostController;
+import net.openright.infrastructure.rest.RestApiFrontController;
 import net.openright.simpleserverseed.domain.orders.OrdersApiController;
-import net.openright.simpleserverseed.infrastructure.db.PgsqlDatabase;
-import net.openright.simpleserverseed.infrastructure.rest.GetController;
-import net.openright.simpleserverseed.infrastructure.rest.JsonGetController;
-import net.openright.simpleserverseed.infrastructure.rest.JsonPostController;
-import net.openright.simpleserverseed.infrastructure.rest.PostController;
-import net.openright.simpleserverseed.infrastructure.rest.RestApiFrontController;
 
 public class ApiFrontServlet extends RestApiFrontController {
-	
+
 	private static final long serialVersionUID = 6363140410513232499L;
-	
+
 	private OrdersApiController ordersController;
 
 	@Override
@@ -33,7 +33,7 @@ public class ApiFrontServlet extends RestApiFrontController {
 
 		ordersController = new OrdersApiController(database);
 	}
-	
+
 	@Override
 	protected Map<String,GetController> getControllers() {
         Map<String, GetController> controllers = new HashMap<>();

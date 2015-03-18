@@ -8,8 +8,8 @@ import java.util.Random;
 
 import javax.sql.DataSource;
 
+import net.openright.infrastructure.db.PgsqlDatabase;
 import net.openright.simpleserverseed.application.SimpleseedAppConfigFile;
-import net.openright.simpleserverseed.infrastructure.db.PgsqlDatabase;
 
 import org.junit.Test;
 

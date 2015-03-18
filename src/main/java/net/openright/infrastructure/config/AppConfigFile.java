@@ -1,4 +1,4 @@
-package net.openright.simpleserverseed.infrastructure.config;
+package net.openright.infrastructure.config;
 
 import java.io.File;
 import java.io.FileInputStream;

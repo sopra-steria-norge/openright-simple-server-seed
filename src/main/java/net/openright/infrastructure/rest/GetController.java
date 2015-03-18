@@ -1,4 +1,4 @@
-package net.openright.simpleserverseed.infrastructure.rest;
+package net.openright.infrastructure.rest;
 
 import java.io.IOException;
 

@@ -5,8 +5,8 @@ import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.openright.simpleserverseed.infrastructure.db.PgsqlDatabase;
-import net.openright.simpleserverseed.infrastructure.rest.JsonController;
+import net.openright.infrastructure.db.PgsqlDatabase;
+import net.openright.infrastructure.rest.JsonController;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
