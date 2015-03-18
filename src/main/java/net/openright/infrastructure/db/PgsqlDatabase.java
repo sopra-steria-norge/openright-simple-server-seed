@@ -17,53 +17,6 @@ import javax.sql.DataSource;
 
 public class PgsqlDatabase {
 
-	public class QualifiedDatabaseTable {
-		private LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
-		private String tableName;
-
-
-		public QualifiedDatabaseTable(String tableName, String field, Object value) {
-			this.tableName = tableName;
-			parameters.put(field, value);
-		}
-
-
-		public <T> T single(ResultSetMapper<T> mapper) {
-			return doWithConnection(conn -> {
-				String query = getQuery();
-				System.out.println(query);
-				System.out.println(parameters);
-				try (PreparedStatement prepareStatement = conn.prepareStatement(query)) {
-					int index = 1;
-					for (Object param : parameters.values()) {
-						prepareStatement.setObject(index++, param);
-					}
-					ResultSet rs = prepareStatement.executeQuery();
-					if (!rs.next()) {
-						throw new RuntimeException("Not found");
-					}
-
-					T result = mapper.run(rs);
-					if (rs.next()) {
-						throw new RuntimeException("Duplicat");
-					}
-					return result;
-				} catch (SQLException e) {
-					throw convertException(e);
-				}
-			});
-		}
-
-
-		private String getQuery() {
-			String whereClause = parameters.keySet().stream()
-					.map(s -> s + " = ?")
-					.collect(Collectors.joining(" and "));
-			return "select * from " + tableName + " where " + whereClause;
-		}
-
-	}
-
 	public interface ConnectionCallback<T> {
 
 		T run(Connection conn);
@@ -85,6 +38,68 @@ public class PgsqlDatabase {
 	public interface Inserter {
 
 		void values(Map<String, Object> row);
+
+	}
+
+	public class QualifiedDatabaseTable {
+		private LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
+		private String tableName;
+
+
+		public QualifiedDatabaseTable(String tableName, String field, Object value) {
+			this.tableName = tableName;
+			parameters.put(field, value);
+		}
+
+
+		public <T> T single(ResultSetMapper<T> mapper) {
+			return doWithConnection(conn -> {
+				try (PreparedStatement prepareStatement = conn.prepareStatement(getQuery())) {
+					int index = 1;
+					for (Object param : parameters.values()) {
+						prepareStatement.setObject(index++, param);
+					}
+					ResultSet rs = prepareStatement.executeQuery();
+					if (!rs.next()) {
+						throw new RuntimeException("Not found");
+					}
+
+					T result = mapper.run(rs);
+					if (rs.next()) {
+						throw new RuntimeException("Duplicat");
+					}
+					return result;
+				} catch (SQLException e) {
+					throw convertException(e);
+				}
+			});
+		}
+
+		public <T> List<T> list(ResultSetMapper<T> mapper) {
+			return executeOperation(getQuery(), parameters.values(), stmt -> {
+				try (ResultSet rs = stmt.executeQuery()) {
+					List<T> result = new ArrayList<T>();
+					while (rs.next()) {
+						result.add(mapper.run(rs));
+					}
+					return result;
+				}
+			});
+		}
+
+
+		private String getQuery() {
+			String whereClause = parameters.keySet().stream()
+					.map(s -> s + " = ?")
+					.collect(Collectors.joining(" and "));
+			return "select * from " + tableName + " where " + whereClause;
+		}
+
+
+		public Object list(Object object) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 
 	}
 

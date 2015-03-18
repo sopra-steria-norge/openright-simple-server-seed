@@ -41,7 +41,6 @@ public abstract class AppConfigFile {
 		Flyway flyway = new Flyway();
 		flyway.setDataSource(dataSource);
 		flyway.setLocations("classpath:db/" + prefix);
-		flyway.clean();
 		flyway.migrate();
 
 		return dataSource;

@@ -1,7 +1,6 @@
 package net.openright.simpleserverseed.domain.orders;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -19,11 +18,10 @@ public class OrdersApiControllerTest {
 	private SimpleseedAppConfigFile config = new SimpleseedAppConfigFile("test-restjdbc.properties");
 	private DataSource dataSource = config.createDataSource("restjdbc", "restjdbc_test");
 	private PgsqlDatabase database = new PgsqlDatabase(dataSource);
+	private OrdersRepository repository = new OrdersRepository(database);
 
 	@Test
 	public void shouldRetrieveSavedOrdersWithoutOrderLines() throws Exception {
-		OrdersRepository repository = new OrdersRepository(database);
-
 		Order order = sampleOrder();
 		repository.insert(order);
 		assertThat(repository.list()).contains(order);
@@ -32,8 +30,23 @@ public class OrdersApiControllerTest {
 			.isEqualToComparingFieldByField(order);
 	}
 
+	@Test
+	public void shouldRetrieveSavedOrdersWithOrderLines() throws Exception {
+		Order order = sampleOrder();
+
+		order.addOrderLine("test");
+		order.addOrderLine("test 2");
+
+		repository.insert(order);
+
+		assertThat(repository.retrieve(order.getId()))
+			.isEqualToComparingFieldByField(order);
+	}
+
+
+
 	private Order sampleOrder() {
-		return new Order(sampleString(4), new ArrayList<OrderLine>());
+		return new Order(sampleString(4));
 	}
 
 	private String sampleString(int numberOfWords) {

@@ -1,5 +1,6 @@
 package net.openright.simpleserverseed.domain.orders;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -7,10 +8,13 @@ public class Order {
 
 	private String title;
 	private Integer id;
-	private List<OrderLine> orderLines;
+	private List<OrderLine> orderLines = new ArrayList<>();
 
-	public Order(String title, List<OrderLine> orderLines) {
+	public Order(String title) {
 		this.title = title;
+	}
+
+	void setOrderLines(List<OrderLine> orderLines) {
 		this.orderLines = orderLines;
 	}
 
@@ -53,5 +57,9 @@ public class Order {
 		return "Order {id = " + Objects.toString(id) + ", title = "
 				+ Objects.toString(title, "no title set") +
 				orderLines.toString() +	"}";
+	}
+
+	public void addOrderLine(String title) {
+		this.orderLines.add(new OrderLine(title));
 	}
 }

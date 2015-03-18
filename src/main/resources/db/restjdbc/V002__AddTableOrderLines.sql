@@ -1,6 +1,5 @@
-create table OrderLines (
-	id integer NOT NULL,
-	orderId integer NOT NULL,
-	title text not null,
-	PRIMARY KEY (id)
+create table order_lines (
+	id serial primary key,
+	order_id integer NOT NULL references orders(id),
+	title text not null
 );

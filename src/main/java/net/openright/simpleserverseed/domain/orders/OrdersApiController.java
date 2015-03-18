@@ -1,5 +1,4 @@
 package net.openright.simpleserverseed.domain.orders;
-import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -31,7 +30,7 @@ public class OrdersApiController implements JsonController {
 	}
 
 	private Order toOrder(JSONObject jsonObject) {
-		Order order = new Order(jsonObject.getString("title"), new ArrayList<OrderLine>());
+		Order order = new Order(jsonObject.getString("title"));
 		order.setId(jsonObject.getInt("id"));
 		return order;
 	}
