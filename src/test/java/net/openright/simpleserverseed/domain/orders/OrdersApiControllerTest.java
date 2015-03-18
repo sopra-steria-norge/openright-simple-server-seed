@@ -43,8 +43,6 @@ public class OrdersApiControllerTest {
 			.isEqualToComparingFieldByField(order);
 	}
 
-
-
 	private Order sampleOrder() {
 		return new Order(sampleString(4));
 	}

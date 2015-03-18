@@ -53,40 +53,21 @@ public class PgsqlDatabase {
 
 
 		public <T> T single(ResultSetMapper<T> mapper) {
-			return doWithConnection(conn -> {
-				try (PreparedStatement prepareStatement = conn.prepareStatement(getQuery())) {
-					int index = 1;
-					for (Object param : parameters.values()) {
-						prepareStatement.setObject(index++, param);
-					}
-					ResultSet rs = prepareStatement.executeQuery();
-					if (!rs.next()) {
-						throw new RuntimeException("Not found");
-					}
-
-					T result = mapper.run(rs);
-					if (rs.next()) {
-						throw new RuntimeException("Duplicat");
-					}
-					return result;
-				} catch (SQLException e) {
-					throw convertException(e);
+			return executeQuery(getQuery(), parameters.values(), rs -> {
+				if (!rs.next()) {
+					throw new RuntimeException("Not found");
 				}
+				T result = mapper.run(rs);
+				if (rs.next()) {
+					throw new RuntimeException("Duplicat");
+				}
+				return result;
 			});
 		}
 
 		public <T> List<T> list(ResultSetMapper<T> mapper) {
-			return executeOperation(getQuery(), parameters.values(), stmt -> {
-				try (ResultSet rs = stmt.executeQuery()) {
-					List<T> result = new ArrayList<T>();
-					while (rs.next()) {
-						result.add(mapper.run(rs));
-					}
-					return result;
-				}
-			});
+			return executeListQuery(getQuery(), parameters.values(), mapper);
 		}
-
 
 		private String getQuery() {
 			String whereClause = parameters.keySet().stream()
@@ -94,13 +75,6 @@ public class PgsqlDatabase {
 					.collect(Collectors.joining(" and "));
 			return "select * from " + tableName + " where " + whereClause;
 		}
-
-
-		public Object list(Object object) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
 	}
 
 	public class DatabaseTable {
@@ -109,7 +83,6 @@ public class PgsqlDatabase {
 
 		public DatabaseTable(String tableName) {
 			this.tableName = tableName;
-			// TODO Auto-generated constructor stub
 		}
 
 		public int insertValues(Inserter inserter) {
@@ -130,13 +103,7 @@ public class PgsqlDatabase {
 		}
 
 		public <T> List<T> list(ResultSetMapper<T> mapper) {
-			return executeQuery(getQuery(), rs -> {
-				ArrayList<T> result = new ArrayList<T>();
-				while (rs.next()) {
-					result.add(mapper.run(rs));
-				}
-				return result;
-			});
+			return executeListQuery(getQuery(), new ArrayList<Object>(), mapper);
 		}
 
 		private String getQuery() {
@@ -181,12 +148,24 @@ public class PgsqlDatabase {
 
 	}
 
-	public <T> List<T> executeQuery(String query, ResultSetMapper<List<T>> object) {
-		return doWithConnection(conn -> {
-			try (PreparedStatement prepareStatement = conn.prepareStatement(query)) {
-				return object.run(prepareStatement.executeQuery());
-			} catch (SQLException e) {
-				throw convertException(e);
+	public <T> T executeQuery(String query, ResultSetMapper<T> mapper) {
+		return executeQuery(query, new ArrayList<Object>(), mapper);
+	}
+
+	public <T> List<T> executeListQuery(String query, Collection<Object> parameters, ResultSetMapper<T> mapper) {
+		return executeQuery(query, parameters, rs -> {
+			List<T> result = new ArrayList<T>();
+			while (rs.next()) {
+				result.add(mapper.run(rs));
+			}
+			return result;
+		});
+	}
+
+	public <T> T executeQuery(String query, Collection<Object> parameters, ResultSetMapper<T> mapper) {
+		return executeOperation(query, parameters, stmt -> {
+			try (ResultSet rs = stmt.executeQuery()) {
+				return mapper.run(rs);
 			}
 		});
 	}
