@@ -2,15 +2,15 @@ package net.openright.simpleserverseed.domain.orders;
 
 import java.util.Objects;
 
-public class OrderLine {
+class OrderLine {
 
 	private String title;
 
-	public OrderLine(String title) {
+	OrderLine(String title) {
 		this.title = title;
 	}
 
-	public String getTitle() {
+	String getTitle() {
 		return title;
 	}
 

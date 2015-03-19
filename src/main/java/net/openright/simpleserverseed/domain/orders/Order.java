@@ -4,33 +4,37 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Order {
+class Order {
 
 	private String title;
 	private Integer id;
 	private List<OrderLine> orderLines = new ArrayList<>();
 
-	public Order(String title) {
+	Order(String title) {
 		this.title = title;
 	}
 
+	void addOrderLine(String title) {
+		this.orderLines.add(new OrderLine(title));
+	}
+	
 	void setOrderLines(List<OrderLine> orderLines) {
 		this.orderLines = orderLines;
 	}
 
-	public void setId(int id) {
+	void setId(int id) {
 		this.id = id;
 	}
 
-	public int getId() {
+	int getId() {
 		return id;
 	}
 
-	public String getTitle() {
+	String getTitle() {
 		return title;
 	}
 
-	public List<OrderLine> getOrderLines() {
+	List<OrderLine> getOrderLines() {
 		return orderLines;
 	}
 
@@ -57,9 +61,5 @@ public class Order {
 		return "Order {id = " + Objects.toString(id) + ", title = "
 				+ Objects.toString(title, "no title set") +
 				orderLines.toString() +	"}";
-	}
-
-	public void addOrderLine(String title) {
-		this.orderLines.add(new OrderLine(title));
 	}
 }

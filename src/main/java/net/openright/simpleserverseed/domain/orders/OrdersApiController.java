@@ -39,7 +39,7 @@ public class OrdersApiController implements JsonController {
 		return new JSONArray(stream.collect(Collectors.toList()));
 	}
 
-	JSONObject toJSON(Order order) {
+	private JSONObject toJSON(Order order) {
 		return new JSONObject().put("id", order.getId()).put("title", order.getTitle());
 	}
 

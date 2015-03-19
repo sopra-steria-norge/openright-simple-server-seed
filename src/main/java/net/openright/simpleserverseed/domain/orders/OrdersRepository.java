@@ -8,19 +8,19 @@ import net.openright.infrastructure.db.PgsqlDatabase;
 import net.openright.infrastructure.db.PgsqlDatabase.DatabaseTable;
 import net.openright.infrastructure.rest.RequestException;
 
-public class OrdersRepository {
+class OrdersRepository {
 
 	private DatabaseTable table;
 	private PgsqlDatabase database;
 	private DatabaseTable lineTable;
 
-	public OrdersRepository(PgsqlDatabase database) {
+	OrdersRepository(PgsqlDatabase database) {
 		this.database = database;
 		this.table = database.table("orders");
 		this.lineTable = database.table("order_lines");
 	}
 
-	public List<Order> list() {
+	List<Order> list() {
 		return table.list(this::toOrder);
 	}
 
@@ -34,7 +34,7 @@ public class OrdersRepository {
 		return new OrderLine(rs.getString("title"));
 	}
 
-	public void insert(Order order) {
+	void insert(Order order) {
 		if (order.getTitle().equals("null")) {
 			throw new RuntimeException("Null title is invalid");
 		}
@@ -57,7 +57,7 @@ public class OrdersRepository {
 		});
 	}
 
-	public Order retrieve(int id) {
+	protected Order retrieve(int id) {
 		Order order = table.where("id", id).single(this::toOrder);
 		order.setOrderLines(
 				lineTable.where("order_id", id).list(this::toOrderLine));
