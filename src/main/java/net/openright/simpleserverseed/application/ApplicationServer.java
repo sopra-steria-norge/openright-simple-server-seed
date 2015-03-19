@@ -26,7 +26,7 @@ public class ApplicationServer {
 		LogUtil.setupLogging("logging-simpleserverseed.xml");
 		IOUtil.extractResourceFile("simpleserverseed.properties");
 
-		new ApplicationServer(new SimpleseedAppConfigFile("src/main/resources/simpleserverseed.properties")).run(args);
+		new ApplicationServer(new SimpleseedAppConfigFile("simpleserverseed.properties")).run(args);
 	}
 
 	private void run(String[] args) throws Exception {

@@ -17,7 +17,7 @@ import org.junit.Test;
 public class OrdersApiControllerTest {
 
 	private Random random = new Random();
-	private SimpleseedAppConfig config = new SimpleseedAppConfigFile("test-restjdbc.properties");
+	private SimpleseedAppConfig config = new SimpleseedAppConfigFile("src/main/resources/test-simpleserverseed.properties");
 	private DataSource dataSource = config.createTestDataSource();
 	private PgsqlDatabase database = new PgsqlDatabase(dataSource);
 	private OrdersRepository repository = new OrdersRepository(database);
