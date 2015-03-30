@@ -3,11 +3,7 @@ package net.openright.simpleserverseed.application;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
-import javax.sql.DataSource;
-
 import net.openright.infrastructure.db.PgsqlDatabase;
 import net.openright.infrastructure.rest.GetController;
 import net.openright.infrastructure.rest.JsonGetController;
@@ -24,13 +20,7 @@ public class ApiFrontServlet extends RestApiFrontController {
 
 	@Override
 	public void init() throws ServletException {
-		PgsqlDatabase database ;
-		try {
-			database = new PgsqlDatabase((DataSource) new InitialContext().lookup("jdbc/restjdbc"));
-		} catch (NamingException e) {
-			throw new RuntimeException(e);
-		}
-
+		PgsqlDatabase database = new PgsqlDatabase("jdbc/restjdbd");
 		ordersController = new OrdersApiController(database);
 	}
 

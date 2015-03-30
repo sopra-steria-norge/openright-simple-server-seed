@@ -16,8 +16,7 @@ import org.junit.Test;
 
 public class OrdersApiControllerTest {
 
-	private Random random = new Random();
-	private SimpleseedAppConfig config = new SimpleseedAppConfigFile("src/main/resources/test-simpleserverseed.properties");
+	private SimpleseedAppConfig config = new SimpleseedAppConfigFile("test-restjdbc.properties");
 	private DataSource dataSource = config.createTestDataSource();
 	private PgsqlDatabase database = new PgsqlDatabase(dataSource);
 	private OrdersRepository repository = new OrdersRepository(database);
@@ -45,11 +44,13 @@ public class OrdersApiControllerTest {
 			.isEqualToComparingFieldByField(order);
 	}
 
-	private Order sampleOrder() {
+	private static Random random = new Random();
+
+	public static Order sampleOrder() {
 		return new Order(sampleString(4));
 	}
 
-	private String sampleString(int numberOfWords) {
+	private static String sampleString(int numberOfWords) {
 		List<String> words = new ArrayList<String>();
 		for (int i = 0; i < numberOfWords; i++) {
 			words.add(sampleWord());
@@ -57,11 +58,11 @@ public class OrdersApiControllerTest {
 		return String.join(" ", words);
 	}
 
-	private String sampleWord() {
+	private static String sampleWord() {
 		return random(new String[] { "foo", "bar", "baz", "qux", "quux", "quuuux" });
 	}
 
-	private <T> T random(@SuppressWarnings("unchecked") T... alternatives) {
+	private static <T> T random(@SuppressWarnings("unchecked") T... alternatives) {
 		return alternatives[random.nextInt(alternatives.length)];
 	}
 

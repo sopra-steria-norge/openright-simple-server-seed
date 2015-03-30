@@ -1,6 +1,7 @@
 package net.openright.simpleserverseed.application;
 
 import java.io.File;
+import java.net.URI;
 
 import net.openright.infrastructure.server.ServerUtil;
 import net.openright.infrastructure.server.StatusHandler;
@@ -16,6 +17,7 @@ import org.eclipse.jetty.server.handler.ShutdownHandler;
 public class ApplicationServer {
 	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ApplicationServer.class);
 	private SimpleseedAppConfig config;
+	private Server server;
 
 	public ApplicationServer(SimpleseedAppConfig config) {
 		this.config = config;
@@ -26,17 +28,14 @@ public class ApplicationServer {
 		LogUtil.setupLogging("logging-simpleserverseed.xml");
 		IOUtil.extractResourceFile("simpleserverseed.properties");
 
-		new ApplicationServer(new SimpleseedAppConfigFile("simpleserverseed.properties")).run(args);
+		SimpleseedAppConfig config = new SimpleseedAppConfigFile("src/main/resources/simpleserverseed.properties");
+		new ApplicationServer(config).start(config.getHttpPort());
 	}
 
-	private void run(String[] args) throws Exception {
-		start();
-	}
-
-	private void start() throws Exception {
+	public void start(int port) throws Exception {
 		new EnvEntry("jdbc/restjdbc", config.createDataSource());
 
-		Server server = new Server(8000);
+		server = new Server(port);
 		server.setHandler(createHandlers());
 		server.start();
 
@@ -51,6 +50,10 @@ public class ApplicationServer {
 
 		return ServerUtil.createStatisticsHandler(
 				ServerUtil.createRequestLogHandler(handlers));
+	}
+
+	public URI getURI() {
+		return server.getURI();
 	}
 
 

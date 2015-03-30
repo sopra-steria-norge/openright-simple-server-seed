@@ -13,7 +13,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
+
+import net.openright.infrastructure.util.ExceptionUtil;
 
 public class PgsqlDatabase {
 
@@ -117,6 +121,14 @@ public class PgsqlDatabase {
 
 	public PgsqlDatabase(DataSource dataSource) {
 		this.dataSource = dataSource;
+	}
+
+	public PgsqlDatabase(String string) {
+		try {
+			this.dataSource = (DataSource) new InitialContext().lookup("jdbc/restjdbc");
+		} catch (NamingException e) {
+			throw ExceptionUtil.soften(e);
+		}
 	}
 
 	private List<String> repeat(String string, int count) {

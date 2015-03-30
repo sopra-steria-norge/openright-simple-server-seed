@@ -9,4 +9,6 @@ public interface SimpleseedAppConfig {
 
 	DataSource createTestDataSource();
 
+	int getHttpPort();
+
 }

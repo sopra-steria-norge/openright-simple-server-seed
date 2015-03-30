@@ -73,10 +73,10 @@ Getting started developing
   * For IntelliJ, 
 3. Create the database schema
   * Log in with the root user on PostgreSQL (locally)
-  * `CREATE USER restjdbc WITH PASSWORD restjdbc`
-  * `CREATE DATABASE restjdbc OWNER restjdbc`
-  * `CREATE USER restjdbc_test WITH PASSWORD restjdbc_test`
-  * `CREATE DATABASE restjdbc_test OWNER restjdbc_test`
+  * `CREATE USER seed WITH PASSWORD 'seed'`
+  * `CREATE DATABASE seed OWNER seed`
+  * `CREATE USER seed_test WITH PASSWORD 'seed_test'`
+  * `CREATE DATABASE seed_test OWNER seed_test`
 4. Run the tests
   * In Eclipse, right click on the project and select `Run As` > `JUnit test`
   * In IntelliJ, ...
