@@ -3,11 +3,9 @@ package net.openright.simpleserverseed.application;
 import javax.sql.DataSource;
 
 
-public interface SimpleseedAppConfig {
+public interface SeedAppConfig {
 
 	DataSource createDataSource();
-
-	DataSource createTestDataSource();
 
 	int getHttpPort();
 

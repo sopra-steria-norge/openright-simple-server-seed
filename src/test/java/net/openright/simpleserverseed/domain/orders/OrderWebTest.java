@@ -12,9 +12,9 @@ import java.util.zip.ZipFile;
 
 import net.openright.infrastructure.db.PgsqlDatabase;
 import net.openright.infrastructure.util.IOUtil;
-import net.openright.simpleserverseed.application.ApplicationServer;
-import net.openright.simpleserverseed.application.SimpleseedAppConfig;
-import net.openright.simpleserverseed.application.SimpleseedAppConfigFile;
+import net.openright.simpleserverseed.application.SeedAppServer;
+import net.openright.simpleserverseed.application.SeedAppConfig;
+import net.openright.simpleserverseed.application.SimpleseedTestConfig;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -25,10 +25,10 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 public class OrderWebTest {
-	private static SimpleseedAppConfig config = new SimpleseedAppConfigFile("test-seed.properties");
-	private static ApplicationServer server = new ApplicationServer(config);
+	private static SeedAppConfig config = new SimpleseedTestConfig();
+	private static SeedAppServer server = new SeedAppServer(config);
 	private static WebDriver browser;
-	private OrdersRepository repository = new OrdersRepository(new PgsqlDatabase("jdbc/restjdbc"));
+	private OrdersRepository repository = new OrdersRepository(new PgsqlDatabase("jdbc/seedappDs"));
 
 	@BeforeClass
 	public static void startServer() throws Exception {

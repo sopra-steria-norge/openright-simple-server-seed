@@ -9,15 +9,15 @@ import java.util.Random;
 import javax.sql.DataSource;
 
 import net.openright.infrastructure.db.PgsqlDatabase;
-import net.openright.simpleserverseed.application.SimpleseedAppConfig;
-import net.openright.simpleserverseed.application.SimpleseedAppConfigFile;
+import net.openright.simpleserverseed.application.SeedAppConfig;
+import net.openright.simpleserverseed.application.SimpleseedTestConfig;
 
 import org.junit.Test;
 
 public class OrdersApiControllerTest {
 
-	private SimpleseedAppConfig config = new SimpleseedAppConfigFile("test-restjdbc.properties");
-	private DataSource dataSource = config.createTestDataSource();
+	private SeedAppConfig config = new SimpleseedTestConfig();
+	private DataSource dataSource = config.createDataSource();
 	private PgsqlDatabase database = new PgsqlDatabase(dataSource);
 	private OrdersRepository repository = new OrdersRepository(database);
 

@@ -80,11 +80,11 @@ Getting started developing
 4. Run the tests
   * In Eclipse, right click on the project and select `Run As` > `JUnit test`
   * In IntelliJ, ...
-5. Run the `net.openright.restjdbc.RestJdbcApplicationServer` main class in the debugger
+5. Run the `net.openright.simpleserverseed.SeedAppServer` main class in the debugger
 6. Visit the application at http://localhost:3000/
 7. You can edit client HTML, JavaScript or CSS under `src/main/resources/webapp`. Any changes will be reflected when you refresh the browser
-8. You can edit server side code, for example `net.openright.restjdbc.order.OrderApiController `. Any changes that don't cross a method boundary will be reflected when you refresh, as long as you run in the debugger
-9. Any changes that are not supported by the debugger will be reflected when you start `net.openright.restjdbc.RestJdbcApplicationServer` again (starting again will shut down the old server instance)
+8. You can edit server side code, for example `net.openright.simpleserverseed.domain.order.OrderApiController `. Any changes that don't cross a method boundary will be reflected when you refresh, as long as you run in the debugger
+9. Any changes that are not supported by the debugger will be reflected when you start `net.openright.simpleserverseed.SeedAppServer` again (starting again will shut down the old server instance)
 0. To change the database schema, add new migrations under `src/main/resources/db`. The changes will be reflected when you restart the application server
 
 Development quick guide
@@ -221,10 +221,10 @@ Deploying on a standalone JVM
 1. Run `mvn package`
 2. Copy `target/openright-rest-jdbc-server-1.0.0.jar` to the target server.
   * This can be a folder on the local machine. It can even be the `target` directory itself
-3. Extract the base configuration `java -jar openright-rest-jdbc-server-1.0.0.jar` on the target directory. This will extract `restjdbc.properties`
-4. Modify the configuration settings in `restjdbc.properties`
-5. Start the server `java -jar openright-rest-jdbc-server-1.0.0.jar`
-6. Visit the application at http://localhost:8000/myapp
+3. Extract the base configuration `java -jar openright-rest-jdbc-server-1.0.0.jar` on the target directory. This will extract `seedapp.properties`
+4. Modify the configuration settings in `seedapp.properties`
+5. Start the server `java -jar openright-simple-seed-server-1.0.0.jar`
+6. Visit the application at http://localhost:8000/seedapp
 7. Visit the status page for the application at http://localhost:8000/status/admin
 
 Other deployment options

@@ -1,3 +1,5 @@
+/* cssreset.com */* { margin: 0;  padding: 0;}
+
 nav {
     background-color: #999;
     margin: 0;
@@ -23,8 +25,8 @@ nav ul li.active {
 }
 
 section#main {
-	padding: 0;
-    background-color:#FF0;
+  padding: 0;
+  background-color:#FF0;
 }
 section#notifications {
 	padding: 0;

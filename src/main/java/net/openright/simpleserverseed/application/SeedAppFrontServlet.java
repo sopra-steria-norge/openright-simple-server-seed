@@ -12,7 +12,7 @@ import net.openright.infrastructure.rest.PostController;
 import net.openright.infrastructure.rest.RestApiFrontController;
 import net.openright.simpleserverseed.domain.orders.OrdersApiController;
 
-public class ApiFrontServlet extends RestApiFrontController {
+public class SeedAppFrontServlet extends RestApiFrontController {
 
 	private static final long serialVersionUID = 6363140410513232499L;
 

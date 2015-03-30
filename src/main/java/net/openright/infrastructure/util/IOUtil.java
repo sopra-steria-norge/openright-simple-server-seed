@@ -16,19 +16,14 @@ public class IOUtil {
 		if (file.exists())
 			return;
 
-		try (InputStream input = IOUtil.class.getResourceAsStream("/"
-				+ filename)) {
+		try (InputStream input = IOUtil.class.getResourceAsStream("/" + filename)) {
 			if (input == null) {
-				throw new IllegalArgumentException("Can't find /" + filename
-						+ " in classpath");
+				throw new IllegalArgumentException("Can't find /" + filename + " in classpath");
 			}
 
-			try (FileOutputStream output = new FileOutputStream(file)) {
-				copy(input, output);
-			}
+			copy(input, file);
 		} catch (IOException e) {
-			throw new RuntimeException("Failed to extract " + filename + ": "
-					+ e);
+			throw ExceptionUtil.soften(e);
 		}
 	}
 

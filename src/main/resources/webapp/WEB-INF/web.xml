@@ -7,7 +7,7 @@
 
 	<servlet>
 		<servlet-name>apiFrontServlet</servlet-name>
-		<servlet-class>net.openright.simpleserverseed.application.ApiFrontServlet</servlet-class>
+		<servlet-class>net.openright.simpleserverseed.application.SeedAppFrontServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>

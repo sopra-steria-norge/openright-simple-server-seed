@@ -123,9 +123,9 @@ public class PgsqlDatabase {
 		this.dataSource = dataSource;
 	}
 
-	public PgsqlDatabase(String string) {
+	public PgsqlDatabase(String name) {
 		try {
-			this.dataSource = (DataSource) new InitialContext().lookup("jdbc/restjdbc");
+			this.dataSource = (DataSource) new InitialContext().lookup(name);
 		} catch (NamingException e) {
 			throw ExceptionUtil.soften(e);
 		}

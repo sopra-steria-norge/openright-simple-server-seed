@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title>The webshop</title>
-	<link rel="stylesheet" href="/myapp/style/style.css" />
+	<link rel="stylesheet" href="/seedapp/style/style.css" />
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 	
 <style type="text/css">
@@ -41,8 +41,8 @@
 
 
 </body>
-<script src="/myapp/vendor/jquery.js"></script>
-<script src="/myapp/vendor/handlebars.min.js"></script>
+<script src="/seedapp/vendor/jquery.js"></script>
+<script src="/seedapp/vendor/handlebars.min.js"></script>
 <script type="text/javascript">
 $(document).ajaxError(function( event, jqxhr, settings, thrownError) {
   console.log( event, jqxhr, settings, thrownError);
@@ -65,10 +65,11 @@ $(function() {
 });
 
 var displayCurrentLocation = function() {
+	$("#notifications .notify").fadeOut().empty();
   $("#content").html(loadingTemplate());
 
 	var parts = window.location.hash.substring(1).split(/\//);
-	var partial = "/myapp/" + parts[0] + "/";
+	var partial = "/seedapp/" + parts[0] + "/";
 	if (parts[1]) partial += ("_" + parts[1] + ".html");
     $.get(partial).then(function(html) {
         $("#content").html(html);
