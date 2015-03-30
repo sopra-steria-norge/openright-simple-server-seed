@@ -14,7 +14,7 @@ import net.openright.simpleserverseed.application.SimpleseedTestConfig;
 
 import org.junit.Test;
 
-public class OrdersApiControllerTest {
+public class OrderRepositoryTest {
 
 	private SeedAppConfig config = new SimpleseedTestConfig();
 	private DataSource dataSource = config.createDataSource();

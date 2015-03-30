@@ -62,7 +62,7 @@ public class OrderWebTest {
 
 	@Test
 	public void shouldSeeCurrentOrders() throws Exception {
-		Order order = OrdersApiControllerTest.sampleOrder();
+		Order order = OrderRepositoryTest.sampleOrder();
 		repository.insert(order);
 
 		browser.get(server.getURI().toString());
@@ -79,7 +79,7 @@ public class OrderWebTest {
 		browser.get(server.getURI().toString());
 		browser.findElement(By.id("addOrder")).click();
 
-		String orderTitle = OrdersApiControllerTest.sampleOrder().getTitle();
+		String orderTitle = OrderRepositoryTest.sampleOrder().getTitle();
 
 		WebElement titleField = browser.findElement(By.name("order[title]"));
 		titleField.clear();
