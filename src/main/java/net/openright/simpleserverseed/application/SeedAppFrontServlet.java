@@ -20,7 +20,7 @@ public class SeedAppFrontServlet extends RestApiFrontController {
 
 	@Override
 	public void init() throws ServletException {
-		PgsqlDatabase database = new PgsqlDatabase("jdbc/restjdbd");
+		PgsqlDatabase database = new PgsqlDatabase("jdbc/seedappDs");
 		ordersController = new OrdersApiController(database);
 	}
 
