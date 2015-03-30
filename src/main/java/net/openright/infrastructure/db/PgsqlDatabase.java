@@ -17,9 +17,14 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.openright.infrastructure.util.ExceptionUtil;
 
 public class PgsqlDatabase {
+
+	private static final Logger log = LoggerFactory.getLogger(PgsqlDatabase.class);
 
 	public interface ConnectionCallback<T> {
 		T run(Connection conn);
@@ -40,22 +45,25 @@ public class PgsqlDatabase {
 	public class DatabaseTable {
 
 		// parameters are used when building a where clause in a query. Keys corresponds to database columns.
-		private LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
-		private String tableName;
+		private final LinkedHashMap<String, Object> parameters;
+		private final String tableName;
+		private List<String> orderBy = new ArrayList<>();
 
-		public DatabaseTable(String tableName) {
+		public DatabaseTable(String tableName, LinkedHashMap<String, Object> parameters) {
 			this.tableName = tableName;
+			this.parameters = new LinkedHashMap<>(parameters);
 		}
-		
+
 		/**
-		 * Used for adding column=value pairs for use in sql. 
+		 * Used for adding column=value pairs for use in sql.
 		 * @param tableName
+		 * @param parameters2
 		 * @param field column name for use in where clause of sql
 		 * @param value corresponding to column name for use in where clause of sql
 		 */
-		public DatabaseTable(String tableName, String field, Object value) {
-			this.tableName = tableName;
-			parameters.put(field, value);
+		public DatabaseTable(String tableName, LinkedHashMap<String, Object> parameters, String field, Object value) {
+			this(tableName, parameters);
+			this.parameters.put(field, value);
 		}
 
 		public int insertValues(Inserter inserter) {
@@ -78,7 +86,7 @@ public class PgsqlDatabase {
 		public <T> List<T> list(ResultSetMapper<T> mapper) {
 			return executeListQuery(getQuery(), parameters.values(), mapper);
 		}
-		
+
 		public <T> T single(ResultSetMapper<T> mapper) {
 			return executeQuery(getQuery(), parameters.values(), rs -> {
 				if (!rs.next()) {
@@ -100,19 +108,29 @@ public class PgsqlDatabase {
 			if (!whereClause.isEmpty()) {
 				query.append(" where ").append(whereClause);
 			}
-			
+			if (!orderBy.isEmpty()) {
+				query.append(" order by ").append(String.join(",", orderBy));
+			}
+
 			return query.toString();
 		}
 
 		/**
-		 * Create a new DatabaseTable object with query parameters for where class. Fluent interface allows for chaining query parameters and values. 
+		 * Create a new DatabaseTable object with query parameters for where class. Fluent interface allows for chaining query parameters and values.
 		 * @param field is the name of the database column
 		 * @param value
 		 * @return new instance of self with added set of query parameter and value
 		 */
 		public DatabaseTable where(String field, Object value) {
-			return new DatabaseTable(tableName, field, value);
+			return new DatabaseTable(tableName, parameters, field, value);
 		}
+
+		public DatabaseTable orderBy(String string) {
+			DatabaseTable table = new DatabaseTable(tableName, parameters);
+			table.orderBy.add(string);
+			return table;
+		}
+
 	}
 
 	private final DataSource dataSource;
@@ -141,6 +159,7 @@ public class PgsqlDatabase {
 
 	public <T> T executeOperation(String query, Collection<Object> parameters, StatementCallback<T> statementCallback) {
 		return doWithConnection(conn -> {
+			log.info("Executing: {}", query);
 			try (PreparedStatement prepareStatement = conn.prepareStatement(query)) {
 				int index = 1;
 				for (Object object : parameters) {
@@ -149,7 +168,7 @@ public class PgsqlDatabase {
 
 				return statementCallback.run(prepareStatement);
 			} catch (SQLException e) {
-				throw convertException(e);
+				throw ExceptionUtil.soften(e);
 			}
 		});
 
@@ -186,7 +205,7 @@ public class PgsqlDatabase {
 				threadConnection.set(null);
 			}
 		} catch (SQLException e) {
-			throw convertException(e);
+			throw ExceptionUtil.soften(e);
 		}
 
 	}
@@ -199,7 +218,7 @@ public class PgsqlDatabase {
 		try (Connection conn = dataSource.getConnection()) {
 			return object.run(conn);
 		} catch (SQLException e) {
-			throw convertException(e);
+			throw ExceptionUtil.soften(e);
 		}
 	}
 
@@ -208,11 +227,7 @@ public class PgsqlDatabase {
 	}
 
 	public DatabaseTable table(String tableName) {
-		return new DatabaseTable(tableName);
-	}
-
-	public static RuntimeException convertException(SQLException e) {
-		return new RuntimeException(e);
+		return new DatabaseTable(tableName, new LinkedHashMap<>());
 	}
 
 }
