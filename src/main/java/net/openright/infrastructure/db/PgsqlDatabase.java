@@ -18,71 +18,40 @@ import javax.sql.DataSource;
 public class PgsqlDatabase {
 
 	public interface ConnectionCallback<T> {
-
 		T run(Connection conn);
-
 	}
 
 	public interface StatementCallback<T> {
-
 		T run(PreparedStatement stmt) throws SQLException;
-
 	}
 
 	public interface ResultSetMapper<T> {
-
 		T run(ResultSet rs) throws SQLException;
-
 	}
 
 	public interface Inserter {
-
 		void values(Map<String, Object> row);
-
-	}
-
-	public class QualifiedDatabaseTable {
-		private LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
-		private String tableName;
-
-
-		public QualifiedDatabaseTable(String tableName, String field, Object value) {
-			this.tableName = tableName;
-			parameters.put(field, value);
-		}
-
-
-		public <T> T single(ResultSetMapper<T> mapper) {
-			return executeQuery(getQuery(), parameters.values(), rs -> {
-				if (!rs.next()) {
-					throw new RuntimeException("Not found");
-				}
-				T result = mapper.run(rs);
-				if (rs.next()) {
-					throw new RuntimeException("Duplicat");
-				}
-				return result;
-			});
-		}
-
-		public <T> List<T> list(ResultSetMapper<T> mapper) {
-			return executeListQuery(getQuery(), parameters.values(), mapper);
-		}
-
-		private String getQuery() {
-			String whereClause = parameters.keySet().stream()
-					.map(s -> s + " = ?")
-					.collect(Collectors.joining(" and "));
-			return "select * from " + tableName + " where " + whereClause;
-		}
 	}
 
 	public class DatabaseTable {
 
+		// parameters are used when building a where clause in a query. Keys corresponds to database columns.
+		private LinkedHashMap<String, Object> parameters = new LinkedHashMap<>();
 		private String tableName;
 
 		public DatabaseTable(String tableName) {
 			this.tableName = tableName;
+		}
+		
+		/**
+		 * Used for adding column=value pairs for use in sql. 
+		 * @param tableName
+		 * @param field column name for use in where clause of sql
+		 * @param value corresponding to column name for use in where clause of sql
+		 */
+		public DatabaseTable(String tableName, String field, Object value) {
+			this.tableName = tableName;
+			parameters.put(field, value);
 		}
 
 		public int insertValues(Inserter inserter) {
@@ -103,17 +72,43 @@ public class PgsqlDatabase {
 		}
 
 		public <T> List<T> list(ResultSetMapper<T> mapper) {
-			return executeListQuery(getQuery(), new ArrayList<Object>(), mapper);
+			return executeListQuery(getQuery(), parameters.values(), mapper);
+		}
+		
+		public <T> T single(ResultSetMapper<T> mapper) {
+			return executeQuery(getQuery(), parameters.values(), rs -> {
+				if (!rs.next()) {
+					throw new RuntimeException("Not found");
+				}
+				T result = mapper.run(rs);
+				if (rs.next()) {
+					throw new RuntimeException("Duplicat");
+				}
+				return result;
+			});
 		}
 
 		private String getQuery() {
-			return "select * from " + tableName;
+			StringBuilder query = new StringBuilder("select * from ").append(tableName);
+			String whereClause = parameters.keySet().stream()
+					.map(s -> s + " = ?")
+					.collect(Collectors.joining(" and "));
+			if (!whereClause.isEmpty()) {
+				query.append(" where ").append(whereClause);
+			}
+			
+			return query.toString();
 		}
 
-		public QualifiedDatabaseTable where(String field, Object value) {
-			return new QualifiedDatabaseTable(tableName, field, value);
+		/**
+		 * Create a new DatabaseTable object with query parameters for where class. Fluent interface allows for chaining query parameters and values. 
+		 * @param field is the name of the database column
+		 * @param value
+		 * @return new instance of self with added set of query parameter and value
+		 */
+		public DatabaseTable where(String field, Object value) {
+			return new DatabaseTable(tableName, field, value);
 		}
-
 	}
 
 	private final DataSource dataSource;
