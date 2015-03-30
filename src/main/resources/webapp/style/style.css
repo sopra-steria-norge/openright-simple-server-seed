@@ -32,7 +32,7 @@ section#notifications {
 	padding: 0;
 }
 section#content {
-	padding: 0;
+	padding: 0.5em 2em;
 }
 
 .notify {

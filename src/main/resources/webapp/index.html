@@ -71,7 +71,9 @@ var displayCurrentLocation = function() {
 	var parts = window.location.hash.substring(1).split(/\//);
 	var partial = "/seedapp/" + parts[0] + "/";
 	if (parts[1]) partial += ("_" + parts[1] + ".html");
-    $.get(partial).then(function(html) {
+    $.get(partial).always(function() {
+        $("#content").empty();    	
+    }).then(function(html) {
         $("#content").html(html);
     }).always(function() {
         $("nav li").removeClass("active");
