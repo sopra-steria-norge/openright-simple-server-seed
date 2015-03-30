@@ -44,6 +44,16 @@
 <script src="/myapp/vendor/jquery.js"></script>
 <script src="/myapp/vendor/handlebars.min.js"></script>
 <script type="text/javascript">
+$(document).ajaxError(function( event, jqxhr, settings, thrownError) {
+  console.log( event, jqxhr, settings, thrownError);
+  if (jqxhr.status >= 500) {
+    notify("error", "A terrible error occurred", "We are very sorry and looking into it");
+  } else {
+    notify("warning", "Problems", thrownError);
+  }
+});
+
+
 var loadingTemplate = Handlebars.compile($("#loading-template").html());
 
 $(function() {
@@ -55,13 +65,16 @@ $(function() {
 });
 
 var displayCurrentLocation = function() {
-    $("#content").html(loadingTemplate());
+  $("#content").html(loadingTemplate());
 
 	var parts = window.location.hash.substring(1).split(/\//);
 	var partial = "/myapp/" + parts[0] + "/";
 	if (parts[1]) partial += ("_" + parts[1] + ".html");
     $.get(partial).then(function(html) {
         $("#content").html(html);
+    }).always(function() {
+        $("nav li").removeClass("active");
+        $("nav a[href='#" + parts[0] + "']").closest("li").addClass("active");    	
     });
 }
 
