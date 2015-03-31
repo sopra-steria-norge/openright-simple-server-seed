@@ -98,6 +98,7 @@ Values in the configuration are key=value pairs. The following parameters are ex
 seed.db.username=some_database_user
 seed.db.password=a_password_for_the_database_user
 ```
+By default, the database settings use Postgresql on localhost with «seed» as username and password when running the dev server and «seed_test” when running unit tests.
 
 Development quick guide
 ------------------------------
