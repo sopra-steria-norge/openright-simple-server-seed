@@ -2,18 +2,13 @@ package net.openright.simpleserverseed.domain.orders;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import net.openright.infrastructure.db.PgsqlDatabase;
 import net.openright.infrastructure.test.SampleData;
-import net.openright.infrastructure.util.IOUtil;
+import net.openright.infrastructure.test.WebTestUtil;
 import net.openright.simpleserverseed.application.SeedAppServer;
 import net.openright.simpleserverseed.application.SeedAppConfig;
 import net.openright.simpleserverseed.application.SimpleseedTestConfig;
@@ -21,9 +16,6 @@ import net.openright.simpleserverseed.domain.products.Product;
 import net.openright.simpleserverseed.domain.products.ProductRepository;
 import net.openright.simpleserverseed.domain.products.ProductRepositoryTest;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.XML;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -31,9 +23,6 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -53,57 +42,9 @@ public class OrderWebTest {
 
     @BeforeClass
     public static void startBrowser() throws Exception {
-        browser = createFirefoxDriver();
+        browser = WebTestUtil.createFirefoxDriver();
         browser.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-
         wait = new WebDriverWait(browser, 2);
-    }
-
-    private static WebDriver createFirefoxDriver() {
-        return new FirefoxDriver();
-    }
-
-    private static InternetExplorerDriver createMsieDriver() throws Exception {
-        File driverFile = new File("target/IEDriverServer.exe");
-        if (!driverFile.exists()) {
-            URL msieDriverUrl = new URL("http://selenium-release.storage.googleapis.com/");
-
-            List<String> msieVersions = new ArrayList<>();
-            JSONObject storageContents = XML.toJSONObject(IOUtil.toString(msieDriverUrl));
-            JSONArray jsonArray = storageContents.getJSONObject("ListBucketResult").getJSONArray("Contents");
-            for (int i = 0; i < jsonArray.length(); i++) {
-                String file = jsonArray.getJSONObject(i).getString("Key");
-                if (file.contains("IEDriver")) {
-                    msieVersions.add(file);
-                }
-            }
-            String latestFile = msieVersions.stream().max(String::compareTo).get();
-
-            File zippedFile = IOUtil.copy(new URL(msieDriverUrl, latestFile), new File("target/"));
-            try (ZipFile zipFile = new ZipFile(zippedFile)) {
-                ZipEntry zipEntry = zipFile.getEntry(driverFile.getName());
-                IOUtil.copy(zipFile.getInputStream(zipEntry), driverFile);
-            }
-        }
-        System.setProperty("webdriver.ie.driver", driverFile.getPath());
-        return new InternetExplorerDriver();
-    }
-
-    public static ChromeDriver createChromeDriver() throws Exception {
-        File driverFile = new File("target/chromedriver.exe");
-        if (!driverFile.exists()) {
-            URL chromeDriverUrl = new URL("http://chromedriver.storage.googleapis.com/");
-            String chromeDriverVersion = IOUtil.toString(new URL(chromeDriverUrl, "LATEST_RELEASE"));
-
-            URL latestDriverVersion = new URL(chromeDriverUrl, chromeDriverVersion + "/chromedriver_win32.zip");
-            File zippedFile = IOUtil.copy(latestDriverVersion, new File("target/"));
-            try (ZipFile zipFile = new ZipFile(zippedFile)) {
-                ZipEntry zipEntry = zipFile.getEntry(driverFile.getName());
-                IOUtil.copy(zipFile.getInputStream(zipEntry), driverFile);
-            }
-        }
-        System.setProperty("webdriver.chrome.driver", driverFile.getPath());
-        return new ChromeDriver();
     }
 
     @AfterClass

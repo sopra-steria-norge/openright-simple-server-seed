@@ -14,13 +14,11 @@ class OrdersRepository {
     private DatabaseTable table;
     private PgsqlDatabase database;
     private DatabaseTable lineTable;
-    private ProductRepository productRepository;
 
     OrdersRepository(PgsqlDatabase database) {
         this.database = database;
         this.table = database.table("orders");
         this.lineTable = database.table("order_lines");
-        this.productRepository = new ProductRepository(database);
     }
 
     List<Order> list() {
