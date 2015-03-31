@@ -88,7 +88,7 @@ Getting started developing
 0. To change the database schema, add new migrations under `src/main/resources/db`. The changes will be reflected when you restart the application server
 
 ### Configuration (Optional)
-The application starts with a working default configuration given you have followed the steps above. Two configuration files are loaded if you create them.
+The application starts with a working default configuration given you have followed the steps above. Default values are set in AppConfigFile.java. Two configuration files are loaded if you create them.
 
 1. seedapp.properties - This configuration is loaded when you run SeedAppServer.java
 2. seedapp-test.properties - This configuration is loaded by the JUnit tests.
