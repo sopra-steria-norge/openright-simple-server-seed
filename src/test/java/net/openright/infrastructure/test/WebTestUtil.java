@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -21,12 +20,7 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 
 public class WebTestUtil {
 
-    public static WebDriver createDriver(Dictionary<?,?> properties) throws Exception {
-        String driverName = (String)properties.get(WebDriver.class.getName());
-        if (driverName == null) {
-            driverName = FirefoxDriver.class.getName();
-        }
-
+    public static WebDriver createDriver(String driverName) throws Exception {
         switch (driverName) {
         case "org.openqa.selenium.firefox.FirefoxDriver":
             return createFirefoxDriver();

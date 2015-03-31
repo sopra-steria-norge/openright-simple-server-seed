@@ -1,6 +1,7 @@
 package net.openright.simpleserverseed.domain.orders;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -8,7 +9,6 @@ import java.util.stream.Collectors;
 import net.openright.infrastructure.db.PgsqlDatabase;
 import net.openright.infrastructure.test.WebTestUtil;
 import net.openright.simpleserverseed.application.SeedAppServer;
-import net.openright.simpleserverseed.application.SeedAppConfig;
 import net.openright.simpleserverseed.application.SimpleseedTestConfig;
 import net.openright.simpleserverseed.domain.products.Product;
 import net.openright.simpleserverseed.domain.products.ProductRepository;
@@ -25,7 +25,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class OrderWebTest {
-    private static SeedAppConfig config = new SimpleseedTestConfig();
+    private static SimpleseedTestConfig config = new SimpleseedTestConfig();
     private static SeedAppServer server = new SeedAppServer(config);
     private static WebDriver browser;
     private static WebDriverWait wait;
@@ -40,7 +40,7 @@ public class OrderWebTest {
 
     @BeforeClass
     public static void startBrowser() throws Exception {
-        browser = WebTestUtil.createDriver(config.getProperties());
+        browser = WebTestUtil.createDriver(config.getWebDriverName());
         wait = new WebDriverWait(browser, 4);
     }
 
