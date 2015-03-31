@@ -3,6 +3,7 @@ package net.openright.simpleserverseed.domain.products;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONArray;
@@ -20,9 +21,24 @@ public class ProductsApiController implements JsonController {
     }
 
     @Override
-    public JSONObject getJSON(HttpServletRequest req) {
+    public JSONObject listJSON(HttpServletRequest req) {
         return new JSONObject()
             .put("products", mapToJSON(repository.list(), this::toJSON));
+    }
+
+    @Override
+    public JSONObject getJSON(String id) {
+        return toJSON(repository.retrieve(Long.valueOf(id)));
+    }
+
+    @Override
+    public void postJSON(JSONObject jsonObject) {
+        repository.insert(toProduct(jsonObject));
+    }
+
+    @Override
+    public void putJSON(String id, JSONObject jsonObject) {
+        repository.update(Long.valueOf(id), toProduct(jsonObject));
     }
 
     private <T> JSONArray mapToJSON(List<T> list, Function<T, JSONObject> mapper) {
@@ -32,12 +48,8 @@ public class ProductsApiController implements JsonController {
     private JSONObject toJSON(Product product) {
         return new JSONObject()
             .put("id", product.getId())
-            .put("title", product.getTitle());
-    }
-
-    @Override
-    public void postJSON(JSONObject jsonObject) {
-        repository.insert(toProduct(jsonObject));
+            .put("title", product.getTitle())
+            .put("price", product.getPrice());
     }
 
     private Product toProduct(JSONObject jsonObject) {

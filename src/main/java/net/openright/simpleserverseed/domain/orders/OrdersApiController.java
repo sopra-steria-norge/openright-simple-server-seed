@@ -3,6 +3,7 @@ package net.openright.simpleserverseed.domain.orders;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
 
 import net.openright.infrastructure.db.PgsqlDatabase;
@@ -20,7 +21,12 @@ public class OrdersApiController implements JsonController {
     }
 
     @Override
-    public JSONObject getJSON(HttpServletRequest req) {
+    public JSONObject getJSON(String id) {
+        return null;
+    }
+
+    @Override
+    public JSONObject listJSON(HttpServletRequest req) {
         return new JSONObject()
             .put("orders", mapToJSON(repository.list(), this::toJSON));
     }
@@ -28,6 +34,11 @@ public class OrdersApiController implements JsonController {
     @Override
     public void postJSON(JSONObject jsonObject) {
         repository.insert(toOrder(jsonObject));
+    }
+
+    @Override
+    public void putJSON(String id, JSONObject jsonObject) {
+
     }
 
     private Order toOrder(JSONObject jsonObject) {

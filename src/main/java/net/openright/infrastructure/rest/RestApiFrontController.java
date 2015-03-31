@@ -46,15 +46,19 @@ public abstract class RestApiFrontController extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		GetController controller = getControllers()
-				.getOrDefault(req.getPathInfo(), new NotFoundController());
+				.getOrDefault(getControllerName(req), new NotFoundController());
 		controller.doGet(req, resp);
 	}
+
+    private String getControllerName(HttpServletRequest req) {
+        return req.getPathInfo().split("\\/")[1];
+    }
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		PostController controller = postControllers()
-				.getOrDefault(req.getPathInfo(), new NotFoundController());
+				.getOrDefault(getControllerName(req), new NotFoundController());
 		controller.doPost(req, resp);
 	}
 

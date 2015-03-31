@@ -6,8 +6,12 @@ import org.json.JSONObject;
 
 public interface JsonController {
 
-	JSONObject getJSON(HttpServletRequest req);
+    JSONObject listJSON(HttpServletRequest req);
 
-	void postJSON(JSONObject jsonObject);
+    JSONObject getJSON(String id);
+
+    void postJSON(JSONObject jsonObject);
+
+    void putJSON(String id, JSONObject jsonObject);
 
 }

@@ -1,0 +1,2 @@
+-Dseed.db.username=seed_infinitest
+-Dseed.db.test.clean=false

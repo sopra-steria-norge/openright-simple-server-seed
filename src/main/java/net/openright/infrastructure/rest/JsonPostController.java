@@ -21,9 +21,15 @@ public class JsonPostController implements PostController {
 
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String[] parts = req.getPathInfo().split("\\/");
+
 		try (BufferedReader reader = req.getReader()) {
 			JSONObject jsonObject = new JSONObject(new JSONTokener(reader));
-			jsonController.postJSON(jsonObject);
+	        if (parts.length > 2) {
+	            jsonController.putJSON(parts[2], jsonObject);
+	        } else {
+	            jsonController.postJSON(jsonObject);
+	        }
 			resp.sendError(200);
 		} catch (RequestException e) {
 			log.warn("Invalid request {}: {}", req.getRequestURL(), e.toString());

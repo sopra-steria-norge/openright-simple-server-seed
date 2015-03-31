@@ -30,7 +30,13 @@ public class SeedAppServer {
 		IOUtil.extractResourceFile("seedapp.properties");
 
 		SeedAppConfig config = new SeedAppConfigFile("seedapp.properties");
-		new SeedAppServer(config).start(config.getHttpPort());
+
+		SeedAppServer server = new SeedAppServer(config);
+        server.start(config.getHttpPort());
+
+        if (System.getProperty("startBrowser") != null) {
+            Runtime.getRuntime().exec("cmd /c \"start " + server.getURI() + "\"");
+        }
 	}
 
 	public void start(int port) throws Exception {

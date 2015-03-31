@@ -10,15 +10,24 @@ import org.json.JSONObject;
 
 public class JsonGetController implements GetController {
 
-	private JsonController jsonController;
+    private JsonController jsonController;
 
-	public JsonGetController(JsonController jsonController) {
-		this.jsonController = jsonController;
-	}
+    public JsonGetController(JsonController jsonController) {
+        this.jsonController = jsonController;
+    }
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        JSONObject response = jsonController.getJSON(req);
+        String[] parts = req.getPathInfo().split("\\/");
+
+        if (parts.length > 2) {
+            sendResponse(resp, jsonController.getJSON(parts[2]));
+        } else {
+            sendResponse(resp, jsonController.listJSON(req));
+        }
+    }
+
+    private void sendResponse(HttpServletResponse resp, JSONObject response) throws IOException {
         if (response == null) {
             resp.setStatus(204);
             return;

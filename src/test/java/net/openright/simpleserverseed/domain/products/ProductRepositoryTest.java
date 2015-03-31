@@ -24,6 +24,18 @@ public class ProductRepositoryTest {
     }
 
     @Test
+    public void shouldUpdateProduct() throws Exception {
+        Product product = sampleProduct();
+        repository.insert(product);
+
+        product.setTitle("New title");
+        repository.update(product.getId(), product);
+
+        assertThat(repository.retrieve(product.getId()).getTitle())
+            .isEqualTo("New title");
+    }
+
+    @Test
     public void shouldListActiveProducts() throws Exception {
         Product product1 = sampleProduct("z");
         Product product2 = sampleProduct("a");

@@ -1,29 +1,45 @@
 <form id="productForm">
+  <script type="text/x-handlebars-template" id="productFormTemplate">
+  <input type="hidden" name="product[id]" value="{{id}}"/>
   <div>
     <label>Product name:</label>
-    <input type="text" name="product[title]" required placeholder="Title" />
+    <input type="text" name="product[title]" required placeholder="Title" value="{{title}}" />
   </div>
   <div>
     <label>Price:</label>
-    <input type="number" name="product[price]" required placeholder="Price" min="0" step="any" />
+    <input type="number" name="product[price]" required placeholder="Price" min="0" step="any" value="{{price}}" />
   </div>
 
-    <h3>Submit</h3>
-    <p>
-        <button>Submit product</button>
-    </p>
+  <h3>Submit</h3>
+  <p>
+    <button>Submit product</button>
+  </p>
+  </script>
 </form>
 
 <script src="/seedapp/vendor/jquery.serialize-object.min.js"></script>
 <script type="text/javascript">
 $(function() {
-    $("#productForm").submit(function(e) {
-        e.preventDefault();
-        var form = $("form#productForm").serializeObject();
-        productRepository.save(form.product).then(function() {
-        	window.location.hash = "products";
-        });
-    });
-});
+  console.log("order_edit.html");
+  var productFormTemplate = Handlebars.compile($("#productFormTemplate").html());
+  
+  var parts = window.location.hash.substring(1).split(/\//);
 
+  if (parts[2] && parts[2].match(/\d+/)) {
+    productRepository.get(parts[2]).then(function (product) {
+      $("#productForm").html(productFormTemplate(product));
+    });
+  } else {
+      $("#productForm").html(productFormTemplate());
+  }
+  
+  
+  $("#productForm").submit(function(e) {
+    e.preventDefault();
+    var form = $("form#productForm").serializeObject();
+    productRepository.save(form.product).then(function() {
+      window.location.hash = "products";
+    });
+  });
+});
 </script>

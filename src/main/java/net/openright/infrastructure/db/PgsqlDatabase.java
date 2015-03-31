@@ -144,6 +144,26 @@ public class PgsqlDatabase {
                 + ") returning id";
         }
 
+        public void updateValues(Inserter inserter) {
+            HashMap<String, Object> row = new HashMap<String, Object>();
+            inserter.values(row);
+
+            List<Object> values = new ArrayList<>();
+            values.addAll(row.values());
+            values.addAll(parameters.values());
+            executeOperation(updateQuery(row.keySet()), values, stmt -> {
+                stmt.executeUpdate();
+                return null;
+            });
+        }
+
+        private String updateQuery(Collection<String> updatedColumns) {
+            return "update " + tableName + " set "
+                    + updatedColumns.stream().map(col -> col + " = ?").collect(Collectors.joining(", "))
+                    + " where "
+                    + parameters.keySet().stream().map(s -> s + " = ?").collect(Collectors.joining(" and "));
+        }
+
         public <T> List<T> list(ResultSetMapper<T> mapper) {
             return executeListQuery(getQuery(), parameters.values(), mapper);
         }
