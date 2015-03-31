@@ -4,20 +4,22 @@
     <input type="text" name="order[title]" required placeholder="Title" />
   </div>
 
-  <h4>Order contents</h4>
-  <div id="orderLines"></div>
-  <button id="addOrderLine">Add line</button>
-
-  <h3>Submit</h3>
   <p>
-    <button>Submit question</button>
+    <button>Save order</button>
   </p>
+
+  <div id="orderContents">
+    <h4>Order contents</h4>
+    <div id="orderLines"></div>
+    <button id="addOrderLine">Add line</button>
+  </div>
 </form>
 
 <script type="text/x-handlebars-template" id="orderLineTemplate">
   <div class="orderLine">
     <span>Product</span>
-    <select name="order[orderlines][][product]" class="productSelect">
+    <select name="order[orderlines][][product]" class="productSelect" required>
+      <option value>(Not selected)</option>      
       {{#each products}}
         <option value={{id}}>{{title}}</option>
       {{/each}}
@@ -43,6 +45,7 @@
       e.preventDefault();
       if (products) {
         $("#orderLines").append(orderTemplate({products: products}));
+        $("#orderLines .productSelect").last().focus()
       }
     });
 

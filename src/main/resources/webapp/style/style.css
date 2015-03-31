@@ -29,19 +29,25 @@ section#main {
   background-color:#FF0;
 }
 section#notifications {
-	padding: 0;
+  padding: 0;
 }
 section#content {
-	padding: 0.5em 2em;
+  padding: 0.5em 2em;
 }
 
 form div label {
-	display: block;
-	font-weight: bold;
+  display: block;
+  font-weight: bold;
 }
 
 input[type=number] {
-	text-align: right;
+  text-align: right;
+}
+
+
+#orderContents {
+  padding-top: 1em;
+  padding-left: 1em;
 }
 
 
@@ -60,9 +66,9 @@ input[type=number] {
 }
 
 .notify h1 {
-	margin-bottom: 6px;
-	text-align: center;
-	overflow: hidden;
+  margin-bottom: 6px;
+  text-align: center;
+  overflow: hidden;
 }
 
  
