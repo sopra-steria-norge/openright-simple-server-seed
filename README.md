@@ -59,7 +59,7 @@ Getting started developing
 ### Prerequisites
 
 * A git client (for Windows, we recommend [TortoiseGit](https://code.google.com/p/tortoisegit/) and [Msysgit](https://msysgit.github.io/))
-* An IDE (we recommend Eclipse or IntelliJ)
+* An IDE (we recommend Eclipse or IntelliJ with Infinitest plugin)
 * JDK 1.8
 * Maven 3
 * PostgreSQL
