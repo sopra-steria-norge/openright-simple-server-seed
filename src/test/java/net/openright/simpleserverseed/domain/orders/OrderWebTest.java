@@ -1,7 +1,6 @@
 package net.openright.simpleserverseed.domain.orders;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -42,8 +41,8 @@ public class OrderWebTest {
 
     @BeforeClass
     public static void startBrowser() throws Exception {
-        browser = WebTestUtil.createFirefoxDriver();
-        browser.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        browser = WebTestUtil.createDriver(config.getProperties());
+        browser.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
         wait = new WebDriverWait(browser, 2);
     }
 
@@ -89,6 +88,25 @@ public class OrderWebTest {
 
         assertThat(productRepository.list()).extracting("title")
             .contains(productTitle);
+    }
+
+    @Test
+    public void shouldEditProduct() throws Exception {
+        Product product = ProductRepositoryTest.sampleProduct();
+        productRepository.insert(product);
+
+        browser.findElement(By.linkText("Products")).click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("addProduct")));
+        browser.findElement(By.linkText(product.getTitle())).click();
+
+        WebElement titleField = browser.findElement(By.name("product[title]"));
+        titleField.clear();
+        titleField.sendKeys("New title");
+        titleField.submit();
+
+        browser.findElement(By.id("products"));
+        assertThat(productRepository.retrieve(product.getId()).getTitle())
+            .isEqualTo("New title");
     }
 
     @Test

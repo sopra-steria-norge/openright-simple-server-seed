@@ -3,6 +3,7 @@ package net.openright.infrastructure.config;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Dictionary;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -30,6 +31,11 @@ public abstract class AppConfigFile {
 
 		this.configFile = new File(filename);
 	}
+
+	public Dictionary<Object, Object> getProperties() {
+	    ensureConfigurationIsFresh();
+        return properties;
+    }
 
 	protected DataSource createDataSource(String prefix) {
 		DataSource dataSource = createDataSource(prefix, prefix);
