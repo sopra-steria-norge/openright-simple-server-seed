@@ -1,11 +1,11 @@
 package net.openright.simpleserverseed.domain.products;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 import net.openright.infrastructure.db.PgsqlDatabase;
 import net.openright.infrastructure.db.PgsqlDatabase.DatabaseTable;
+import net.openright.infrastructure.db.PgsqlDatabase.Row;
 
 public class ProductRepository {
 
@@ -25,22 +25,22 @@ public class ProductRepository {
 	}
 
 	public Product retrieve(long id) {
-		return table.where("id", id).single(this::toProduct);
+		return table.where("id", id).single(ProductRepository::toProduct);
 	}
 
 	public List<Product> list() {
 		return table.where("active", true)
 				.orderBy("title")
-				.list(this::toProduct);
+				.list(ProductRepository::toProduct);
 	}
 
-	private Product toProduct(ResultSet rs) throws SQLException {
+	public static Product toProduct(Row rs) throws SQLException {
 		Product product = new Product();
-		product.setId(rs.getLong("id"));
-		product.setTitle(rs.getString("title"));
-		product.setDescription(rs.getString("description"));
-		product.setActive(rs.getBoolean("active"));
-		product.setPrice(rs.getDouble("price"));
+		product.setId(rs.getLong("products", "id"));
+		product.setTitle(rs.getString("products", "title"));
+		product.setDescription(rs.getString("products", "description"));
+		product.setActive(rs.getBoolean("products", "active"));
+		product.setPrice(rs.getDouble("products", "price"));
 		return product;
 	}
 

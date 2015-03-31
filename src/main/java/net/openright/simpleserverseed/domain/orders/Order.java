@@ -6,60 +6,63 @@ import java.util.Objects;
 
 class Order {
 
-	private String title;
-	private Integer id;
-	private List<OrderLine> orderLines = new ArrayList<>();
+    private String title;
+    private Integer id;
+    private List<OrderLine> orderLines = new ArrayList<>();
 
-	Order(String title) {
-		this.title = title;
-	}
+    Order(String title) {
+        this.title = title;
+    }
 
-	void addOrderLine(String title) {
-		this.orderLines.add(new OrderLine(title));
-	}
-	
-	void setOrderLines(List<OrderLine> orderLines) {
-		this.orderLines = orderLines;
-	}
+    public void addOrderLine(Long productId, int amount) {
+        this.orderLines.add(new OrderLine(productId, amount));
+    }
 
-	void setId(int id) {
-		this.id = id;
-	}
+    public double getTotalAmount() {
+        return orderLines.stream().map(line -> line.getPrice()).reduce(0.0, (a,b) -> a+b);
+    }
 
-	int getId() {
-		return id;
-	}
+    void setOrderLines(List<OrderLine> orderLines) {
+        this.orderLines = orderLines;
+    }
 
-	String getTitle() {
-		return title;
-	}
+    void setId(int id) {
+        this.id = id;
+    }
 
-	List<OrderLine> getOrderLines() {
-		return orderLines;
-	}
+    int getId() {
+        return id;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == this) {
-			return true;
-		}
-		if (obj instanceof Order) {
-			Order other = (Order) obj;
-			return Objects.equals(id, other.id)
-					&& Objects.equals(title, other.title) && Objects.equals(orderLines, other.orderLines);
-		}
-		return false;
-	}
+    String getTitle() {
+        return title;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, title);
-	}
+    List<OrderLine> getOrderLines() {
+        return orderLines;
+    }
 
-	@Override
-	public String toString() {
-		return "Order {id = " + Objects.toString(id) + ", title = "
-				+ Objects.toString(title, "no title set") +
-				orderLines.toString() +	"}";
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Order)) {
+            return false;
+        }
+
+        Order other = (Order) obj;
+        return Objects.equals(id, other.id)
+                && Objects.equals(title, other.title) && Objects.equals(orderLines, other.orderLines);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title);
+    }
+
+    @Override
+    public String toString() {
+        return "Order {id = " + id
+                + ", title = " + title
+                + "," + orderLines.toString()
+                + "}";
+    }
 }
