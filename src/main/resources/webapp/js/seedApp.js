@@ -14,13 +14,25 @@ var ajax = {
   }
 };
 
+
+window.Handlebars.registerHelper('select', function( value, options ){
+  var $el = $('<select />').html( options.fn(this) );
+  $el.find('[value=' + value + ']').attr({'selected':'selected'});
+  return $el.html();
+});
+
+
 var orderRepository = {
+  get: function(id) {
+    return ajax.get('api/orders/' + id);
+  },
+
   list: function() {
     return ajax.get('api/orders');
   },
 
   save: function(order) {
-    return ajax.post('api/orders', order);
+    return ajax.post('api/orders', order, order.id);
   }
 };
 
@@ -34,7 +46,6 @@ var productRepository = {
   },
 
   save: function(product) {
-    console.log(product);
     return ajax.post('api/products', product, product.id);
   }
 };

@@ -1,7 +1,6 @@
 package net.openright.simpleserverseed.domain.orders;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 import net.openright.infrastructure.db.PgsqlDatabase;
 import net.openright.infrastructure.test.SampleData;
 import net.openright.simpleserverseed.application.SeedAppConfig;
@@ -62,15 +61,29 @@ public class OrderRepositoryTest {
     }
 
     @Test
+    public void shouldUpdateOrder() throws Exception {
+        Order order = sampleOrder();
+        order.addOrderLine(product.getId(), 2);
+        repository.insert(order);
+
+        order.getOrderLines().get(0).setAmount(1000);
+        order.setTitle(SampleData.sampleString(3));
+        repository.update(order.getId(), order);
+
+        assertThat(repository.retrieve(order.getId()).getTitle())
+            .isEqualTo(order.getTitle());
+        assertThat(repository.retrieve(order.getId()).getOrderLines().get(0).getAmount())
+            .isEqualTo(order.getOrderLines().get(0).getAmount());
+    }
+
+    @Test
     public void shouldRetrieveSavedOrdersWithOrderLines() throws Exception {
-        Product product1 = ProductRepositoryTest.sampleProduct();
         Product product2 = ProductRepositoryTest.sampleProduct();
-        productRepository.insert(product1);
         productRepository.insert(product2);
 
         Order order = sampleOrder();
 
-        order.addOrderLine(product1.getId(), 10);
+        order.addOrderLine(product.getId(), 10);
         order.addOrderLine(product2.getId(), 100);
 
         repository.insert(order);
@@ -78,7 +91,7 @@ public class OrderRepositoryTest {
         Order savedOrder = repository.retrieve(order.getId());
         assertThat(savedOrder).isEqualToComparingFieldByField(order);
         assertThat(savedOrder.getTotalAmount())
-            .isEqualTo(10 * product1.getPrice() + 100 * product2.getPrice());
+            .isEqualTo(10 * product.getPrice() + 100 * product2.getPrice());
     }
 
     public static Order sampleOrder() {

@@ -26,6 +26,10 @@ class OrderLine {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     Long getProductId() {
         return productId;
     }
@@ -63,6 +67,7 @@ class OrderLine {
 
     void setProduct(Product product) {
         this.product = Optional.of(product);
+        this.productId = product.getId();
     }
 
     public double getPrice() {

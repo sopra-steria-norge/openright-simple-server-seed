@@ -50,6 +50,25 @@ class OrdersRepository {
         });
     }
 
+    public void update(int orderId, Order order) {
+        database.doInTransaction(() -> {
+            table.where("id", orderId).updateValues(row -> {
+                row.put("title", order.getTitle());
+            });
+
+            lineTable.where("order_id", orderId).delete();
+
+            for (OrderLine orderLine : order.getOrderLines()) {
+                lineTable.insertValues(row -> {
+                    row.put("order_id", orderId);
+                    row.put("title", orderLine.getTitle());
+                    row.put("product_id", orderLine.getProductId());
+                    row.put("amount", orderLine.getAmount());
+                });
+            }
+        });
+    }
+
     protected Order retrieve(int id) {
         Order order = table.where("id", id).single(this::toOrder);
         order.setOrderLines(lineTable

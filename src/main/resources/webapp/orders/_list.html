@@ -23,7 +23,7 @@ $(function() {
 
     $("#ordersList").on("click", "a", function(e) {
         e.preventDefault();
-        window.location.hash = "orders/show/" + $(e.target).data("order");
+        window.location.hash = "orders/edit/" + $(e.target).data("order");
     });
 
     $("#addOrder").click(function() {

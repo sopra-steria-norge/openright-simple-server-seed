@@ -143,6 +143,32 @@ public class OrderWebTest {
             .contains(orderTitle);
     }
 
+    @Test
+    public void shouldUpdateExistingOrder() throws Exception {
+        Product product = ProductRepositoryTest.sampleProduct();
+        productRepository.insert(product);
+
+        Order order = OrderRepositoryTest.sampleOrder();
+        order.addOrderLine(product.getId(), 100);
+        orderRepository.insert(order);
+
+        browser.get(server.getURI().toString() + "#orders/edit/" + order.getId());
+
+        WebElement titleField = browser.findElement(By.name("order[title]"));
+        assertThat(titleField.getAttribute("value")).isEqualTo(order.getTitle());
+
+        WebElement amountField = browser.findElement(By.name("order[orderlines][][amount]"));
+        assertThat(amountField.getAttribute("value")).isEqualTo("100");
+        amountField.clear();
+        amountField.sendKeys("1000");
+        amountField.submit();
+
+        browser.findElement(By.id("ordersList"));
+
+        assertThat(orderRepository.retrieve(order.getId()).getOrderLines().get(0).getAmount())
+            .isEqualTo(1000);
+    }
+
     private By optionWithText(String optionText) {
         return By.xpath("option[text() = '" + optionText + "']");
     }

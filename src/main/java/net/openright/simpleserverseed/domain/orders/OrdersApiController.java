@@ -22,7 +22,7 @@ public class OrdersApiController implements JsonController {
 
     @Override
     public JSONObject getJSON(String id) {
-        return null;
+        return toJSON(repository.retrieve(Integer.parseInt(id)));
     }
 
     @Override
@@ -38,7 +38,7 @@ public class OrdersApiController implements JsonController {
 
     @Override
     public void putJSON(String id, JSONObject jsonObject) {
-
+        repository.update(Integer.parseInt(id), toOrder(jsonObject));
     }
 
     private Order toOrder(JSONObject jsonObject) {
@@ -59,7 +59,14 @@ public class OrdersApiController implements JsonController {
     private JSONObject toJSON(Order order) {
         return new JSONObject()
             .put("id", order.getId())
-            .put("title", order.getTitle());
+            .put("title", order.getTitle())
+            .put("orderlines", mapToJSON(order.getOrderLines(), this::toJSON));
+    }
+
+    private JSONObject toJSON(OrderLine line) {
+        return new JSONObject()
+            .put("productId", line.getProductId())
+            .put("amount", line.getAmount());
     }
 
     private <T> JSONArray mapToJSON(List<T> list, Function<T, JSONObject> mapper) {

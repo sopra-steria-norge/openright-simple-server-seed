@@ -28,7 +28,6 @@ $(function() {
   var productFormTemplate = Handlebars.compile($("#productFormTemplate").html());
   
   var parts = window.location.hash.substring(1).split(/\//);
-
   if (parts[2] && parts[2].match(/\d+/)) {
     productRepository.get(parts[2]).then(function (product) {
       $("#productForm").html(productFormTemplate(product));

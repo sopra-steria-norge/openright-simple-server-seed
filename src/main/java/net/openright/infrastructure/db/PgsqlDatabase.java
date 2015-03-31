@@ -185,6 +185,24 @@ public class PgsqlDatabase {
             });
         }
 
+        public void delete() {
+            executeOperation(deleteQuery(), parameters.values(), stmt -> {
+                stmt.executeUpdate();
+                return null;
+            });
+        }
+
+        private String deleteQuery() {
+            StringBuilder query = new StringBuilder("delete from ").append(tableName);
+            String whereClause = parameters.keySet().stream()
+                    .map(s -> s + " = ?")
+                    .collect(Collectors.joining(" and "));
+            if (!whereClause.isEmpty()) {
+                query.append(" where ").append(whereClause);
+            }
+            return query.toString();
+        }
+
         private String getQuery() {
             StringBuilder query = new StringBuilder("select * from ").append(tableName);
             if (!this.innerJoins.isEmpty()) {

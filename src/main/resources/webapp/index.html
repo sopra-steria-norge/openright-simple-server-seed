@@ -71,6 +71,15 @@ $(function() {
     });
 });
 
+var currentId = function() {
+  var parts = window.location.hash.substring(1).split(/\//);
+  if (parts[2] && parts[2].match(/\d+/)) {
+    return parts[2];
+  } else {
+    return null;
+  }
+}
+
 var displayCurrentLocation = function() {
   $("#notifications .notify").fadeOut().empty();
   $("#content").html(loadingTemplate());
