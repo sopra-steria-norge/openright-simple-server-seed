@@ -49,12 +49,15 @@ public class ProductsApiController implements JsonController {
         return new JSONObject()
             .put("id", product.getId())
             .put("title", product.getTitle())
-            .put("price", product.getPrice());
+            .put("price", product.getPrice())
+            .put("description", product.getDescription());
     }
 
     private Product toProduct(JSONObject jsonObject) {
         Product product = new Product();
         product.setTitle(jsonObject.getString("title"));
+        product.setPrice(jsonObject.getDouble("price"));
+        product.setDescription(jsonObject.getString("description"));
         return product;
     }
 

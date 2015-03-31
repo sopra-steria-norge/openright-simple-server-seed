@@ -2,7 +2,7 @@
 
 <script>
 $(function() {
-    if (!window.location.hash || window.location.hash === "#products") {
+    if (!window.location.hash || window.location.hash === "#products" || window.location.hash === "#products/") {
         window.location.hash = "products/list";
     }
     displayCurrentLocation();

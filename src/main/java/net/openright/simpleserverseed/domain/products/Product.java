@@ -4,68 +4,72 @@ import java.util.Objects;
 
 public class Product {
 
-	private Long id;
-	private String title;
-	private String description;
-	private boolean active = true;
+    private Long id;
+    private String title;
+    private String description;
+    private boolean active = true;
     private double price;
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public boolean isActive() {
-		return active;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setActive(boolean active) {
-		this.active = active;
-	}
+    public boolean isActive() {
+        return active;
+    }
 
-	public void setInactive() {
-		this.active = false;
-	}
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
-	public double getPrice() {
+    public void setInactive() {
+        this.active = false;
+    }
+
+    public double getPrice() {
         return price;
     }
 
-	public void setPrice(double price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
-	@Override
-	public String toString() {
-		return "Product{id=" + id + ",title=" + title + "}";
-	}
+    @Override
+    public String toString() {
+        return "Product{id=" + id + ",title=" + title + "}";
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof Product)) return false;
-		Product that = (Product)obj;
-		return Objects.equals(this.id, that.id) && Objects.equals(this.title, that.title);
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Product)) return false;
+        Product that = (Product)obj;
+        return Objects.equals(this.id, that.id) && Objects.equals(this.title, that.title);
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, title);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title);
+    }
 
 
 }

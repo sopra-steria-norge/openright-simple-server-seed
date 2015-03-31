@@ -63,39 +63,45 @@ $(function() {
         window.location.hash = "orders";
     }
     displayCurrentLocation();
+
+    $('#notifications').on('click', '.notify', function() {
+      $(this).fadeOut(350, function() {
+        $(this).remove();
+      });
+    });
 });
 
 var displayCurrentLocation = function() {
-	$("#notifications .notify").fadeOut().empty();
+  $("#notifications .notify").fadeOut().empty();
   $("#content").html(loadingTemplate());
 
-	var parts = window.location.hash.substring(1).split(/\//);
-	var partial = "/seedapp/" + parts[0] + "/";
-	if (parts[1]) partial += ("_" + parts[1] + ".html");
-    $.get(partial).always(function() {
-        $("#content").empty();    	
-    }).then(function(html) {
-        $("#content").html(html);
-    }).always(function() {
-        $("nav li").removeClass("active");
-        $("nav a[href='#" + parts[0] + "']").closest("li").addClass("active");    	
-    });
+  var parts = window.location.hash.substring(1).split(/\//);
+
+  var partial = "/seedapp/" + parts[0] + "/";
+  if (parts[1]) partial += ("_" + parts[1] + ".html");
+
+  $.get(partial).always(function() {
+    $("#content").empty();
+  }).then(function(html) {
+    $("#content").html(html);
+  }).always(function() {
+    $("nav li").removeClass("active");
+    $("nav a[href='#" + parts[0] + "']").closest("li").addClass("active");
+  });
 }
 
-$('#notifications').on('click', '.notify', function(){
-    $(this).fadeOut(350, function(){
-      $(this).remove();
-    });
-});
 
-var notificationTemplate = Handlebars.compile($("#notification-template").html());
-var notify = function(type, title, message) {
-	var notification = notificationTemplate({
-		type: type || 'error', title: title, message: message
-	});
-	$("#notifications").prepend(notification);
-	var elem = $("#notifications .notify:first");
-	elem.hide().slideDown(1000);
-}
+  var notificationTemplate = Handlebars.compile($("#notification-template")
+      .html());
+  var notify = function(type, title, message) {
+    var notification = notificationTemplate({
+      type : type || 'error',
+      title : title,
+      message : message
+    });
+    $("#notifications").prepend(notification);
+    var elem = $("#notifications .notify:first");
+    elem.hide().slideDown(1000);
+  }
 </script>
 </html>

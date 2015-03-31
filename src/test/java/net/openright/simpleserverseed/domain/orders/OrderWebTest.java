@@ -6,7 +6,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import net.openright.infrastructure.db.PgsqlDatabase;
-import net.openright.infrastructure.test.SampleData;
 import net.openright.infrastructure.test.WebTestUtil;
 import net.openright.simpleserverseed.application.SeedAppServer;
 import net.openright.simpleserverseed.application.SeedAppConfig;
@@ -43,7 +42,7 @@ public class OrderWebTest {
     public static void startBrowser() throws Exception {
         browser = WebTestUtil.createDriver(config.getProperties());
         browser.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-        wait = new WebDriverWait(browser, 2);
+        wait = new WebDriverWait(browser, 4);
     }
 
     @AfterClass
@@ -72,22 +71,28 @@ public class OrderWebTest {
 
     @Test
     public void shouldAddProduct() throws Exception {
+        Product newProduct = ProductRepositoryTest.sampleProduct();
+
         browser.findElement(By.linkText("Products")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(By.id("addProduct")));
         browser.findElement(By.id("addProduct")).click();
 
-        browser.findElement(By.name("product[price]")).sendKeys("123");
-
-        String productTitle = SampleData.sampleString(4);
         WebElement titleField = browser.findElement(By.name("product[title]"));
         titleField.clear();
-        titleField.sendKeys(productTitle);
+        titleField.sendKeys(newProduct.getTitle());
+        browser.findElement(By.name("product[price]"))
+            .sendKeys(String.valueOf(newProduct.getPrice()));
+        browser.findElement(By.name("product[description]"))
+            .sendKeys(String.valueOf(newProduct.getDescription()));
         titleField.submit();
 
         browser.findElement(By.id("products"));
 
-        assertThat(productRepository.list()).extracting("title")
-            .contains(productTitle);
+        Product product = productRepository.list().stream()
+                .filter(p -> p.getTitle().equals(newProduct.getTitle()))
+                .findFirst().get();
+        assertThat(product)
+            .isEqualToIgnoringGivenFields(newProduct, "id");
     }
 
     @Test

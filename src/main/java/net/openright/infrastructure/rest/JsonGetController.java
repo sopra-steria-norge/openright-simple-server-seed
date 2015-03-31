@@ -28,6 +28,8 @@ public class JsonGetController implements GetController {
     }
 
     private void sendResponse(HttpServletResponse resp, JSONObject response) throws IOException {
+        resp.setHeader("Expires", "-1");
+
         if (response == null) {
             resp.setStatus(204);
             return;

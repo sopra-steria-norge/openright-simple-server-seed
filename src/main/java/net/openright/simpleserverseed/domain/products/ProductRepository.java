@@ -48,6 +48,7 @@ public class ProductRepository {
         row.put("title", product.getTitle());
         row.put("active", product.isActive());
         row.put("price", product.getPrice());
+        row.put("description", product.getDescription());
     }
 
 
