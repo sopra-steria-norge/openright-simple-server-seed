@@ -19,6 +19,7 @@ public class ProductRepository {
 		long id = table.insertValues((row) -> {
 			row.put("title", product.getTitle());
 			row.put("active", product.isActive());
+			row.put("price", product.getPrice());
 		});
 		product.setId(id);
 	}
@@ -39,6 +40,7 @@ public class ProductRepository {
 		product.setTitle(rs.getString("title"));
 		product.setDescription(rs.getString("description"));
 		product.setActive(rs.getBoolean("active"));
+		product.setPrice(rs.getDouble("price"));
 		return product;
 	}
 

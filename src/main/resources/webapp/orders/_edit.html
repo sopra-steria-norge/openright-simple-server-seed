@@ -9,7 +9,6 @@
 </form>
 
 <script src="/seedapp/vendor/jquery.serialize-object.min.js"></script>
-<script src="/seedapp/js/orderRepository.js"></script>
 
 <script type="text/javascript">
 $(function() {
@@ -17,7 +16,7 @@ $(function() {
         e.preventDefault();
         var form = $("form#orderForm").serializeObject();
         orderRepository.save(form.order).then(function() {
-        	window.location.hash = "orders";
+        	  window.location.hash = "orders";
         });
     });
 });

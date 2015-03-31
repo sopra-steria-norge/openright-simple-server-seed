@@ -8,6 +8,7 @@ public class Product {
 	private String title;
 	private String description;
 	private boolean active = true;
+    private double price;
 
 	public Long getId() {
 		return id;
@@ -41,6 +42,14 @@ public class Product {
 		this.active = false;
 	}
 
+	public double getPrice() {
+        return price;
+    }
+
+	public void setPrice(double price) {
+        this.price = price;
+    }
+
 	@Override
 	public String toString() {
 		return "Product{id=" + id + ",title=" + title + "}";
@@ -57,5 +66,6 @@ public class Product {
 	public int hashCode() {
 		return Objects.hash(id, title);
 	}
+
 
 }

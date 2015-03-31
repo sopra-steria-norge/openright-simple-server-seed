@@ -1,0 +1,29 @@
+<form id="productForm">
+  <div>
+    <label>Product name:</label>
+    <input type="text" name="product[title]" required placeholder="Title" />
+  </div>
+  <div>
+    <label>Price:</label>
+    <input type="number" name="product[price]" required placeholder="Price" min="0" step="any" />
+  </div>
+
+    <h3>Submit</h3>
+    <p>
+        <button>Submit product</button>
+    </p>
+</form>
+
+<script src="/seedapp/vendor/jquery.serialize-object.min.js"></script>
+<script type="text/javascript">
+$(function() {
+    $("#productForm").submit(function(e) {
+        e.preventDefault();
+        var form = $("form#productForm").serializeObject();
+        productRepository.save(form.product).then(function() {
+        	window.location.hash = "products";
+        });
+    });
+});
+
+</script>

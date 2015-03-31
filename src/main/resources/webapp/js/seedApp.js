@@ -22,3 +22,13 @@ var orderRepository = {
     return ajax.post('api/orders', order);
   }
 };
+
+var productRepository = {
+  list: function() {
+    return ajax.get('api/products');
+  },
+  
+  save: function(products) {
+    return ajax.post('api/products', products);
+  }
+};

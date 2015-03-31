@@ -1,7 +1,7 @@
 package net.openright.simpleserverseed.domain.orders;
+import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import javax.servlet.http.HttpServletRequest;
 
 import net.openright.infrastructure.db.PgsqlDatabase;
@@ -21,7 +21,7 @@ public class OrdersApiController implements JsonController {
 	@Override
 	public JSONObject getJSON(HttpServletRequest req) {
 		return new JSONObject()
-			.put("orders", collect(repository.list().stream().map(this::toJSON)));
+			.put("orders", mapToJSON(repository.list(), this::toJSON));
 	}
 
 	@Override
@@ -35,12 +35,13 @@ public class OrdersApiController implements JsonController {
 		return order;
 	}
 
-	private JSONArray collect(Stream<JSONObject> stream) {
-		return new JSONArray(stream.collect(Collectors.toList()));
-	}
-
 	private JSONObject toJSON(Order order) {
 		return new JSONObject().put("id", order.getId()).put("title", order.getTitle());
 	}
+
+
+    private <T> JSONArray mapToJSON(List<T> list, Function<T, JSONObject> mapper) {
+        return new JSONArray(list.stream().map(mapper).collect(Collectors.toList()));
+    }
 
 }

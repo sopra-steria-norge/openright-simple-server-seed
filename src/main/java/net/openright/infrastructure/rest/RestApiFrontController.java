@@ -8,18 +8,26 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public abstract class RestApiFrontController extends HttpServlet {
+
+
+    private static final Logger log = LoggerFactory.getLogger(RestApiFrontController.class);
 
 	private static final long serialVersionUID = 7392483750149012130L;
 
 	private static class NotFoundController implements GetController, PostController {
 		@Override
 		public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		    log.warn("404 {} {}", req.getMethod(), req.getRequestURL());
 			resp.sendError(404);
 		}
-		
+
 		@Override
 		public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+	        log.warn("404 {} {}", req.getMethod(), req.getRequestURL());
 			resp.sendError(404);
 		}
 	}
@@ -29,12 +37,19 @@ public abstract class RestApiFrontController extends HttpServlet {
 	protected abstract Map<String, PostController> postControllers();
 
 	@Override
+	protected void service(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+	    log.info("{} {}", req.getMethod(), req.getRequestURL());
+		super.service(req, resp);
+	}
+
+	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		GetController controller = getControllers()
 				.getOrDefault(req.getPathInfo(), new NotFoundController());
 		controller.doGet(req, resp);
 	}
-	
+
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {

@@ -42,6 +42,8 @@ public class ProductRepositoryTest {
 	private Product sampleProduct(String prefix) {
 		Product product = new Product();
 		product.setTitle(prefix + SampleData.sampleString(3));
+		product.setDescription(SampleData.sampleString(10));
+		product.setPrice(SampleData.randomAmount());
 		return product;
 	}
 

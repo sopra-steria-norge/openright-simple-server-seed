@@ -35,6 +35,16 @@ section#content {
 	padding: 0.5em 2em;
 }
 
+form div label {
+	display: block;
+	font-weight: bold;
+}
+
+input[type=number] {
+	text-align: right;
+}
+
+
 .notify {
   display: block;
   background: #fff;

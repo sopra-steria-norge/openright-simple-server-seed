@@ -19,6 +19,10 @@ public class JsonGetController implements GetController {
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         JSONObject response = jsonController.getJSON(req);
+        if (response == null) {
+            resp.setStatus(204);
+            return;
+        }
 
         resp.setContentType("application/json");
         try (Writer writer = resp.getWriter()) {

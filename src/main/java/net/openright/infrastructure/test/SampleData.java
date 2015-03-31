@@ -24,4 +24,8 @@ public class SampleData {
 		return alternatives[random.nextInt(alternatives.length)];
 	}
 
+    public static double randomAmount() {
+        return random.nextInt(10000) / 100.0;
+    }
+
 }

@@ -11,12 +11,15 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import net.openright.infrastructure.db.PgsqlDatabase;
+import net.openright.infrastructure.test.SampleData;
 import net.openright.infrastructure.util.IOUtil;
 import net.openright.simpleserverseed.application.SeedAppServer;
 import net.openright.simpleserverseed.application.SeedAppConfig;
 import net.openright.simpleserverseed.application.SimpleseedTestConfig;
+import net.openright.simpleserverseed.domain.products.ProductRepository;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -28,7 +31,9 @@ public class OrderWebTest {
 	private static SeedAppConfig config = new SimpleseedTestConfig();
 	private static SeedAppServer server = new SeedAppServer(config);
 	private static WebDriver browser;
-	private OrdersRepository repository = new OrdersRepository(new PgsqlDatabase("jdbc/seedappDs"));
+	private PgsqlDatabase database = new PgsqlDatabase("jdbc/seedappDs");
+	private OrdersRepository repository = new OrdersRepository(database);
+	private ProductRepository productRepository = new ProductRepository(database);
 
 	@BeforeClass
 	public static void startServer() throws Exception {
@@ -60,12 +65,15 @@ public class OrderWebTest {
 		browser.quit();
 	}
 
+	@Before
+	public void goToFrontPage() {
+		browser.get(server.getURI().toString());
+	}
+
 	@Test
 	public void shouldSeeCurrentOrders() throws Exception {
 		Order order = OrderRepositoryTest.sampleOrder();
 		repository.insert(order);
-
-		browser.get(server.getURI().toString());
 
 		List<String> orders = browser.findElement(By.id("ordersList"))
 			.findElements(By.tagName("li"))
@@ -75,8 +83,26 @@ public class OrderWebTest {
 	}
 
 	@Test
+	public void shouldAddProduct() throws Exception {
+		browser.findElement(By.linkText("Products")).click();
+		browser.findElement(By.id("addProduct")).click();
+
+		browser.findElement(By.name("product[price]")).sendKeys("123");
+
+		String productTitle = SampleData.sampleString(4);
+		WebElement titleField = browser.findElement(By.name("product[title]"));
+		titleField.clear();
+		titleField.sendKeys(productTitle);
+		titleField.submit();
+
+		browser.findElement(By.id("products"));
+
+		assertThat(productRepository.list()).extracting("title")
+			.contains(productTitle);
+	}
+
+	@Test
 	public void shouldInsertNewOrders() throws Exception {
-		browser.get(server.getURI().toString());
 		browser.findElement(By.id("addOrder")).click();
 
 		String orderTitle = OrderRepositoryTest.sampleOrder().getTitle();
