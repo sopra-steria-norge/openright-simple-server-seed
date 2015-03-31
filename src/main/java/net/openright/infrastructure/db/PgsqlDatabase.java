@@ -34,16 +34,18 @@ public class PgsqlDatabase {
         T run(PreparedStatement stmt) throws SQLException;
     }
 
-    public interface ResultSetMapper<T> {
-        T run(ResultSet rs) throws SQLException;
-    }
-
     public interface RowMapper<T> {
         T run(Row row) throws SQLException;
     }
 
     public interface Inserter {
         void values(Map<String, Object> row);
+    }
+
+    public interface Selectable {
+
+        <T> List<T> list(RowMapper<T> mapper);
+
     }
 
     public static class Row {
@@ -102,29 +104,16 @@ public class PgsqlDatabase {
         }
     }
 
-    public class DatabaseTable {
+    public class DatabaseTable implements Selectable {
 
-        // parameters are used when building a where clause in a query. Keys corresponds to database columns.
-        private final LinkedHashMap<String, Object> parameters;
+        private final LinkedHashMap<String, Object> parameterMap;
         private final String tableName;
         private List<String> orderBy = new ArrayList<>();
         private List<String> innerJoins = new ArrayList<>();
 
         public DatabaseTable(String tableName, LinkedHashMap<String, Object> parameters) {
             this.tableName = tableName;
-            this.parameters = new LinkedHashMap<>(parameters);
-        }
-
-        /**
-         * Used for adding column=value pairs for use in sql.
-         * @param tableName
-         * @param parameters2
-         * @param field column name for use in where clause of sql
-         * @param value corresponding to column name for use in where clause of sql
-         */
-        public DatabaseTable(String tableName, LinkedHashMap<String, Object> parameters, String field, Object value) {
-            this(tableName, parameters);
-            this.parameters.put(field, value);
+            this.parameterMap = new LinkedHashMap<>(parameters);
         }
 
         public int insertValues(Inserter inserter) {
@@ -150,7 +139,7 @@ public class PgsqlDatabase {
 
             List<Object> values = new ArrayList<>();
             values.addAll(row.values());
-            values.addAll(parameters.values());
+            values.addAll(parameterMap.values());
             executeOperation(updateQuery(row.keySet()), values, stmt -> {
                 stmt.executeUpdate();
                 return null;
@@ -160,47 +149,27 @@ public class PgsqlDatabase {
         private String updateQuery(Collection<String> updatedColumns) {
             return "update " + tableName + " set "
                     + updatedColumns.stream().map(col -> col + " = ?").collect(Collectors.joining(", "))
-                    + " where "
-                    + parameters.keySet().stream().map(s -> s + " = ?").collect(Collectors.joining(" and "));
+                    + getWhereClause();
         }
 
-        public <T> List<T> list(ResultSetMapper<T> mapper) {
-            return executeListQuery(getQuery(), parameters.values(), mapper);
-        }
-
+        @Override
         public <T> List<T> list(RowMapper<T> mapper) {
-            return executeListQuery(getQuery(), parameters.values(), mapper);
+            return executeQueryForList(getQuery(), parameterMap.values(), mapper);
         }
 
         public <T> T single(RowMapper<T> mapper) {
-            return executeQuery(getQuery(), parameters.values(), rs -> {
-                if (!rs.next()) {
-                    throw new RuntimeException("Not found");
-                }
-                T result = mapper.run(new Row(rs));
-                if (rs.next()) {
-                    throw new RuntimeException("Duplicat");
-                }
-                return result;
-            });
+            return executeQueryForSingle(getQuery(), parameterMap.values(), mapper);
         }
 
         public void delete() {
-            executeOperation(deleteQuery(), parameters.values(), stmt -> {
+            executeOperation(deleteQuery(), parameterMap.values(), stmt -> {
                 stmt.executeUpdate();
                 return null;
             });
         }
 
         private String deleteQuery() {
-            StringBuilder query = new StringBuilder("delete from ").append(tableName);
-            String whereClause = parameters.keySet().stream()
-                    .map(s -> s + " = ?")
-                    .collect(Collectors.joining(" and "));
-            if (!whereClause.isEmpty()) {
-                query.append(" where ").append(whereClause);
-            }
-            return query.toString();
+            return "delete from " + tableName + getWhereClause();
         }
 
         private String getQuery() {
@@ -208,17 +177,21 @@ public class PgsqlDatabase {
             if (!this.innerJoins.isEmpty()) {
                 query.append(" ").append(String.join(" ", innerJoins));
             }
-            String whereClause = parameters.keySet().stream()
-                    .map(s -> s + " = ?")
-                    .collect(Collectors.joining(" and "));
-            if (!whereClause.isEmpty()) {
-                query.append(" where ").append(whereClause);
-            }
+            query.append(getWhereClause());
             if (!orderBy.isEmpty()) {
                 query.append(" order by ").append(String.join(",", orderBy));
             }
-
             return query.toString();
+        }
+
+        private String getWhereClause() {
+            if (parameterMap.keySet().isEmpty()) {
+                return "";
+            }
+
+            return " where " + parameterMap.keySet().stream()
+                .map(s -> s + " = ?")
+                .collect(Collectors.joining(" and "));
         }
 
         /**
@@ -228,17 +201,19 @@ public class PgsqlDatabase {
          * @return new instance of self with added set of query parameter and value
          */
         public DatabaseTable where(String field, Object value) {
-            return new DatabaseTable(tableName, parameters, field, value);
+            DatabaseTable newTable = new DatabaseTable(tableName, parameterMap);
+            newTable.parameterMap.put(field, value);
+            return newTable;
         }
 
-        public DatabaseTable orderBy(String string) {
-            DatabaseTable table = new DatabaseTable(tableName, parameters);
+        public Selectable orderBy(String string) {
+            DatabaseTable table = new DatabaseTable(tableName, parameterMap);
             table.orderBy.add(string);
             return table;
         }
 
-        public DatabaseTable join(String tableName, String myReference, String id) {
-            DatabaseTable table = new DatabaseTable(this.tableName, parameters);
+        public Selectable join(String tableName, String myReference, String id) {
+            DatabaseTable table = new DatabaseTable(this.tableName, parameterMap);
             table.innerJoins.add("INNER JOIN " + tableName + " on " + tableName + "." + id
                     + " = " + this.tableName + "." + myReference);
             return table;
@@ -248,7 +223,6 @@ public class PgsqlDatabase {
 
     private final DataSource dataSource;
     private final static ThreadLocal<Connection> threadConnection = new ThreadLocal<>();
-
 
     public PgsqlDatabase(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -287,36 +261,30 @@ public class PgsqlDatabase {
 
     }
 
-    public <T> T executeQuery(String query, ResultSetMapper<T> mapper) {
-        return executeQuery(query, new ArrayList<Object>(), mapper);
-    }
-
-    public <T> List<T> executeListQuery(String query, Collection<Object> parameters, ResultSetMapper<T> mapper) {
-        return executeQuery(query, parameters, rs -> {
-            List<T> result = new ArrayList<T>();
-            while (rs.next()) {
-                result.add(mapper.run(rs));
-            }
-            return result;
-        });
-    }
-
-
-    public <T> List<T> executeListQuery(String query, Collection<Object> parameters, RowMapper<T> mapper) {
-        return executeQuery(query, parameters, rs -> {
-            Row row = new Row(rs);
-            List<T> result = new ArrayList<T>();
-            while (rs.next()) {
-                result.add(mapper.run(row));
-            }
-            return result;
-        });
-    }
-
-    public <T> T executeQuery(String query, Collection<Object> parameters, ResultSetMapper<T> mapper) {
+    public <T> List<T> executeQueryForList(String query, Collection<Object> parameters, RowMapper<T> mapper) {
         return executeOperation(query, parameters, stmt -> {
             try (ResultSet rs = stmt.executeQuery()) {
-                return mapper.run(rs);
+                Row row = new Row(rs);
+                List<T> result = new ArrayList<T>();
+                while (rs.next()) {
+                    result.add(mapper.run(row));
+                }
+                return result;
+            }
+        });
+    }
+
+    private <T> T executeQueryForSingle(String query, Collection<Object> parameters, RowMapper<T> mapper) {
+        return executeOperation(query, parameters, stmt -> {
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (!rs.next()) {
+                    throw new RuntimeException("Not found");
+                }
+                T result = mapper.run(new Row(rs));
+                if (rs.next()) {
+                    throw new RuntimeException("Duplicate");
+                }
+                return result;
             }
         });
     }

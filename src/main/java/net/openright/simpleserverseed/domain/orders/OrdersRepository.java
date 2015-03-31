@@ -2,6 +2,7 @@ package net.openright.simpleserverseed.domain.orders;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import net.openright.infrastructure.db.PgsqlDatabase;
 import net.openright.infrastructure.db.PgsqlDatabase.DatabaseTable;
@@ -25,51 +26,7 @@ class OrdersRepository {
         return table.list(this::toOrder);
     }
 
-    void insert(Order order) {
-        if (order.getTitle().equals("null")) {
-            throw new RuntimeException("Null title is invalid");
-        }
-        if (order.getTitle().contains("foul")) {
-            throw new RequestException("No foul language in orders, please!");
-        }
-
-
-        database.doInTransaction(() -> {
-            order.setId(table.insertValues(row -> {
-                row.put("title", order.getTitle());
-            }));
-
-            for (OrderLine orderLine : order.getOrderLines()) {
-                lineTable.insertValues(row -> {
-                    row.put("order_id", order.getId());
-                    row.put("title", orderLine.getTitle());
-                    row.put("product_id", orderLine.getProductId());
-                    row.put("amount", orderLine.getAmount());
-                });
-            }
-        });
-    }
-
-    public void update(int orderId, Order order) {
-        database.doInTransaction(() -> {
-            table.where("id", orderId).updateValues(row -> {
-                row.put("title", order.getTitle());
-            });
-
-            lineTable.where("order_id", orderId).delete();
-
-            for (OrderLine orderLine : order.getOrderLines()) {
-                lineTable.insertValues(row -> {
-                    row.put("order_id", orderId);
-                    row.put("title", orderLine.getTitle());
-                    row.put("product_id", orderLine.getProductId());
-                    row.put("amount", orderLine.getAmount());
-                });
-            }
-        });
-    }
-
-    protected Order retrieve(int id) {
+    Order retrieve(int id) {
         Order order = table.where("id", id).single(this::toOrder);
         order.setOrderLines(lineTable
                 .where("order_id", id)
@@ -78,9 +35,54 @@ class OrdersRepository {
         return order;
     }
 
-    private Order toOrder(Row rs) throws SQLException {
-        Order order = new Order(rs.getString("title"));
-        order.setId(rs.getInt("id"));
+    void insert(Order order) {
+        validateOrder(order);
+
+        database.doInTransaction(() -> {
+            order.setId(table.insertValues(row -> toRow(order, row)));
+            insertOrderLines(order.getId(), order);
+        });
+    }
+
+    public void update(int orderId, Order order) {
+        validateOrder(order);
+
+        database.doInTransaction(() -> {
+            table.where("id", orderId).updateValues(row -> toRow(order, row));
+            lineTable.where("order_id", orderId).delete();
+            insertOrderLines(orderId, order);
+        });
+    }
+
+    private void insertOrderLines(int orderId, Order order) {
+        for (OrderLine orderLine : order.getOrderLines()) {
+            lineTable.insertValues(row -> toRow(orderId, orderLine, row));
+        }
+    }
+
+    private Object toRow(Order order, Map<String, Object> row) {
+        return row.put("title", order.getTitle());
+    }
+
+    private void toRow(int orderId, OrderLine orderLine, Map<String, Object> row) {
+        row.put("order_id", orderId);
+        row.put("title", orderLine.getTitle());
+        row.put("product_id", orderLine.getProductId());
+        row.put("amount", orderLine.getAmount());
+    }
+
+    private void validateOrder(Order order) {
+        if (order.getTitle().equals("null")) {
+            throw new RuntimeException("Null title is invalid");
+        }
+        if (order.getTitle().contains("foul")) {
+            throw new RequestException("No foul language in orders, please!");
+        }
+    }
+
+    private Order toOrder(Row row) throws SQLException {
+        Order order = new Order(row.getString("title"));
+        order.setId(row.getInt("id"));
         return order;
     }
 
