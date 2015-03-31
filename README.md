@@ -87,6 +87,18 @@ Getting started developing
 9. Any changes that are not supported by the debugger will be reflected when you start `net.openright.simpleserverseed.SeedAppServer` again (starting again will shut down the old server instance)
 0. To change the database schema, add new migrations under `src/main/resources/db`. The changes will be reflected when you restart the application server
 
+### Configuration (Optional)
+The application starts with a working default configuration given you have followed the steps above. Two configuration files are loaded if you create them.
+
+1. seedapp.properties - This configuration is loaded when you run SeedAppServer.java
+2. seedapp-test.properties - This configuration is loaded by the JUnit tests.
+
+Values in the configuration are key=value pairs. The following parameters are examples of configurable parameters:
+```
+seed.db.username=some_database_user
+seed.db.password=a_password_for_the_database_user
+```
+
 Development quick guide
 ------------------------------
 
