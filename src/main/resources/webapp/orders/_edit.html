@@ -1,24 +1,57 @@
 <form id="orderForm">
-	<input type="number" name="order[id]" required placeholder="Order id" value=1 />
-	<input type="text" name="order[title]" required placeholder="Title" value=null />
+  <div>
+    <label>Order title:</label>
+    <input type="text" name="order[title]" required placeholder="Title" />
+  </div>
 
-    <h3>Submit</h3>
-    <p>
-        <button>Submit question</button>
-    </p>
+  <h4>Order contents</h4>
+  <div id="orderLines"></div>
+  <button id="addOrderLine">Add line</button>
+
+  <h3>Submit</h3>
+  <p>
+    <button>Submit question</button>
+  </p>
 </form>
+
+<script type="text/x-handlebars-template" id="orderLineTemplate">
+  <div class="orderLine">
+    <span>Product</span>
+    <select name=order[orderLines][][product]" class="productSelect">
+      {{#each products}}
+        <option>{{title}}</option>
+      {{/each}}
+    </select>
+    <input type="number" name="order[orderlines][][amount]" required min=1 step=1 placeholder="amount" />
+  </div>
+</script>
 
 <script src="/seedapp/vendor/jquery.serialize-object.min.js"></script>
 
 <script type="text/javascript">
-$(function() {
-    $("#orderForm").submit(function(e) {
-        e.preventDefault();
-        var form = $("form#orderForm").serializeObject();
-        orderRepository.save(form.order).then(function() {
-        	  window.location.hash = "orders";
-        });
-    });
-});
+  $(function() {
+    var products;
+    var orderTemplate = Handlebars.compile($("#orderLineTemplate").html());
 
+    productRepository.list().then(function(data) {
+      products = data.products;
+      $("#orderLines").append(orderTemplate({products: products}));
+      $("#orderLines").append(orderTemplate({products: products}));
+    });
+    
+    $("#addOrderLine").click(function(e) {
+      e.preventDefault();
+      if (products) {
+        $("#orderLines").append(orderTemplate({products: products}));
+      }
+    });
+
+    $("#orderForm").submit(function(e) {
+      e.preventDefault();
+      var form = $("form#orderForm").serializeObject();
+      orderRepository.save(form.order).then(function() {
+        window.location.hash = "orders";
+      });
+    });
+  });
 </script>
