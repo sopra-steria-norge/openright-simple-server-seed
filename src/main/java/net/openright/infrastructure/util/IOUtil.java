@@ -56,9 +56,13 @@ public class IOUtil {
 		}
 	}
 
-	public static void copy(URL url, File file) {
+	public static File copy(URL url, File file) {
+	    if (file.isDirectory()) {
+	        file = new File(file, new File(url.getPath()).getName());
+	    }
 		try (InputStream content = (InputStream) url.getContent()) {
 			copy(content, file);
+			return file;
 		} catch (IOException e) {
 			throw ExceptionUtil.soften(e);
 		}

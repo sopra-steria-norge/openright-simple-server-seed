@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -16,8 +17,13 @@ import net.openright.infrastructure.util.IOUtil;
 import net.openright.simpleserverseed.application.SeedAppServer;
 import net.openright.simpleserverseed.application.SeedAppConfig;
 import net.openright.simpleserverseed.application.SimpleseedTestConfig;
+import net.openright.simpleserverseed.domain.products.Product;
 import net.openright.simpleserverseed.domain.products.ProductRepository;
+import net.openright.simpleserverseed.domain.products.ProductRepositoryTest;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.XML;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -26,96 +32,155 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class OrderWebTest {
-	private static SeedAppConfig config = new SimpleseedTestConfig();
-	private static SeedAppServer server = new SeedAppServer(config);
-	private static WebDriver browser;
-	private PgsqlDatabase database = new PgsqlDatabase("jdbc/seedappDs");
-	private OrdersRepository repository = new OrdersRepository(database);
-	private ProductRepository productRepository = new ProductRepository(database);
+    private static SeedAppConfig config = new SimpleseedTestConfig();
+    private static SeedAppServer server = new SeedAppServer(config);
+    private static WebDriver browser;
+    private static WebDriverWait wait;
+    private PgsqlDatabase database = new PgsqlDatabase("jdbc/seedappDs");
+    private OrdersRepository orderRepository = new OrdersRepository(database);
+    private ProductRepository productRepository = new ProductRepository(database);
 
-	@BeforeClass
-	public static void startServer() throws Exception {
-		server.start(0);
-	}
+    @BeforeClass
+    public static void startServer() throws Exception {
+        server.start(0);
+    }
 
-	@BeforeClass
-	public static void startBrowser() throws Exception {
-		File driverFile = new File("target/chromedriver.exe");
-		if (!driverFile.exists()) {
-			URL chromeDriverUrl = new URL("http://chromedriver.storage.googleapis.com/");
-			String chromeDriverVersion = IOUtil.toString(new URL(chromeDriverUrl, "LATEST_RELEASE"));
+    @BeforeClass
+    public static void startBrowser() throws Exception {
+        browser = createFirefoxDriver();
+        browser.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 
-			File zippedFile = new File("target/chromedriver.zip");
+        wait = new WebDriverWait(browser, 2);
+    }
 
-			IOUtil.copy(new URL(chromeDriverUrl, chromeDriverVersion + "/chromedriver_win32.zip"), zippedFile);
-			try (ZipFile zipFile = new ZipFile(zippedFile)) {
-				ZipEntry zipEntry = zipFile.getEntry("chromedriver.exe");
-				IOUtil.copy(zipFile.getInputStream(zipEntry), driverFile);
-			}
-		}
-		System.setProperty("webdriver.chrome.driver", driverFile.getPath());
-		browser = new ChromeDriver();
-		browser.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-	}
+    private static WebDriver createFirefoxDriver() {
+        return new FirefoxDriver();
+    }
 
-	@AfterClass
-	public static void stopClient() {
-		browser.quit();
-	}
+    private static InternetExplorerDriver createMsieDriver() throws Exception {
+        File driverFile = new File("target/IEDriverServer.exe");
+        if (!driverFile.exists()) {
+            URL msieDriverUrl = new URL("http://selenium-release.storage.googleapis.com/");
 
-	@Before
-	public void goToFrontPage() {
-		browser.get(server.getURI().toString());
-	}
+            List<String> msieVersions = new ArrayList<>();
+            JSONObject storageContents = XML.toJSONObject(IOUtil.toString(msieDriverUrl));
+            JSONArray jsonArray = storageContents.getJSONObject("ListBucketResult").getJSONArray("Contents");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                String file = jsonArray.getJSONObject(i).getString("Key");
+                if (file.contains("IEDriver")) {
+                    msieVersions.add(file);
+                }
+            }
+            String latestFile = msieVersions.stream().max(String::compareTo).get();
 
-	@Test
-	public void shouldSeeCurrentOrders() throws Exception {
-		Order order = OrderRepositoryTest.sampleOrder();
-		repository.insert(order);
+            File zippedFile = IOUtil.copy(new URL(msieDriverUrl, latestFile), new File("target/"));
+            try (ZipFile zipFile = new ZipFile(zippedFile)) {
+                ZipEntry zipEntry = zipFile.getEntry(driverFile.getName());
+                IOUtil.copy(zipFile.getInputStream(zipEntry), driverFile);
+            }
+        }
+        System.setProperty("webdriver.ie.driver", driverFile.getPath());
+        return new InternetExplorerDriver();
+    }
 
-		List<String> orders = browser.findElement(By.id("ordersList"))
-			.findElements(By.tagName("li"))
-			.stream().map(e -> e.getText()).collect(Collectors.toList());
+    public static ChromeDriver createChromeDriver() throws Exception {
+        File driverFile = new File("target/chromedriver.exe");
+        if (!driverFile.exists()) {
+            URL chromeDriverUrl = new URL("http://chromedriver.storage.googleapis.com/");
+            String chromeDriverVersion = IOUtil.toString(new URL(chromeDriverUrl, "LATEST_RELEASE"));
 
-		assertThat(orders).contains("Order: " + order.getTitle());
-	}
+            URL latestDriverVersion = new URL(chromeDriverUrl, chromeDriverVersion + "/chromedriver_win32.zip");
+            File zippedFile = IOUtil.copy(latestDriverVersion, new File("target/"));
+            try (ZipFile zipFile = new ZipFile(zippedFile)) {
+                ZipEntry zipEntry = zipFile.getEntry(driverFile.getName());
+                IOUtil.copy(zipFile.getInputStream(zipEntry), driverFile);
+            }
+        }
+        System.setProperty("webdriver.chrome.driver", driverFile.getPath());
+        return new ChromeDriver();
+    }
 
-	@Test
-	public void shouldAddProduct() throws Exception {
-		browser.findElement(By.linkText("Products")).click();
-		browser.findElement(By.id("addProduct")).click();
+    @AfterClass
+    public static void stopClient() {
+        browser.quit();
+    }
 
-		browser.findElement(By.name("product[price]")).sendKeys("123");
+    @Before
+    public void goToFrontPage() {
+        browser.manage().deleteAllCookies();
+        browser.get(server.getURI().toString());
+        //wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Products")));
+    }
 
-		String productTitle = SampleData.sampleString(4);
-		WebElement titleField = browser.findElement(By.name("product[title]"));
-		titleField.clear();
-		titleField.sendKeys(productTitle);
-		titleField.submit();
+    @Test
+    public void shouldSeeCurrentOrders() throws Exception {
+        Order order = OrderRepositoryTest.sampleOrder();
+        orderRepository.insert(order);
 
-		browser.findElement(By.id("products"));
+        List<String> orders = browser.findElement(By.id("ordersList"))
+            .findElements(By.tagName("li"))
+            .stream().map(e -> e.getText()).collect(Collectors.toList());
 
-		assertThat(productRepository.list()).extracting("title")
-			.contains(productTitle);
-	}
+        assertThat(orders).contains("Order: " + order.getTitle());
+    }
 
-	@Test
-	public void shouldInsertNewOrders() throws Exception {
-		browser.findElement(By.id("addOrder")).click();
+    @Test
+    public void shouldAddProduct() throws Exception {
+        browser.findElement(By.linkText("Products")).click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("addProduct")));
+        browser.findElement(By.id("addProduct")).click();
 
-		String orderTitle = OrderRepositoryTest.sampleOrder().getTitle();
+        browser.findElement(By.name("product[price]")).sendKeys("123");
 
-		WebElement titleField = browser.findElement(By.name("order[title]"));
-		titleField.clear();
-		titleField.sendKeys(orderTitle);
-		titleField.submit();
+        String productTitle = SampleData.sampleString(4);
+        WebElement titleField = browser.findElement(By.name("product[title]"));
+        titleField.clear();
+        titleField.sendKeys(productTitle);
+        titleField.submit();
 
-		browser.findElement(By.id("ordersList"));
+        browser.findElement(By.id("products"));
 
-		assertThat(repository.list().stream().map(o -> o.getTitle()).collect(Collectors.toList()))
-			.contains(orderTitle);
-	}
+        assertThat(productRepository.list()).extracting("title")
+            .contains(productTitle);
+    }
+
+    @Test
+    public void shouldInsertNewOrders() throws Exception {
+        Product product = ProductRepositoryTest.sampleProduct();
+        productRepository.insert(product);
+
+        browser.findElement(By.id("addOrder")).click();
+
+        String orderTitle = OrderRepositoryTest.sampleOrder().getTitle();
+
+        WebElement titleField = browser.findElement(By.name("order[title]"));
+        titleField.clear();
+        titleField.sendKeys(orderTitle);
+
+        browser.findElement(By.id("addOrderLine")).click();
+
+        browser.findElement(By.cssSelector("#orderLines .productSelect"))
+            .findElement(optionWithText(product.getTitle()))
+            .click();
+        browser.findElement(By.cssSelector("#orderLines input[name='order[orderlines][][amount]']"))
+            .sendKeys("120");
+
+        titleField.submit();
+
+        browser.findElement(By.id("ordersList"));
+
+        assertThat(orderRepository.list().stream().map(o -> o.getTitle()).collect(Collectors.toList()))
+            .contains(orderTitle);
+    }
+
+    private By optionWithText(String optionText) {
+        return By.xpath("option[text() = '" + optionText + "']");
+    }
 
 }

@@ -17,9 +17,9 @@
 <script type="text/x-handlebars-template" id="orderLineTemplate">
   <div class="orderLine">
     <span>Product</span>
-    <select name=order[orderLines][][product]" class="productSelect">
+    <select name="order[orderlines][][product]" class="productSelect">
       {{#each products}}
-        <option>{{title}}</option>
+        <option value={{id}}>{{title}}</option>
       {{/each}}
     </select>
     <input type="number" name="order[orderlines][][amount]" required min=1 step=1 placeholder="amount" />

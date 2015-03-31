@@ -32,6 +32,16 @@ public class OrdersApiController implements JsonController {
 
     private Order toOrder(JSONObject jsonObject) {
         Order order = new Order(jsonObject.getString("title"));
+
+        JSONArray jsonArray = jsonObject.getJSONArray("orderlines");
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject orderLine = jsonArray.getJSONObject(i);
+            if (orderLine.getString("amount").isEmpty()) {
+                continue;
+            }
+            order.addOrderLine(orderLine.optLong("product"), orderLine.optInt("amount"));
+        }
+
         return order;
     }
 
