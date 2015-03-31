@@ -278,7 +278,7 @@ public class PgsqlDatabase {
         return executeOperation(query, parameters, stmt -> {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (!rs.next()) {
-                    throw new RuntimeException("Not found");
+                    return null;
                 }
                 T result = mapper.run(new Row(rs));
                 if (rs.next()) {

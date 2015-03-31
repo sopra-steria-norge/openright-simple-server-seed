@@ -14,6 +14,18 @@ var ajax = {
   }
 };
 
+$(document).ajaxError(function( event, jqxhr, settings, thrownError) {
+  console.log( event, jqxhr, settings, thrownError);
+  if (jqxhr.status >= 500) {
+    notify("error", "A terrible error occurred", "We are very sorry and looking into it");
+  } else if (jqxhr.status >= 404) {
+    notify("warning", "Not found", thrownError);
+  } else {
+    notify("warning", "Problems", thrownError);
+  }
+});
+
+
 
 window.Handlebars.registerHelper('select', function( value, options ){
   var $el = $('<select />').html( options.fn(this) );

@@ -28,6 +28,9 @@ class OrdersRepository {
 
     Order retrieve(int id) {
         Order order = table.where("id", id).single(this::toOrder);
+        if (order == null) {
+            throw new RequestException(404, "Order " + id + " not found");
+        }
         order.setOrderLines(lineTable
                 .where("order_id", id)
                 .join("products", "product_id", "id")

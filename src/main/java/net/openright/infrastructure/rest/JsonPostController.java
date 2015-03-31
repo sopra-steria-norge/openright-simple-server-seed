@@ -33,7 +33,7 @@ public class JsonPostController implements PostController {
 			resp.sendError(200);
 		} catch (RequestException e) {
 			log.warn("Invalid request {}: {}", req.getRequestURL(), e.toString());
-			resp.sendError(400, e.toString());
+			resp.sendError(e.getStatusCode(), e.toString());
 		} catch (RuntimeException e) {
 			log.error("Failed to process " + req.getRequestURL(), e);
 			resp.sendError(500, e.toString());

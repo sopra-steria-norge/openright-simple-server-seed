@@ -41,7 +41,6 @@ public class OrderWebTest {
     @BeforeClass
     public static void startBrowser() throws Exception {
         browser = WebTestUtil.createDriver(config.getProperties());
-        browser.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
         wait = new WebDriverWait(browser, 4);
     }
 
@@ -53,8 +52,9 @@ public class OrderWebTest {
     @Before
     public void goToFrontPage() {
         browser.manage().deleteAllCookies();
+        browser.manage().timeouts().implicitlyWait(4, TimeUnit.SECONDS);
         browser.get(server.getURI().toString());
-        //wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Products")));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.tagName("nav")));
     }
 
     @Test
@@ -67,6 +67,16 @@ public class OrderWebTest {
             .stream().map(e -> e.getText()).collect(Collectors.toList());
 
         assertThat(orders).contains("Order: " + order.getTitle());
+    }
+
+    @Test
+    public void shouldDisplayErrorOnInvalidOrderId() {
+        browser.get(server.getURI().toString() + "#orders/edit/-1");
+
+        WebElement notification = browser.findElement(By.cssSelector("#notifications .notify"));
+        wait.until(ExpectedConditions.visibilityOf(notification));
+        assertThat(notification.getAttribute("class")).contains("warning");
+        assertThat(notification.findElement(By.tagName("h1")).getText()).isEqualTo("Not found");
     }
 
     @Test

@@ -45,16 +45,6 @@
 <script src="/seedapp/vendor/handlebars.min.js"></script>
 <script src="/seedapp/js/seedApp.js"></script>
 <script type="text/javascript">
-$(document).ajaxError(function( event, jqxhr, settings, thrownError) {
-  console.log( event, jqxhr, settings, thrownError);
-  if (jqxhr.status >= 500) {
-    notify("error", "A terrible error occurred", "We are very sorry and looking into it");
-  } else {
-    notify("warning", "Problems", thrownError);
-  }
-});
-
-
 var loadingTemplate = Handlebars.compile($("#loading-template").html());
 
 $(function() {

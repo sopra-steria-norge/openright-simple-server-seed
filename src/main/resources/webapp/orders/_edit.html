@@ -19,6 +19,10 @@
     </div>
     <button id="addOrderLine">Add line</button>
   </div>
+
+  <p>
+    <button>Save order</button>
+  </p>
 </script>
 </form>
 
@@ -35,6 +39,7 @@
     </select>
     <input type="number" name="order[orderlines][][amount]"
         required min=1 step=1 placeholder="amount" value="{{orderLine.amount}}" />
+    <a class="deleteOrderLine" href="#">[x]</a>
   </div>
 </script>
 
@@ -55,6 +60,11 @@ $(function() {
         e.preventDefault();
         $("#orderLines").append(orderLineTemplate({products: products}));
         $("#orderLines .productSelect").last().focus()
+      });
+      
+      $("#orderLines").on("click", ".deleteOrderLine", function(e) {
+        e.preventDefault();
+        $(this).closest(".orderLine").remove();
       });
     }
 

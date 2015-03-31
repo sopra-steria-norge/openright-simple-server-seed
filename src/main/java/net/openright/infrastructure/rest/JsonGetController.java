@@ -7,8 +7,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JsonGetController implements GetController {
+
+    private static final Logger log = LoggerFactory.getLogger(JsonGetController.class);
 
     private JsonController jsonController;
 
@@ -20,10 +24,15 @@ public class JsonGetController implements GetController {
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String[] parts = req.getPathInfo().split("\\/");
 
-        if (parts.length > 2) {
-            sendResponse(resp, jsonController.getJSON(parts[2]));
-        } else {
-            sendResponse(resp, jsonController.listJSON(req));
+        try {
+            if (parts.length > 2) {
+                sendResponse(resp, jsonController.getJSON(parts[2]));
+            } else {
+                sendResponse(resp, jsonController.listJSON(req));
+            }
+        } catch (RequestException e) {
+            log.warn("Invalid request {}: {}", req.getRequestURL(), e.toString());
+            resp.sendError(e.getStatusCode(), e.toString());
         }
     }
 
