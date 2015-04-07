@@ -60,8 +60,9 @@ public class OrderWebTest {
     @Test
     public void shouldSeeCurrentOrders() throws Exception {
         Order order = OrderRepositoryTest.sampleOrder();
-        orderRepository.insert(order);
-
+        orderRepository.insert(order);    
+        browser.get(server.getURI().toString());
+        
         List<String> orders = browser.findElement(By.id("ordersList"))
             .findElements(By.tagName("li"))
             .stream().map(e -> e.getText()).collect(Collectors.toList());
