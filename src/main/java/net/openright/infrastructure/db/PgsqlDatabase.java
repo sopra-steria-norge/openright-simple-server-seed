@@ -13,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-@SuppressWarnings("SameParameterValue")
 public class PgsqlDatabase {
 
     private static final Logger log = LoggerFactory.getLogger(PgsqlDatabase.class);
@@ -30,7 +29,6 @@ public class PgsqlDatabase {
         T run(Row row) throws SQLException;
     }
 
-    @SuppressWarnings("SameParameterValue")
     public static class Row {
 
         private final ResultSet rs;
