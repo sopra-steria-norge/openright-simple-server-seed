@@ -1,24 +1,87 @@
 package net.openright.infrastructure.db;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
+import net.openright.infrastructure.util.ExceptionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 
-import net.openright.infrastructure.util.ExceptionUtil;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+@SuppressWarnings("SameParameterValue")
 public class PgsqlDatabase {
 
     private static final Logger log = LoggerFactory.getLogger(PgsqlDatabase.class);
+
+    public int executeInsert(String query, Object... parameters) {
+        return executeDbOperation(query, Arrays.asList(parameters), stmt -> {
+            ResultSet rs = stmt.executeQuery();
+            rs.next();
+            return rs.getInt("id");
+        });
+    }
+
+    public interface ConnectionCallback<T> {
+        T run(Connection conn);
+    }
+
+    public interface StatementCallback<T> {
+        T run(PreparedStatement stmt) throws SQLException;
+    }
+
+    public interface RowMapper<T> {
+        T run(Row row) throws SQLException;
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    public static class Row {
+
+        private final ResultSet rs;
+        private final Map<String, Integer> columnMap = new HashMap<>();
+
+        public Row(ResultSet rs) throws SQLException {
+            this.rs = rs;
+            for (int i = 1; i < rs.getMetaData().getColumnCount() + 1; i++) {
+                String tableName = rs.getMetaData().getTableName(i);
+                String columnName = rs.getMetaData().getColumnName(i);
+
+                this.columnMap.put(tableName + "." + columnName, i);
+            }
+        }
+
+        public String getString(String string) throws SQLException {
+            return rs.getString(string);
+        }
+
+        public int getInt(String columnName) throws SQLException {
+            return rs.getInt(columnName);
+        }
+
+        public long getLong(String tableName, String columnName) throws SQLException {
+            return rs.getLong(getColumnIndex(tableName, columnName));
+        }
+
+        public String getString(String tableName, String columnName) throws SQLException {
+            return rs.getString(getColumnIndex(tableName, columnName));
+        }
+
+        public boolean getBoolean(String tableName, String columnName) throws SQLException {
+            return rs.getBoolean(getColumnIndex(tableName, columnName));
+        }
+
+        public double getDouble(String tableName, String columnName) throws SQLException {
+            return rs.getDouble(getColumnIndex(tableName, columnName));
+        }
+
+        private int getColumnIndex(String tableName, String columnName) {
+            return columnMap.get(tableName + "." + columnName);
+        }
+    }
 
     private final DataSource dataSource;
     private final static ThreadLocal<Connection> threadConnection = new ThreadLocal<>();
@@ -34,10 +97,15 @@ public class PgsqlDatabase {
             throw ExceptionUtil.soften(e);
         }
     }
-    
-    public <T> T executeDbOperation(String query, Object[] parameters, StatementCallback<T> statementCallback) {
+
+    public void executeUpdate(String query, Object... parameters) {
+        executeDbOperation(query, Arrays.asList(parameters), PreparedStatement::executeUpdate);
+    }
+
+
+    public <T> T executeDbOperation(String query, Collection<Object> parameters, StatementCallback<T> statementCallback) {
         return doWithConnection(conn -> {
-            log.info("Executing: {} with params {}", query, parameters.toString());
+            log.info("Executing: {} with params {}", query, parameters);
             try (PreparedStatement prepareStatement = conn.prepareStatement(query)) {
                 int index = 1;
                 for (Object object : parameters) {
@@ -49,8 +117,49 @@ public class PgsqlDatabase {
                 throw ExceptionUtil.soften(e);
             }
         });
+
     }
-    
+
+    public <T> List<T> queryForList(String query, RowMapper<T> mapper, Object... params) {
+        return queryForList(query, Arrays.asList(params), mapper);
+    }
+
+    public <T> List<T> queryForList(String query, Collection<Object> parameters, RowMapper<T> mapper) {
+        return executeDbOperation(query, parameters, stmt -> {
+            try (ResultSet rs = stmt.executeQuery()) {
+                Row row = new Row(rs);
+                List<T> result = new ArrayList<>();
+                while (rs.next()) {
+                    result.add(mapper.run(row));
+                }
+                return result;
+            }
+        });
+    }
+
+    public <T> Optional<T> queryForSingle(String query, RowMapper<T> mapper, Object... parameters) {
+        return queryForSingle(query, Arrays.asList(parameters), mapper);
+    }
+
+    private <T> Optional<T> queryForSingle(String query, Collection<Object> parameters, RowMapper<T> mapper) {
+        return executeDbOperation(query, parameters, stmt -> {
+            try (ResultSet rs = stmt.executeQuery()) {
+                return mapSingleRow(rs, mapper);
+            }
+        });
+    }
+
+    private <T> Optional<T> mapSingleRow(ResultSet rs, RowMapper<T> mapper) throws SQLException {
+        if (!rs.next()) {
+            return Optional.empty();
+        }
+        T result = mapper.run(new Row(rs));
+        if (rs.next()) {
+            throw new RuntimeException("Duplicate");
+        }
+        return Optional.of(result);
+    }
+
     public void doInTransaction(Runnable operation) {
         try (Connection connection = dataSource.getConnection()) {
             threadConnection.set(connection);
@@ -76,67 +185,5 @@ public class PgsqlDatabase {
         }
     }
     
-    public static class Row {
 
-        private ResultSet rs;
-        private Map<String, Integer> columnMap = new HashMap<>();
-
-        public Row(ResultSet rs) throws SQLException {
-            this.rs = rs;
-            for (int i = 1; i < rs.getMetaData().getColumnCount() + 1; i++) {
-                String tableName = rs.getMetaData().getTableName(i);
-                String columnName = rs.getMetaData().getColumnName(i);
-
-                this.columnMap.put(tableName + "." + columnName, i);
-            }
-        }
-
-        public String getString(String string) throws SQLException {
-            return rs.getString(string);
-        }
-
-        public long getLong(String columnName) throws SQLException {
-            return rs.getLong(columnName);
-        }
-
-        public int getInt(String columnName) throws SQLException {
-            return rs.getInt(columnName);
-        }
-
-        public boolean getBoolean(String columnName) throws SQLException {
-            return rs.getBoolean(columnName);
-        }
-
-        public double getDouble(String columnLabel) throws SQLException {
-            return rs.getDouble(columnLabel);
-        }
-
-        public long getLong(String tableName, String columnName) throws SQLException {
-            return rs.getLong(getColumnIndex(tableName, columnName));
-        }
-
-        public String getString(String tableName, String columnName) throws SQLException {
-            return rs.getString(getColumnIndex(tableName, columnName));
-        }
-
-        public boolean getBoolean(String tableName, String columnName) throws SQLException {
-            return rs.getBoolean(getColumnIndex(tableName, columnName));
-        }
-
-        public double getDouble(String tableName, String columnName) throws SQLException {
-            return rs.getDouble(getColumnIndex(tableName, columnName));
-        }
-
-        private int getColumnIndex(String tableName, String columnName) {
-            return columnMap.get(tableName + "." + columnName);
-        }
-    }
-    
-    public interface ConnectionCallback<T> {
-        T run(Connection conn);
-    }
-
-    public interface StatementCallback<T> {
-        T run(PreparedStatement stmt) throws SQLException;
-    }
 }

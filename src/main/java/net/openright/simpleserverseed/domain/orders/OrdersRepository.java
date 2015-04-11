@@ -1,85 +1,47 @@
 package net.openright.simpleserverseed.domain.orders;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import net.openright.infrastructure.db.PgsqlDatabase;
 import net.openright.infrastructure.db.PgsqlDatabase.Row;
 import net.openright.infrastructure.rest.RequestException;
 import net.openright.simpleserverseed.domain.products.ProductRepository;
 
+import java.sql.SQLException;
+import java.util.List;
+
 class OrdersRepository {
 
-	private PgsqlDatabase database;
+	private final PgsqlDatabase database;
 
 	OrdersRepository(PgsqlDatabase database) {
 		this.database = database;
 	}
 
 	List<Order> list() {
-		String query = "select * from orders order by title";
-
-		return database.executeDbOperation(query, new Object[] { }, stmt -> {
-			try (ResultSet rs = stmt.executeQuery()) {
-				List<Order> result = new ArrayList<Order>();
-				while (rs.next()) {
-					Order order = toOrder(new Row(rs));
-					result.add(order);
-					
-				}
-				return result;
-			}
-		});
+		return database.queryForList("select * from orders order by title", this::toOrder);
 	}
 
 	Order retrieve(int id) {
-		String query = "select * from orders where id = ?";
-		Object[] parameters = new Object[] { id };
-
-		return database.executeDbOperation(query, parameters, stmt -> {
-			try (ResultSet rs = stmt.executeQuery()) {
-				if (!rs.next()) {
-					throw new RequestException(404, "Order " + id + " not found");
-				}
-				Order result = toOrder(new Row(rs));
-				result.setOrderLines(retrieveOrderLines(id));
-				if (rs.next()) {
-					throw new RuntimeException("Duplicate");
-				}
-				return result;
-			}
-		});
+		return database.queryForSingle("select * from orders where id = ?", (row) -> toOrderWithOrderLines(id, row), id)
+				.orElseThrow(() -> new RequestException(404, "Can't find object with id " + id));
 	}
 
-	List<OrderLine> retrieveOrderLines(int orderId) {
-		String query = "select * from order_lines INNER JOIN products on products.id = order_lines.product_id where order_id = ?";
-		Object[] parameters = new Object[] { orderId };
+	private Order toOrderWithOrderLines(int orderId, Row row) throws SQLException {
+		Order order = toOrder(row);
+		order.setOrderLines(queryForOrderLines(orderId));
+		return order;
+	}
 
-		return database.executeDbOperation(query, parameters, stmt -> {
-			List<OrderLine> lines = new ArrayList<OrderLine>();
-			try (ResultSet rs = stmt.executeQuery()) {
-				while (rs.next()) {
-					lines.add(toOrderLine(new Row(rs)));
-				}
-			}
-			return lines;
-		});
+	private List<OrderLine> queryForOrderLines(int orderId) {
+		return database.queryForList("select * from order_lines INNER JOIN products on products.id = order_lines.product_id where order_id = ?",
+				this::toOrderLine, orderId);
 	}
 
 	void insert(Order order) {
 		validateOrder(order);
 
-		String query = "insert into orders (title) values (?) returning id";
-		Object[] parameters = new Object[] { order.getTitle() };
-
 		database.doInTransaction(() -> {
-			order.setId(database.executeDbOperation(query, parameters, stmt -> {
-				ResultSet rs = stmt.executeQuery();
-				rs.next();
-				return rs.getInt("id");
-			}));
+			int orderId = database.executeInsert("insert into orders (title) values (?) returning id", order.getTitle());
+			order.setId(orderId);
 			insertOrderLines(order.getId(), order);
 		});
 	}
@@ -87,41 +49,25 @@ class OrdersRepository {
 	public void update(int orderId, Order order) {
 		validateOrder(order);
 		
-		String query = "update orders set title = ? where id = ?";
-		Object[] parameters = new Object[] { order.getTitle(), orderId };
-
 		database.doInTransaction(() -> {
-			
-			database.executeDbOperation(query, parameters, stmt -> {
-				stmt.executeUpdate();
-				return null;
-			});
-			
+			updateOrder(orderId, order);
 			deleteOrderLines(orderId);
 			insertOrderLines(orderId, order);
 		});
 	}
 
 	private void deleteOrderLines(int orderId) {
-		String query = "delete from order_lines where order_id = ?";
-		Object[] parameters = new Object[] { orderId };
-		
-		database.executeDbOperation(query, parameters, stmt -> {
-			stmt.execute();
-			return null;
-		});
+		database.executeUpdate("delete from order_lines where order_id = ?", orderId);
+	}
+
+	private void updateOrder(int orderId, Order order) {
+		database.executeUpdate("update orders set title = ? where id = ?", order.getTitle(), orderId);
 	}
 
 	private void insertOrderLines(int orderId, Order order) {
 		for (OrderLine orderLine : order.getOrderLines()) {
-
-			String query = "insert into order_lines (amount, product_id, title, order_id) values (?, ?, ?, ?) returning id";
-			Object[] parameters = new Object[] { orderLine.getAmount(), orderLine.getProductId(), orderLine.getTitle(), orderId };
-
-			database.executeDbOperation(query, parameters, stmt -> {
-				stmt.executeQuery();
-				return null;
-			});
+			database.executeUpdate("insert into order_lines (amount, product_id, title, order_id) values (?, ?, ?, ?)",
+					orderLine.getAmount(), orderLine.getProductId(), orderLine.getTitle(), orderId);
 		}
 	}
 

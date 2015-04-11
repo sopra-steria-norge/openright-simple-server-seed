@@ -1,76 +1,38 @@
 package net.openright.simpleserverseed.domain.products;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import net.openright.infrastructure.db.PgsqlDatabase;
 import net.openright.infrastructure.db.PgsqlDatabase.Row;
 import net.openright.infrastructure.rest.RequestException;
 
+import java.sql.SQLException;
+import java.util.List;
+
 public class ProductRepository {
 
-	private PgsqlDatabase db;
+	private final PgsqlDatabase db;
 
 	public ProductRepository(PgsqlDatabase database) {
 		db = database;
 	}
 
 	public void insert(Product product) {
-		String query = "insert into products (price, active, description, title) values (?,?,?,?) returning id";
-		Object[] parameters = new Object[] { product.getPrice(), product.isActive(), product.getDescription(),
-				product.getTitle() };
-
-		product.setId(db.executeDbOperation(query, parameters, stmt -> {
-			ResultSet rs = stmt.executeQuery();
-			rs.next();
-			return rs.getLong("id");
-		}));
+		product.setId(db.executeInsert("insert into products (price, active, description, title) values (?,?,?,?) returning id",
+				product.getPrice(), product.isActive(), product.getDescription(), product.getTitle()));
 	}
 
 	public Product retrieve(long id) {
-		String query = "select * from products where id = ?";
-		Object[] parameters = new Object[] { id };
-
-		return db.executeDbOperation(query, parameters, stmt -> {
-			try (ResultSet rs = stmt.executeQuery()) {
-				if (!rs.next()) {
-					throw new RequestException(404, "Order " + id + " not found");
-				}
-				Product result = toProduct(new Row(rs));
-				if (rs.next()) {
-					throw new RuntimeException("Duplicate");
-				}
-				return result;
-			}
-		});
+		return db.queryForSingle("select * from products where id = ?", ProductRepository::toProduct, id)
+				.orElseThrow(() -> new RequestException(404, "Order " + id + " not found"));
 	}
 
 	public List<Product> list() {
-		String query = "select * from products where active = ? order by title";
-		Object[] parameters = new Object[] { true };
-
-		return db.executeDbOperation(query, parameters, stmt -> {
-			try (ResultSet rs = stmt.executeQuery()) {
-				List<Product> result = new ArrayList<Product>();
-				while (rs.next()) {
-					result.add(toProduct(new Row(rs)));
-				}
-				return result;
-			}
-		});
+		return db.queryForList("select * from products where active = ? order by title",
+				ProductRepository::toProduct, true);
 	}
 
 	public void update(Long id, Product product) {
-		String query = "update products set price = ?, active = ?, description = ?, title = ? where id = ?";
-		Object[] parameters = new Object[] { product.getPrice(), product.isActive(), product.getDescription(),
-				product.getTitle(), id };
-
-		db.executeDbOperation(query, parameters, stmt -> {
-			stmt.executeUpdate();
-			return null;
-		});
+		db.executeUpdate("update products set price = ?, active = ?, description = ?, title = ? where id = ?",
+				product.getPrice(), product.isActive(), product.getDescription(), product.getTitle(), id);
 	}
 
 	public static Product toProduct(Row rs) throws SQLException {
