@@ -18,14 +18,6 @@ public class PgsqlDatabase {
 
     private static final Logger log = LoggerFactory.getLogger(PgsqlDatabase.class);
 
-    public int executeInsert(String query, Object... parameters) {
-        return executeDbOperation(query, Arrays.asList(parameters), stmt -> {
-            ResultSet rs = stmt.executeQuery();
-            rs.next();
-            return rs.getInt("id");
-        });
-    }
-
     public interface ConnectionCallback<T> {
         T run(Connection conn);
     }
@@ -97,12 +89,19 @@ public class PgsqlDatabase {
             throw ExceptionUtil.soften(e);
         }
     }
+    
+    public int executeInsert(String query, Object... parameters) {
+        return executeDbOperation(query, Arrays.asList(parameters), stmt -> {
+            ResultSet rs = stmt.executeQuery();
+            rs.next();
+            return rs.getInt("id");
+        });
+    }
 
     public void executeUpdate(String query, Object... parameters) {
         executeDbOperation(query, Arrays.asList(parameters), PreparedStatement::executeUpdate);
     }
-
-
+    
     public <T> T executeDbOperation(String query, Collection<Object> parameters, StatementCallback<T> statementCallback) {
         return doWithConnection(conn -> {
             log.info("Executing: {} with params {}", query, parameters);
@@ -184,6 +183,4 @@ public class PgsqlDatabase {
             throw ExceptionUtil.soften(e);
         }
     }
-    
-
 }
