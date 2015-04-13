@@ -1,7 +1,7 @@
 package net.openright.simpleserverseed.domain.orders;
 
-import net.openright.infrastructure.db.PgsqlDatabase;
-import net.openright.infrastructure.db.PgsqlDatabase.Row;
+import net.openright.infrastructure.db.Database;
+import net.openright.infrastructure.db.Database.Row;
 import net.openright.infrastructure.rest.RequestException;
 import net.openright.simpleserverseed.domain.products.ProductRepository;
 
@@ -10,9 +10,9 @@ import java.util.List;
 
 class OrdersRepository {
 
-	private final PgsqlDatabase database;
+	private final Database database;
 
-	OrdersRepository(PgsqlDatabase database) {
+	OrdersRepository(Database database) {
 		this.database = database;
 	}
 

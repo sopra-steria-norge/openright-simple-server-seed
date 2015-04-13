@@ -13,9 +13,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-public class PgsqlDatabase {
+public class Database {
 
-	private static final Logger log = LoggerFactory.getLogger(PgsqlDatabase.class);
+	private static final Logger log = LoggerFactory.getLogger(Database.class);
 
 	public interface ConnectionCallback<T> {
 		T run(Connection conn);
@@ -76,11 +76,11 @@ public class PgsqlDatabase {
 	private final DataSource dataSource;
 	private final static ThreadLocal<Connection> threadConnection = new ThreadLocal<>();
 
-	public PgsqlDatabase(DataSource dataSource) {
+	public Database(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
 
-	public PgsqlDatabase(String name) {
+	public Database(String name) {
 		try {
 			this.dataSource = (DataSource) new InitialContext().lookup(name);
 		} catch (NamingException e) {
@@ -92,7 +92,7 @@ public class PgsqlDatabase {
 	 * Insert an object into the database. Used for create operations.
 	 * 
 	 * @param query
-	 *            in SQL in PostgreSQL dialect stated as a prepared statement.
+	 *            in SQL stated as a prepared statement.
 	 * @param parameters
 	 *            values for the prepared statement.
 	 * @return the database field id from the inserted element.
