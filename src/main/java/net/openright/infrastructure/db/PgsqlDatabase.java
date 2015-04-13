@@ -88,7 +88,7 @@ public class PgsqlDatabase {
         }
     }
     
-    public int executeInsert(String query, Object... parameters) {
+    public int insert(String query, Object... parameters) {
         return executeDbOperation(query, Arrays.asList(parameters), stmt -> {
             ResultSet rs = stmt.executeQuery();
             rs.next();
@@ -96,33 +96,8 @@ public class PgsqlDatabase {
         });
     }
 
-    public void executeUpdate(String query, Object... parameters) {
-        executeDbOperation(query, Arrays.asList(parameters), PreparedStatement::executeUpdate);
-    }
-    
-    public <T> T executeDbOperation(String query, Collection<Object> parameters, StatementCallback<T> statementCallback) {
-        return doWithConnection(conn -> {
-            log.info("Executing: {} with params {}", query, parameters);
-            try (PreparedStatement prepareStatement = conn.prepareStatement(query)) {
-                int index = 1;
-                for (Object object : parameters) {
-                    prepareStatement.setObject(index++, object);
-                }
-
-                return statementCallback.run(prepareStatement);
-            } catch (SQLException e) {
-                throw ExceptionUtil.soften(e);
-            }
-        });
-
-    }
-
     public <T> List<T> queryForList(String query, RowMapper<T> mapper, Object... params) {
-        return queryForList(query, Arrays.asList(params), mapper);
-    }
-
-    public <T> List<T> queryForList(String query, Collection<Object> parameters, RowMapper<T> mapper) {
-        return executeDbOperation(query, parameters, stmt -> {
+    	return executeDbOperation(query, Arrays.asList(params), stmt -> {
             try (ResultSet rs = stmt.executeQuery()) {
                 Row row = new Row(rs);
                 List<T> result = new ArrayList<>();
@@ -135,26 +110,15 @@ public class PgsqlDatabase {
     }
 
     public <T> Optional<T> queryForSingle(String query, RowMapper<T> mapper, Object... parameters) {
-        return queryForSingle(query, Arrays.asList(parameters), mapper);
-    }
-
-    private <T> Optional<T> queryForSingle(String query, Collection<Object> parameters, RowMapper<T> mapper) {
-        return executeDbOperation(query, parameters, stmt -> {
+    	return executeDbOperation(query, Arrays.asList(parameters), stmt -> {
             try (ResultSet rs = stmt.executeQuery()) {
                 return mapSingleRow(rs, mapper);
             }
         });
     }
 
-    private <T> Optional<T> mapSingleRow(ResultSet rs, RowMapper<T> mapper) throws SQLException {
-        if (!rs.next()) {
-            return Optional.empty();
-        }
-        T result = mapper.run(new Row(rs));
-        if (rs.next()) {
-            throw new RuntimeException("Duplicate");
-        }
-        return Optional.of(result);
+    public void executeOperation(String query, Object... parameters) {
+        executeDbOperation(query, Arrays.asList(parameters), PreparedStatement::executeUpdate);
     }
 
     public void doInTransaction(Runnable operation) {
@@ -180,5 +144,32 @@ public class PgsqlDatabase {
         } catch (SQLException e) {
             throw ExceptionUtil.soften(e);
         }
+    }
+    
+    private <T> T executeDbOperation(String query, Collection<Object> parameters, StatementCallback<T> statementCallback) {
+        return doWithConnection(conn -> {
+            log.info("Executing: {} with params {}", query, parameters);
+            try (PreparedStatement prepareStatement = conn.prepareStatement(query)) {
+                int index = 1;
+                for (Object object : parameters) {
+                    prepareStatement.setObject(index++, object);
+                }
+
+                return statementCallback.run(prepareStatement);
+            } catch (SQLException e) {
+                throw ExceptionUtil.soften(e);
+            }
+        });
+    }
+    
+    private <T> Optional<T> mapSingleRow(ResultSet rs, RowMapper<T> mapper) throws SQLException {
+        if (!rs.next()) {
+            return Optional.empty();
+        }
+        T result = mapper.run(new Row(rs));
+        if (rs.next()) {
+            throw new RuntimeException("Duplicate");
+        }
+        return Optional.of(result);
     }
 }

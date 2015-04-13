@@ -16,7 +16,7 @@ public class ProductRepository {
 	}
 
 	public void insert(Product product) {
-		product.setId(db.executeInsert("insert into products (price, active, description, title) values (?,?,?,?) returning id",
+		product.setId(db.insert("insert into products (price, active, description, title) values (?,?,?,?) returning id",
 				product.getPrice(), product.isActive(), product.getDescription(), product.getTitle()));
 	}
 
@@ -31,7 +31,7 @@ public class ProductRepository {
 	}
 
 	public void update(Long id, Product product) {
-		db.executeUpdate("update products set price = ?, active = ?, description = ?, title = ? where id = ?",
+		db.executeOperation("update products set price = ?, active = ?, description = ?, title = ? where id = ?",
 				product.getPrice(), product.isActive(), product.getDescription(), product.getTitle(), id);
 	}
 

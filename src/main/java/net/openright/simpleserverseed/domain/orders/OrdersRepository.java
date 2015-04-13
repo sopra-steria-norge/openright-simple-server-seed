@@ -40,7 +40,7 @@ class OrdersRepository {
 		validateOrder(order);
 
 		database.doInTransaction(() -> {
-			int orderId = database.executeInsert("insert into orders (title) values (?) returning id", order.getTitle());
+			int orderId = database.insert("insert into orders (title) values (?) returning id", order.getTitle());
 			order.setId(orderId);
 			insertOrderLines(order.getId(), order);
 		});
@@ -57,16 +57,16 @@ class OrdersRepository {
 	}
 
 	private void deleteOrderLines(int orderId) {
-		database.executeUpdate("delete from order_lines where order_id = ?", orderId);
+		database.executeOperation("delete from order_lines where order_id = ?", orderId);
 	}
 
 	private void updateOrder(int orderId, Order order) {
-		database.executeUpdate("update orders set title = ? where id = ?", order.getTitle(), orderId);
+		database.executeOperation("update orders set title = ? where id = ?", order.getTitle(), orderId);
 	}
 
 	private void insertOrderLines(int orderId, Order order) {
 		for (OrderLine orderLine : order.getOrderLines()) {
-			database.executeUpdate("insert into order_lines (amount, product_id, title, order_id) values (?, ?, ?, ?)",
+			database.executeOperation("insert into order_lines (amount, product_id, title, order_id) values (?, ?, ?, ?)",
 					orderLine.getAmount(), orderLine.getProductId(), orderLine.getTitle(), orderId);
 		}
 	}
