@@ -17,14 +17,6 @@ public class Database {
 
 	private static final Logger log = LoggerFactory.getLogger(Database.class);
 
-	public interface ConnectionCallback<T> {
-		T run(Connection conn);
-	}
-
-	public interface StatementCallback<T> {
-		T run(PreparedStatement stmt) throws SQLException;
-	}
-
 	public interface RowMapper<T> {
 		T run(Row row) throws SQLException;
 	}
@@ -182,6 +174,10 @@ public class Database {
 			throw ExceptionUtil.soften(e);
 		}
 	}
+	
+	private interface ConnectionCallback<T> {
+		T run(Connection conn);
+	}
 
 	private <T> T doWithConnection(ConnectionCallback<T> object) {
 		if (threadConnection.get() != null) {
@@ -195,6 +191,10 @@ public class Database {
 		}
 	}
 
+	private interface StatementCallback<T> {
+		T run(PreparedStatement stmt) throws SQLException;
+	}
+	
 	private <T> T executeDbOperation(String query, Collection<Object> parameters, StatementCallback<T> statementCallback) {
 		return doWithConnection(conn -> {
 			log.info("Executing: {} with params {}", query, parameters);
