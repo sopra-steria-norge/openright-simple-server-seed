@@ -30,6 +30,7 @@ public class JsonPostController implements PostController {
 	        } else {
 	            jsonController.postJSON(jsonObject);
 	        }
+	        log.info("POST body: {}", jsonObject.toString());
 			resp.sendError(200);
 		} catch (RequestException e) {
 			log.warn("Invalid request {}: {}", req.getRequestURL(), e.toString());
