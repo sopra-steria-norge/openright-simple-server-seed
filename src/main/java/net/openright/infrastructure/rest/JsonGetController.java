@@ -26,7 +26,7 @@ public class JsonGetController implements GetController {
 
 		try {
 			JSONObject json = parts.length > 2 ? jsonController.getJSON(parts[2]) : jsonController.listJSON(req);
-			log.info("HTTP response body: {}", json);
+			log.info("JSON response: {}", json);
 			sendResponse(resp, json);
 		} catch (RequestException e) {
 			log.warn("Invalid request {}: {}", req.getRequestURL(), e.toString());
@@ -47,5 +47,4 @@ public class JsonGetController implements GetController {
 			writer.write(response.toString());
 		}
 	}
-
 }

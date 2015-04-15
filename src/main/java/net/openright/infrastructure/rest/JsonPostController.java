@@ -25,7 +25,7 @@ public class JsonPostController implements PostController {
 
 		try (BufferedReader reader = req.getReader()) {
 			JSONObject jsonObject = new JSONObject(new JSONTokener(reader));
-			log.info("POST body: {}", jsonObject.toString());
+			log.info("JSON request {}", jsonObject.toString());
 	        if (parts.length > 2) {
 	            jsonController.putJSON(parts[2], jsonObject);
 	        } else {
@@ -40,5 +40,4 @@ public class JsonPostController implements PostController {
 			resp.sendError(500, e.toString());
 		}
 	}
-
 }
