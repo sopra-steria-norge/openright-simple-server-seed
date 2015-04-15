@@ -25,12 +25,12 @@ public class JsonPostController implements PostController {
 
 		try (BufferedReader reader = req.getReader()) {
 			JSONObject jsonObject = new JSONObject(new JSONTokener(reader));
+			log.info("POST body: {}", jsonObject.toString());
 	        if (parts.length > 2) {
 	            jsonController.putJSON(parts[2], jsonObject);
 	        } else {
 	            jsonController.postJSON(jsonObject);
 	        }
-	        log.info("POST body: {}", jsonObject.toString());
 			resp.sendError(200);
 		} catch (RequestException e) {
 			log.warn("Invalid request {}: {}", req.getRequestURL(), e.toString());
