@@ -21,19 +21,9 @@ class OrdersRepository {
 	}
 
 	Order retrieve(int id) {
-		return database.queryForSingle("select * from orders where id = ?", (row) -> toOrderWithOrderLines(id, row), id)
+		return database
+				.queryForSingle("select * from orders where id = ?", (row) -> toOrderWithOrderLines(id, row), id)
 				.orElseThrow(() -> new RequestException(404, "Can't find object with id " + id));
-	}
-
-	private Order toOrderWithOrderLines(int orderId, Row row) throws SQLException {
-		Order order = toOrder(row);
-		order.setOrderLines(queryForOrderLines(orderId));
-		return order;
-	}
-
-	private List<OrderLine> queryForOrderLines(int orderId) {
-		return database.queryForList("select * from order_lines INNER JOIN products on products.id = order_lines.product_id where order_id = ?",
-				this::toOrderLine, orderId);
 	}
 
 	void insert(Order order) {
@@ -46,38 +36,14 @@ class OrdersRepository {
 		});
 	}
 
-	public void update(int orderId, Order order) {
+	void update(int orderId, Order order) {
 		validateOrder(order);
-		
+
 		database.doInTransaction(() -> {
 			updateOrder(orderId, order);
 			deleteOrderLines(orderId);
 			insertOrderLines(orderId, order);
 		});
-	}
-
-	private void deleteOrderLines(int orderId) {
-		database.executeOperation("delete from order_lines where order_id = ?", orderId);
-	}
-
-	private void updateOrder(int orderId, Order order) {
-		database.executeOperation("update orders set title = ? where id = ?", order.getTitle(), orderId);
-	}
-
-	private void insertOrderLines(int orderId, Order order) {
-		for (OrderLine orderLine : order.getOrderLines()) {
-			database.executeOperation("insert into order_lines (amount, product_id, title, order_id) values (?, ?, ?, ?)",
-					orderLine.getAmount(), orderLine.getProductId(), orderLine.getTitle(), orderId);
-		}
-	}
-
-	private void validateOrder(Order order) {
-		if (order.getTitle().equals("null")) {
-			throw new RuntimeException("Null title is invalid");
-		}
-		if (order.getTitle().contains("foul")) {
-			throw new RequestException("No foul language in orders, please!");
-		}
 	}
 
 	private Order toOrder(Row row) throws SQLException {
@@ -91,5 +57,43 @@ class OrdersRepository {
 		orderLine.setProduct(ProductRepository.toProduct(row));
 		orderLine.setAmount(row.getInt("amount"));
 		return orderLine;
+	}
+
+	private Order toOrderWithOrderLines(int orderId, Row row) throws SQLException {
+		Order order = toOrder(row);
+		order.setOrderLines(queryForOrderLines(orderId));
+		return order;
+	}
+
+	private List<OrderLine> queryForOrderLines(int orderId) {
+		return database
+				.queryForList(
+						"select * from order_lines INNER JOIN products on products.id = order_lines.product_id where order_id = ?",
+						this::toOrderLine, orderId);
+	}
+
+	private void deleteOrderLines(int orderId) {
+		database.executeOperation("delete from order_lines where order_id = ?", orderId);
+	}
+
+	private void updateOrder(int orderId, Order order) {
+		database.executeOperation("update orders set title = ? where id = ?", order.getTitle(), orderId);
+	}
+
+	private void insertOrderLines(int orderId, Order order) {
+		for (OrderLine orderLine : order.getOrderLines()) {
+			database.executeOperation(
+					"insert into order_lines (amount, product_id, title, order_id) values (?, ?, ?, ?)",
+					orderLine.getAmount(), orderLine.getProductId(), orderLine.getTitle(), orderId);
+		}
+	}
+
+	private void validateOrder(Order order) {
+		if (order.getTitle().equals("null")) {
+			throw new RuntimeException("Null title is invalid");
+		}
+		if (order.getTitle().contains("foul")) {
+			throw new RequestException("No foul language in orders, please!");
+		}
 	}
 }
