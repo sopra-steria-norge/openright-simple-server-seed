@@ -117,7 +117,6 @@ public class PgsqlDatabase {
                 throw ExceptionUtil.soften(e);
             }
         });
-
     }
 
     public <T> List<T> queryForList(String query, RowMapper<T> mapper, Object... params) {
@@ -138,11 +137,7 @@ public class PgsqlDatabase {
     }
 
     public <T> Optional<T> queryForSingle(String query, RowMapper<T> mapper, Object... parameters) {
-        return queryForSingle(query, Arrays.asList(parameters), mapper);
-    }
-
-    private <T> Optional<T> queryForSingle(String query, Collection<Object> parameters, RowMapper<T> mapper) {
-        return executeDbOperation(query, parameters, stmt -> {
+        return executeDbOperation(query, Arrays.asList(parameters), stmt -> {
             try (ResultSet rs = stmt.executeQuery()) {
                 return mapSingleRow(rs, mapper);
             }

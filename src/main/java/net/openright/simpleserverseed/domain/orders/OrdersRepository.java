@@ -7,6 +7,7 @@ import net.openright.simpleserverseed.domain.products.ProductRepository;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.function.Supplier;
 
 class OrdersRepository {
 
@@ -21,14 +22,19 @@ class OrdersRepository {
 	}
 
 	Order retrieve(int id) {
-		return database.queryForSingle("select * from orders where id = ?", (row) -> toOrderWithOrderLines(id, row), id)
-				.orElseThrow(() -> new RequestException(404, "Can't find object with id " + id));
+		return database.queryForSingle("select * from orders where id = ?",
+					row -> toOrderWithLines(id, row),
+					id)
+				.orElseThrow(notFound(getClass(), id));
 	}
 
-	private Order toOrderWithOrderLines(int orderId, Row row) throws SQLException {
-		Order order = toOrder(row);
-		order.setOrderLines(queryForOrderLines(orderId));
-		return order;
+	private Order toOrderWithLines(int id, Row row) throws SQLException {
+		return toOrder(row).withOrderLines(queryForOrderLines(id));
+	}
+
+	private Supplier<RequestException> notFound(Class<?> clazz, int id) {
+		String className = clazz.getName();
+		return () -> new RequestException(404, "Can't find " + className + " with id " + id);
 	}
 
 	private List<OrderLine> queryForOrderLines(int orderId) {

@@ -22,8 +22,9 @@ class Order {
         return orderLines.stream().map(line -> line.getPrice()).reduce(0.0, (a,b) -> a+b);
     }
 
-    void setOrderLines(List<OrderLine> orderLines) {
+    Order withOrderLines(List<OrderLine> orderLines) {
         this.orderLines = orderLines;
+        return this;
     }
 
     void setId(int id) {

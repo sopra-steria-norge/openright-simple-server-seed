@@ -1,19 +1,18 @@
 package net.openright.simpleserverseed.application;
 
-import java.io.File;
-import java.net.URI;
-
 import net.openright.infrastructure.server.EmbeddedWebAppContext;
 import net.openright.infrastructure.server.ServerUtil;
 import net.openright.infrastructure.server.StatusHandler;
 import net.openright.infrastructure.util.IOUtil;
 import net.openright.infrastructure.util.LogUtil;
-
 import org.eclipse.jetty.plus.jndi.EnvEntry;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ShutdownHandler;
+
+import java.io.File;
+import java.net.URI;
 
 public class SeedAppServer {
 	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SeedAppServer.class);

@@ -1,8 +1,8 @@
 package net.openright.simpleserverseed.application;
 
-import javax.sql.DataSource;
-
 import org.openqa.selenium.WebDriver;
+
+import javax.sql.DataSource;
 
 public class SimpleseedTestConfig extends SeedAppConfigFile {
 
@@ -17,7 +17,7 @@ public class SimpleseedTestConfig extends SeedAppConfigFile {
 
     public String getWebDriverName() {
         String webdriverClass = WebDriver.class.getName();
-        return System.getProperty(webdriverClass, getProperty(webdriverClass, "org.openqa.selenium.firefox.FirefoxDriver"));
+        return System.getProperty(webdriverClass, getProperty(webdriverClass, "org.openqa.selenium.chrome.ChromeDriver"));
     }
 
 }

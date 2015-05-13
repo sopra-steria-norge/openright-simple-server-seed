@@ -1,19 +1,19 @@
 package net.openright.infrastructure.config;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Dictionary;
-import java.util.Properties;
-
-import javax.sql.DataSource;
-
+import com.zaxxer.hikari.HikariDataSource;
 import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
-import com.zaxxer.hikari.HikariDataSource;
+import javax.sql.DataSource;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Dictionary;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public abstract class AppConfigFile {
@@ -37,18 +37,40 @@ public abstract class AppConfigFile {
         return properties;
     }
 
+    protected DataSource createDataSourceFromEnv(String databaseUrl) {
+        Pattern pattern = Pattern.compile("^([^:]+)://([^:]+):([^@]+)@(([-a-z0-9.]+):(\\d+)/(\\w+))$");
+        Matcher matcher1 = pattern.matcher(databaseUrl);
+        if (!matcher1.matches()) {
+            throw new RuntimeException("Unexpected database URL " + databaseUrl);
+        }
+        Matcher matcher = matcher1;
+
+        HikariDataSource dataSource = new HikariDataSource();
+        if (matcher.group(1).equals("postgres")) {
+            dataSource.setJdbcUrl("jdbc:postgresql://" + matcher.group(4));
+        } else {
+            throw new RuntimeException("Unexpected database type " + databaseUrl);
+        }
+        dataSource.setUsername(matcher.group(2));
+        dataSource.setPassword(matcher.group(3));
+        return dataSource;
+    }
+
 	protected DataSource createDataSource(String prefix) {
 		DataSource dataSource = createDataSource(prefix, prefix);
-
-		Flyway flyway = new Flyway();
-		flyway.setDataSource(dataSource);
-		flyway.setLocations("classpath:db/" + prefix);
-		flyway.migrate();
-
-		return dataSource;
+        return migrateDataSource(prefix, dataSource);
 	}
 
-	protected DataSource createTestDataSource(String prefix) {
+    protected DataSource migrateDataSource(String prefix, DataSource dataSource) {
+        Flyway flyway = new Flyway();
+        flyway.setDataSource(dataSource);
+        flyway.setLocations("classpath:db/" + prefix);
+        flyway.migrate();
+
+        return dataSource;
+    }
+
+    protected DataSource createTestDataSource(String prefix) {
 		DataSource dataSource = createDataSource(prefix, prefix + "_test");
 
 		Flyway flyway = new Flyway();
