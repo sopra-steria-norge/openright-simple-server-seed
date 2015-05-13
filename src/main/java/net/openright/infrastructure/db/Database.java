@@ -124,22 +124,31 @@ public class Database {
 
 	/**
 	 * Retrieves a single result from the database and maps it to an objec.
-	 * 
+	 *
 	 * @param query
 	 *            in SQL stated as a prepared statement.
-	 * @param mapper
-	 *            definition for mapping fields to the returned object.
 	 * @param parameters
 	 *            for the prepared statement.
+	 * @param mapper
+	 *            definition for mapping fields to the returned object.
 	 * @return database result mapped to class.
 	 */
-	public <T> Optional<T> queryForSingle(String query, RowMapper<T> mapper, Object... parameters) {
-		return executeDbOperation(query, Arrays.asList(parameters), stmt -> {
+	private <T> Optional<T> queryForSingle(String query, Collection<Object> parameters, RowMapper<T> mapper) {
+		return executeDbOperation(query, parameters, stmt -> {
 			try (ResultSet rs = stmt.executeQuery()) {
 				return mapSingleRow(rs, mapper);
 			}
 		});
 	}
+
+	public <T> Optional<T> queryForSingle(String query, String parameter, RowMapper<T> mapper) {
+		return queryForSingle(query, Collections.singletonList(parameter), mapper);
+	}
+
+	public <T> Optional<T> queryForSingle(String query, long parameter, RowMapper<T> mapper) {
+		return queryForSingle(query, Collections.singletonList(parameter), mapper);
+	}
+
 
 	/**
 	 * Update or delete operation sent to the database.

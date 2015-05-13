@@ -21,7 +21,7 @@ public class ProductRepository {
 	}
 
 	public Product retrieve(long id) {
-		return db.queryForSingle("select * from products where id = ?", ProductRepository::toProduct, id)
+		return db.queryForSingle("select * from products where id = ?", id, ProductRepository::toProduct)
 				.orElseThrow(() -> new RequestException(404, "Order " + id + " not found"));
 	}
 
