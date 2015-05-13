@@ -5,7 +5,7 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 
-import net.openright.infrastructure.db.PgsqlDatabase;
+import net.openright.infrastructure.db.Database;
 import net.openright.infrastructure.rest.GetController;
 import net.openright.infrastructure.rest.JsonGetController;
 import net.openright.infrastructure.rest.JsonPostController;
@@ -23,7 +23,7 @@ public class SeedAppFrontServlet extends RestApiFrontController {
 
     @Override
     public void init() throws ServletException {
-        PgsqlDatabase database = new PgsqlDatabase("jdbc/seedappDs");
+        Database database = new Database("jdbc/seedappDs");
         ordersController = new OrdersApiController(database);
         productsController = new ProductsApiController(database);
     }

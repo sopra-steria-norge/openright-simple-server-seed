@@ -1,7 +1,7 @@
 package net.openright.simpleserverseed.domain.products;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import net.openright.infrastructure.db.PgsqlDatabase;
+import net.openright.infrastructure.db.Database;
 import net.openright.infrastructure.test.SampleData;
 import net.openright.simpleserverseed.application.SeedAppConfig;
 import net.openright.simpleserverseed.application.SimpleseedTestConfig;
@@ -11,7 +11,7 @@ import org.junit.Test;
 public class ProductRepositoryTest {
 
     private SeedAppConfig config = new SimpleseedTestConfig();
-    private PgsqlDatabase database = new PgsqlDatabase(config.createDataSource());
+    private Database database = new Database(config.createDataSource());
     private ProductRepository repository = new ProductRepository(database);
 
     @Test

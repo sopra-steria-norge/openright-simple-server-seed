@@ -7,13 +7,12 @@ import net.openright.simpleserverseed.domain.products.ProductRepository;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.function.Supplier;
 
 class OrdersRepository {
 
-	private final PgsqlDatabase database;
+	private final Database database;
 
-	OrdersRepository(PgsqlDatabase database) {
+	OrdersRepository(Database database) {
 		this.database = database;
 	}
 
@@ -60,6 +59,32 @@ class OrdersRepository {
 			deleteOrderLines(orderId);
 			insertOrderLines(orderId, order);
 		});
+	}
+
+	private Order toOrder(Row row) throws SQLException {
+		Order order = new Order(row.getString("title"));
+		order.setId(row.getInt("id"));
+		return order;
+	}
+
+	private OrderLine toOrderLine(Row row) throws SQLException {
+		OrderLine orderLine = new OrderLine(row.getString("title"));
+		orderLine.setProduct(ProductRepository.toProduct(row));
+		orderLine.setAmount(row.getInt("amount"));
+		return orderLine;
+	}
+
+	private Order toOrderWithOrderLines(int orderId, Row row) throws SQLException {
+		Order order = toOrder(row);
+		order.setOrderLines(queryForOrderLines(orderId));
+		return order;
+	}
+
+	private List<OrderLine> queryForOrderLines(int orderId) {
+		return database
+				.queryForList(
+						"select * from order_lines INNER JOIN products on products.id = order_lines.product_id where order_id = ?",
+						this::toOrderLine, orderId);
 	}
 
 	private void deleteOrderLines(int orderId) {

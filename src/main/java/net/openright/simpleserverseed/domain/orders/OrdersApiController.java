@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.openright.infrastructure.db.PgsqlDatabase;
+import net.openright.infrastructure.db.Database;
 import net.openright.infrastructure.rest.JsonController;
 
 import org.json.JSONArray;
@@ -16,7 +16,7 @@ public class OrdersApiController implements JsonController {
 
     private OrdersRepository repository;
 
-    public OrdersApiController(PgsqlDatabase database) {
+    public OrdersApiController(Database database) {
         this.repository = new OrdersRepository(database);
     }
 

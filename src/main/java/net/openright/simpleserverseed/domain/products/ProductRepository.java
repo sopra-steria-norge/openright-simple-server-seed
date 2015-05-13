@@ -1,7 +1,7 @@
 package net.openright.simpleserverseed.domain.products;
 
-import net.openright.infrastructure.db.PgsqlDatabase;
-import net.openright.infrastructure.db.PgsqlDatabase.Row;
+import net.openright.infrastructure.db.Database;
+import net.openright.infrastructure.db.Database.Row;
 import net.openright.infrastructure.rest.RequestException;
 
 import java.sql.SQLException;
@@ -9,14 +9,14 @@ import java.util.List;
 
 public class ProductRepository {
 
-	private final PgsqlDatabase db;
+	private final Database db;
 
-	public ProductRepository(PgsqlDatabase database) {
+	public ProductRepository(Database database) {
 		db = database;
 	}
 
 	public void insert(Product product) {
-		product.setId(db.executeInsert("insert into products (price, active, description, title) values (?,?,?,?) returning id",
+		product.setId(db.insert("insert into products (price, active, description, title) values (?,?,?,?) returning id",
 				product.getPrice(), product.isActive(), product.getDescription(), product.getTitle()));
 	}
 
@@ -31,7 +31,7 @@ public class ProductRepository {
 	}
 
 	public void update(Long id, Product product) {
-		db.executeUpdate("update products set price = ?, active = ?, description = ?, title = ? where id = ?",
+		db.executeOperation("update products set price = ?, active = ?, description = ?, title = ? where id = ?",
 				product.getPrice(), product.isActive(), product.getDescription(), product.getTitle(), id);
 	}
 

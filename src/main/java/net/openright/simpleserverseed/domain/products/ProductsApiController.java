@@ -9,14 +9,14 @@ import javax.servlet.http.HttpServletRequest;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import net.openright.infrastructure.db.PgsqlDatabase;
+import net.openright.infrastructure.db.Database;
 import net.openright.infrastructure.rest.JsonController;
 
 public class ProductsApiController implements JsonController {
 
     private ProductRepository repository;
 
-    public ProductsApiController(PgsqlDatabase database) {
+    public ProductsApiController(Database database) {
         this.repository = new ProductRepository(database);
     }
 

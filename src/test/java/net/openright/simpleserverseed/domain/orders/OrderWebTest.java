@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import net.openright.infrastructure.db.PgsqlDatabase;
+import net.openright.infrastructure.db.Database;
 import net.openright.infrastructure.test.WebTestUtil;
 import net.openright.simpleserverseed.application.SeedAppServer;
 import net.openright.simpleserverseed.application.SimpleseedTestConfig;
@@ -29,7 +29,7 @@ public class OrderWebTest {
     private static SeedAppServer server = new SeedAppServer(config);
     private static WebDriver browser;
     private static WebDriverWait wait;
-    private PgsqlDatabase database = new PgsqlDatabase("jdbc/seedappDs");
+    private Database database = new Database("jdbc/seedappDs");
     private OrdersRepository orderRepository = new OrdersRepository(database);
     private ProductRepository productRepository = new ProductRepository(database);
 

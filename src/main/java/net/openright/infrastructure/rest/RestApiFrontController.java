@@ -39,8 +39,9 @@ public abstract class RestApiFrontController extends HttpServlet {
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-	    log.info("{} {}", req.getMethod(), req.getRequestURL());
+	    log.info("{} {} {}",req.getProtocol(), req.getMethod(), req.getRequestURL());
 		super.service(req, resp);
+		log.info("{} {}",req.getProtocol(), resp.getStatus());
 	}
 
 	@Override
