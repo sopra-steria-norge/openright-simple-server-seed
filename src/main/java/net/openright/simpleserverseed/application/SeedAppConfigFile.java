@@ -13,7 +13,7 @@ public class SeedAppConfigFile extends AppConfigFile implements SeedAppConfig {
 	@Override
 	public DataSource createDataSource() {
 		if (System.getenv("DATABASE_URL") != null) {
-			return migrateDataSource("parental", createDataSourceFromEnv(System.getenv("DATABASE_URL")));
+			return migrateDataSource("seed", createDataSourceFromEnv(System.getenv("DATABASE_URL")));
 		}
 		return createDataSource("seed");
 	}
