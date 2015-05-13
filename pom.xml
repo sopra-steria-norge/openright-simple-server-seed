@@ -111,7 +111,7 @@
               <transformers>
                 <transformer
                   implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>net.openright.simpleserverseed.application.ApplicationServer
+                  <mainClass>net.openright.simpleserverseed.application.SeedAppServer
                   </mainClass>
                 </transformer>
                 <transformer
