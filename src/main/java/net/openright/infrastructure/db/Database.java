@@ -11,6 +11,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.*;
 
 public class Database {
@@ -42,6 +44,11 @@ public class Database {
 
 		public int getInt(String columnName) throws SQLException {
 			return rs.getInt(columnName);
+		}
+
+		public Instant getInstant(String columnName) throws SQLException {
+			Timestamp timestamp = rs.getTimestamp(columnName);
+			return timestamp != null ? timestamp.toInstant() : null;
 		}
 
 		public long getLong(String tableName, String columnName) throws SQLException {
