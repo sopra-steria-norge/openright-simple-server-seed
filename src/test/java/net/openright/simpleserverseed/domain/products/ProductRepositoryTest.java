@@ -1,18 +1,16 @@
 package net.openright.simpleserverseed.domain.products;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import net.openright.infrastructure.db.Database;
 import net.openright.infrastructure.test.SampleData;
 import net.openright.simpleserverseed.application.SeedAppConfig;
 import net.openright.simpleserverseed.application.SimpleseedTestConfig;
-
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProductRepositoryTest {
 
-    private SeedAppConfig config = new SimpleseedTestConfig();
-    private Database database = new Database(config.createDataSource());
-    private ProductRepository repository = new ProductRepository(database);
+    private SeedAppConfig config = SimpleseedTestConfig.instance();
+    private ProductRepository repository = new ProductRepository(config);
 
     @Test
     public void shouldRetrieveSavedProduct() throws Exception {

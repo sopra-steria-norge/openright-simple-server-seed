@@ -2,6 +2,7 @@ package net.openright.simpleserverseed.domain.orders;
 
 import net.openright.infrastructure.db.Database;
 import net.openright.infrastructure.rest.RequestException;
+import net.openright.simpleserverseed.application.SeedAppConfig;
 import net.openright.simpleserverseed.domain.products.ProductRepository;
 
 import java.sql.SQLException;
@@ -12,8 +13,8 @@ class OrdersRepository {
 
 	private final Database database;
 
-	OrdersRepository(Database database) {
-		this.database = database;
+	OrdersRepository(SeedAppConfig database) {
+		this.database = database.getDatabase();
 	}
 
 	List<Order> list() {

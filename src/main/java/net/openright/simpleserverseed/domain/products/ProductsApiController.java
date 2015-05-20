@@ -1,43 +1,42 @@
 package net.openright.simpleserverseed.domain.products;
 
+import net.openright.infrastructure.rest.ResourceApi;
+import net.openright.simpleserverseed.application.SeedAppConfig;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import net.openright.infrastructure.db.Database;
-import net.openright.infrastructure.rest.JsonController;
-
-public class ProductsApiController implements JsonController {
+public class ProductsApiController implements ResourceApi {
 
     private ProductRepository repository;
 
-    public ProductsApiController(Database database) {
-        this.repository = new ProductRepository(database);
+    public ProductsApiController(SeedAppConfig config) {
+        this.repository = new ProductRepository(config);
     }
 
     @Override
-    public JSONObject listJSON(HttpServletRequest req) {
+    public JSONObject listResources() {
         return new JSONObject()
             .put("products", mapToJSON(repository.list(), this::toJSON));
     }
 
     @Override
-    public JSONObject getJSON(String id) {
+    public JSONObject getResource(String id) {
         return toJSON(repository.retrieve(Long.valueOf(id)));
     }
 
     @Override
-    public void postJSON(JSONObject jsonObject) {
-        repository.insert(toProduct(jsonObject));
+    public String createResource(JSONObject jsonObject) {
+        Product product = toProduct(jsonObject);
+        repository.insert(product);
+        return String.valueOf(product.getId());
     }
 
     @Override
-    public void putJSON(String id, JSONObject jsonObject) {
+    public void updateResource(String id, JSONObject jsonObject) {
         repository.update(Long.valueOf(id), toProduct(jsonObject));
     }
 

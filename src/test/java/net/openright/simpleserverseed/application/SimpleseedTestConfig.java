@@ -6,7 +6,9 @@ import javax.sql.DataSource;
 
 public class SimpleseedTestConfig extends SeedAppConfigFile {
 
-    public SimpleseedTestConfig() {
+    private static SimpleseedTestConfig instance;
+
+    private SimpleseedTestConfig() {
         super("seedapp-test.properties");
     }
 
@@ -20,4 +22,11 @@ public class SimpleseedTestConfig extends SeedAppConfigFile {
         return System.getProperty(webdriverClass, getProperty(webdriverClass, "org.openqa.selenium.chrome.ChromeDriver"));
     }
 
+    public synchronized static SimpleseedTestConfig instance() {
+        if (instance == null) {
+            instance = new SimpleseedTestConfig();
+            instance.init();
+        }
+        return instance;
+    }
 }

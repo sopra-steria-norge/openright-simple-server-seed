@@ -1,19 +1,11 @@
 package net.openright.simpleserverseed.domain.orders;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import net.openright.infrastructure.db.Database;
 import net.openright.infrastructure.test.WebTestUtil;
 import net.openright.simpleserverseed.application.SeedAppServer;
 import net.openright.simpleserverseed.application.SimpleseedTestConfig;
 import net.openright.simpleserverseed.domain.products.Product;
 import net.openright.simpleserverseed.domain.products.ProductRepository;
 import net.openright.simpleserverseed.domain.products.ProductRepositoryTest;
-
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -24,14 +16,19 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class OrderWebTest {
-    private static SimpleseedTestConfig config = new SimpleseedTestConfig();
+    private static SimpleseedTestConfig config = SimpleseedTestConfig.instance();
     private static SeedAppServer server = new SeedAppServer(config);
     private static WebDriver browser;
     private static WebDriverWait wait;
-    private Database database = new Database("jdbc/seedappDs");
-    private OrdersRepository orderRepository = new OrdersRepository(database);
-    private ProductRepository productRepository = new ProductRepository(database);
+    private OrdersRepository orderRepository = new OrdersRepository(config);
+    private ProductRepository productRepository = new ProductRepository(config);
 
     @BeforeClass
     public static void startServer() throws Exception {
@@ -65,7 +62,7 @@ public class OrderWebTest {
         
         List<String> orders = browser.findElement(By.id("ordersList"))
             .findElements(By.tagName("li"))
-            .stream().map(e -> e.getText()).collect(Collectors.toList());
+            .stream().map(WebElement::getText).collect(Collectors.toList());
 
         assertThat(orders).contains("Order: " + order.getTitle());
     }
@@ -150,7 +147,7 @@ public class OrderWebTest {
 
         browser.findElement(By.id("ordersList"));
 
-        assertThat(orderRepository.list().stream().map(o -> o.getTitle()).collect(Collectors.toList()))
+        assertThat(orderRepository.list().stream().map(Order::getTitle).collect(Collectors.toList()))
             .contains(orderTitle);
     }
 

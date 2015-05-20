@@ -1,51 +1,35 @@
 package net.openright.simpleserverseed.application;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-
-import net.openright.infrastructure.db.Database;
-import net.openright.infrastructure.rest.GetController;
-import net.openright.infrastructure.rest.JsonGetController;
-import net.openright.infrastructure.rest.JsonPostController;
-import net.openright.infrastructure.rest.PostController;
-import net.openright.infrastructure.rest.RestApiFrontController;
+import net.openright.infrastructure.rest.ApiFrontController;
+import net.openright.infrastructure.rest.Controller;
+import net.openright.infrastructure.rest.JsonResourceController;
+import net.openright.infrastructure.util.ExceptionUtil;
 import net.openright.simpleserverseed.domain.orders.OrdersApiController;
 import net.openright.simpleserverseed.domain.products.ProductsApiController;
 
-public class SeedAppFrontServlet extends RestApiFrontController {
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.servlet.ServletException;
 
-    private static final long serialVersionUID = 6363140410513232499L;
+public class SeedAppFrontServlet extends ApiFrontController {
 
-    private OrdersApiController ordersController;
-    private ProductsApiController productsController;
+    private SeedAppConfig config;
 
     @Override
     public void init() throws ServletException {
-        Database database = new Database("jdbc/seedappDs");
-        ordersController = new OrdersApiController(database);
-        productsController = new ProductsApiController(database);
+        try {
+            this.config = (SeedAppConfig)new InitialContext().lookup("seedapp/config");
+        } catch (NamingException e) {
+            throw ExceptionUtil.soften(e);
+        }
     }
 
     @Override
-    protected Map<String,GetController> getControllers() {
-        Map<String, GetController> controllers = new HashMap<>();
-
-        controllers.put("orders", new JsonGetController(ordersController));
-        controllers.put("products", new JsonGetController(productsController));
-
-        return controllers;
+    protected Controller getControllerForPath(String prefix) {
+        switch (prefix) {
+            case "orders": return new JsonResourceController(new OrdersApiController(config));
+            case "products": return new JsonResourceController(new ProductsApiController(config));
+            default: return null;
+        }
     }
-
-    @Override
-    protected Map<String, PostController> postControllers() {
-        Map<String, PostController> controllers = new HashMap<>();
-
-        controllers.put("orders", new JsonPostController(ordersController));
-        controllers.put("products", new JsonPostController(productsController));
-
-        return controllers;
-    }
-
 }

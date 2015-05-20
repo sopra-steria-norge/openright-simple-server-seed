@@ -5,7 +5,6 @@ import net.openright.infrastructure.server.ServerUtil;
 import net.openright.infrastructure.server.StatusHandler;
 import net.openright.infrastructure.util.IOUtil;
 import net.openright.infrastructure.util.LogUtil;
-import org.eclipse.jetty.plus.jndi.EnvEntry;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -29,6 +28,7 @@ public class SeedAppServer {
 		IOUtil.extractResourceFile("seedapp.properties");
 
 		SeedAppConfig config = new SeedAppConfigFile("seedapp.properties");
+		config.init();
 
 		SeedAppServer server = new SeedAppServer(config);
         server.start(config.getHttpPort());
@@ -39,7 +39,6 @@ public class SeedAppServer {
 	}
 
 	public void start(int port) throws Exception {
-		new EnvEntry("jdbc/seedappDs", config.createDataSource());
 
 		server = new Server(port);
 		server.setHandler(createHandlers());

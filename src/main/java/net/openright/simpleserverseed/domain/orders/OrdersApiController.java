@@ -1,43 +1,42 @@
 package net.openright.simpleserverseed.domain.orders;
 
+import net.openright.infrastructure.rest.ResourceApi;
+import net.openright.simpleserverseed.application.SeedAppConfig;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-
-import net.openright.infrastructure.db.Database;
-import net.openright.infrastructure.rest.JsonController;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-public class OrdersApiController implements JsonController {
+public class OrdersApiController implements ResourceApi {
 
     private OrdersRepository repository;
 
-    public OrdersApiController(Database database) {
-        this.repository = new OrdersRepository(database);
+    public OrdersApiController(SeedAppConfig config) {
+        this.repository = new OrdersRepository(config);
     }
 
     @Override
-    public JSONObject getJSON(String id) {
+    public JSONObject getResource(String id) {
         return toJSON(repository.retrieve(Integer.parseInt(id)));
     }
 
     @Override
-    public JSONObject listJSON(HttpServletRequest req) {
+    public JSONObject listResources() {
         return new JSONObject()
             .put("orders", mapToJSON(repository.list(), this::toJSON));
     }
 
     @Override
-    public void postJSON(JSONObject jsonObject) {
-        repository.insert(toOrder(jsonObject));
+    public String createResource(JSONObject jsonObject) {
+        Order order = toOrder(jsonObject);
+        repository.insert(order);
+        return String.valueOf(order.getId());
     }
 
     @Override
-    public void putJSON(String id, JSONObject jsonObject) {
+    public void updateResource(String id, JSONObject jsonObject) {
         repository.update(Integer.parseInt(id), toOrder(jsonObject));
     }
 
@@ -72,5 +71,4 @@ public class OrdersApiController implements JsonController {
     private <T> JSONArray mapToJSON(List<T> list, Function<T, JSONObject> mapper) {
         return new JSONArray(list.stream().map(mapper).collect(Collectors.toList()));
     }
-
 }
