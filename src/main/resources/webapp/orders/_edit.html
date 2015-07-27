@@ -29,7 +29,7 @@
 <script type="text/x-handlebars-template" id="orderLineTemplate">
   <div class="orderLine">
     <span>Product</span>
-    <select name="order[orderlines][][product]" class="productSelect" required>
+    <select name="order[orderlines][][productId]" class="productSelect" required>
       <option value>(Not selected)</option>
       {{#select orderLine.productId}}
         {{#each products}}

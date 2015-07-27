@@ -11,18 +11,18 @@ import java.util.function.Supplier;
 
 class OrdersRepository {
 
-	private final Database database;
+    private SeedAppConfig config;
 
-	OrdersRepository(SeedAppConfig database) {
-		this.database = database.getDatabase();
+	OrdersRepository(SeedAppConfig config) {
+		this.config = config;
 	}
 
 	List<Order> list() {
-		return database.queryForList("select * from orders order by title", this::toOrder);
+		return getDatabase().queryForList("select * from orders order by title", this::toOrder);
 	}
 
 	Order retrieve(int id) {
-		return database.queryForSingle("select * from orders where id = ?", id,
+		return getDatabase().queryForSingle("select * from orders where id = ?", id,
                 row -> toOrderWithOrderLines(id, row))
 				.orElseThrow(notFound(getClass(), id));
 	}
@@ -35,8 +35,8 @@ class OrdersRepository {
 	void insert(Order order) {
 		validateOrder(order);
 
-		database.doInTransaction(() -> {
-			int orderId = database.insert("insert into orders (title) values (?) returning id", order.getTitle());
+		getDatabase().doInTransaction(() -> {
+			int orderId = getDatabase().insert("insert into orders (title) values (?) returning id", order.getTitle());
 			order.setId(orderId);
 			insertOrderLines(order.getId(), order);
 		});
@@ -44,8 +44,8 @@ class OrdersRepository {
 
 	public void update(int orderId, Order order) {
 		validateOrder(order);
-		
-		database.doInTransaction(() -> {
+
+		getDatabase().doInTransaction(() -> {
 			updateOrder(orderId, order);
 			deleteOrderLines(orderId);
 			insertOrderLines(orderId, order);
@@ -54,23 +54,23 @@ class OrdersRepository {
 
 
 	private List<OrderLine> queryForOrderLines(int orderId) {
-		return database
+		return getDatabase()
 				.queryForList(
 						"select * from order_lines INNER JOIN products on products.id = order_lines.product_id where order_id = ?",
 						this::toOrderLine, orderId);
 	}
 
 	private void deleteOrderLines(int orderId) {
-		database.executeOperation("delete from order_lines where order_id = ?", orderId);
+		getDatabase().executeOperation("delete from order_lines where order_id = ?", orderId);
 	}
 
 	private void updateOrder(int orderId, Order order) {
-		database.executeOperation("update orders set title = ? where id = ?", order.getTitle(), orderId);
+		getDatabase().executeOperation("update orders set title = ? where id = ?", order.getTitle(), orderId);
 	}
 
 	private void insertOrderLines(int orderId, Order order) {
 		for (OrderLine orderLine : order.getOrderLines()) {
-			database.executeOperation("insert into order_lines (amount, product_id, title, order_id) values (?, ?, ?, ?)",
+			getDatabase().executeOperation("insert into order_lines (amount, product_id, title, order_id) values (?, ?, ?, ?)",
 					orderLine.getAmount(), orderLine.getProductId(), orderLine.getTitle(), orderId);
 		}
 	}
@@ -100,4 +100,8 @@ class OrdersRepository {
 		orderLine.setAmount(row.getInt("amount"));
 		return orderLine;
 	}
+
+    public Database getDatabase() {
+        return config.getDatabase();
+    }
 }

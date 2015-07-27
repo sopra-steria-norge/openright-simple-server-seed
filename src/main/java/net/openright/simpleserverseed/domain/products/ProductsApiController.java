@@ -44,7 +44,7 @@ public class ProductsApiController implements ResourceApi {
         return new JSONArray(list.stream().map(mapper).collect(Collectors.toList()));
     }
 
-    private JSONObject toJSON(Product product) {
+    JSONObject toJSON(Product product) {
         return new JSONObject()
             .put("id", product.getId())
             .put("title", product.getTitle())
@@ -52,8 +52,9 @@ public class ProductsApiController implements ResourceApi {
             .put("description", product.getDescription());
     }
 
-    private Product toProduct(JSONObject jsonObject) {
+    Product toProduct(JSONObject jsonObject) {
         Product product = new Product();
+        product.setId(jsonObject.getLong("id"));
         product.setTitle(jsonObject.getString("title"));
         product.setPrice(jsonObject.getDouble("price"));
         product.setDescription(jsonObject.getString("description"));

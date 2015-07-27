@@ -28,4 +28,8 @@ public class SampleData {
         return random.nextInt(10000) / 100.0;
     }
 
+    public static int randomId() {
+        return random.nextInt() + 1000;
+    }
+
 }

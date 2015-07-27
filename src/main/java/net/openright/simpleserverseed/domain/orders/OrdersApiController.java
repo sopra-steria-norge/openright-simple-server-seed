@@ -40,22 +40,23 @@ public class OrdersApiController implements ResourceApi {
         repository.update(Integer.parseInt(id), toOrder(jsonObject));
     }
 
-    private Order toOrder(JSONObject jsonObject) {
+    Order toOrder(JSONObject jsonObject) {
         Order order = new Order(jsonObject.getString("title"));
+        order.setId(jsonObject.getInt("id"));
 
         JSONArray jsonArray = jsonObject.getJSONArray("orderlines");
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject orderLine = jsonArray.getJSONObject(i);
-            if (orderLine.getString("amount").isEmpty()) {
+            if (!orderLine.has("amount")) {
                 continue;
             }
-            order.addOrderLine(orderLine.optLong("product"), orderLine.optInt("amount"));
+            order.addOrderLine(orderLine.optLong("productId"), orderLine.optInt("amount"));
         }
 
         return order;
     }
 
-    private JSONObject toJSON(Order order) {
+    JSONObject toJSON(Order order) {
         return new JSONObject()
             .put("id", order.getId())
             .put("title", order.getTitle())

@@ -79,10 +79,7 @@ public class OrderRepositoryTest {
         Product product2 = ProductRepositoryTest.sampleProduct();
         productRepository.insert(product2);
 
-        Order order = sampleOrder();
-
-        order.addOrderLine(product.getId(), 10);
-        order.addOrderLine(product2.getId(), 100);
+        Order order = sampleOrderWithLines(product, product2);
 
         repository.insert(order);
 
@@ -90,6 +87,13 @@ public class OrderRepositoryTest {
         assertThat(savedOrder).isEqualToComparingFieldByField(order);
         assertThat(savedOrder.getTotalAmount())
             .isEqualTo(10 * product.getPrice() + 100 * product2.getPrice());
+    }
+
+    public static Order sampleOrderWithLines(Product product1, Product product2) {
+        Order order = sampleOrder();
+        order.addOrderLine(product1.getId(), 10);
+        order.addOrderLine(product2.getId(), 100);
+        return order;
     }
 
     public static Order sampleOrder() {

@@ -24,6 +24,7 @@ import net.openright.simpleserverseed.domain.products.Product;
 import net.openright.simpleserverseed.domain.products.ProductRepository;
 import net.openright.simpleserverseed.domain.products.ProductRepositoryTest;
 
+
 public class OrderWebTest {
     private static SimpleseedTestConfig config = SimpleseedTestConfig.instance();
     private static SeedWebServer server = new SeedWebServer(config, 0);

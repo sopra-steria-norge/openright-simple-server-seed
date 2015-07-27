@@ -10,29 +10,29 @@ import java.util.List;
 
 public class ProductRepository {
 
-	private final Database db;
+    private SeedAppConfig config;
 
-	public ProductRepository(SeedAppConfig database) {
-		db = database.getDatabase();
+	public ProductRepository(SeedAppConfig config) {
+		this.config = config;
 	}
 
 	public void insert(Product product) {
-		product.setId(db.insert("insert into products (price, active, description, title) values (?,?,?,?) returning id",
+		product.setId(getDb().insert("insert into products (price, active, description, title) values (?,?,?,?) returning id",
 				product.getPrice(), product.isActive(), product.getDescription(), product.getTitle()));
 	}
 
 	public Product retrieve(long id) {
-		return db.queryForSingle("select * from products where id = ?", id, ProductRepository::toProduct)
+		return getDb().queryForSingle("select * from products where id = ?", id, ProductRepository::toProduct)
 				.orElseThrow(() -> new RequestException(404, "Order " + id + " not found"));
 	}
 
 	public List<Product> list() {
-		return db.queryForList("select * from products where active = ? order by title",
+		return getDb().queryForList("select * from products where active = ? order by title",
 				ProductRepository::toProduct, true);
 	}
 
 	public void update(Long id, Product product) {
-		db.executeOperation("update products set price = ?, active = ?, description = ?, title = ? where id = ?",
+		getDb().executeOperation("update products set price = ?, active = ?, description = ?, title = ? where id = ?",
 				product.getPrice(), product.isActive(), product.getDescription(), product.getTitle(), id);
 	}
 
@@ -45,5 +45,9 @@ public class ProductRepository {
 		product.setPrice(rs.getDouble("products", "price"));
 		return product;
 	}
+
+    public Database getDb() {
+        return config.getDatabase();
+    }
 
 }
