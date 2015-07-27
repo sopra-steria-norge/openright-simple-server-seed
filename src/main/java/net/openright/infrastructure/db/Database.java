@@ -89,7 +89,7 @@ public class Database {
 
 	/**
 	 * Insert an object into the database. Used for create operations.
-	 * 
+	 *
 	 * @param query
 	 *            in SQL stated as a prepared statement.
 	 * @param parameters
@@ -106,7 +106,7 @@ public class Database {
 
 	/**
 	 * Retrieves a list of results from the database and maps it to an object.
-	 * 
+	 *
 	 * @param query
 	 *            in SQL stated as a prepared statement.
 	 * @param mapper
@@ -159,7 +159,7 @@ public class Database {
 
 	/**
 	 * Update or delete operation sent to the database.
-	 * 
+	 *
 	 * @param query
 	 *            in SQL stated as a prepared statement.
 	 * @param parameters
@@ -187,45 +187,49 @@ public class Database {
 				threadConnection.set(null);
 			}
 		} catch (SQLException e) {
-			throw ExceptionUtil.soften(e);
+			throw handleException(null, e);
 		}
 	}
-	
+
 	private interface ConnectionCallback<T> {
-		T run(Connection conn);
+		T run(Connection conn) throws SQLException;
 	}
 
-	private <T> T doWithConnection(ConnectionCallback<T> object) {
+	private <T> T doWithConnection(ConnectionCallback<T> object) throws SQLException {
 		if (threadConnection.get() != null) {
 			return object.run(threadConnection.get());
 		}
 
 		try (Connection conn = dataSource.getConnection()) {
 			return object.run(conn);
-		} catch (SQLException e) {
-			throw ExceptionUtil.soften(e);
 		}
 	}
 
 	private interface StatementCallback<T> {
 		T run(PreparedStatement stmt) throws SQLException;
 	}
-	
-	private <T> T executeDbOperation(String query, Collection<Object> parameters, StatementCallback<T> statementCallback) {
-		return doWithConnection(conn -> {
-			log.info("Executing: {} with params {}", query, parameters);
-			try (PreparedStatement prepareStatement = conn.prepareStatement(query)) {
-				int index = 1;
-				for (Object object : parameters) {
-					prepareStatement.setObject(index++, object);
-				}
 
-				return statementCallback.run(prepareStatement);
-			} catch (SQLException e) {
-				throw ExceptionUtil.soften(e);
-			}
-		});
+	private <T> T executeDbOperation(String query, Collection<Object> parameters, StatementCallback<T> statementCallback) {
+	    try {
+    		return doWithConnection(conn -> {
+    			log.info("Executing: {} with params {}", query, parameters);
+    			try (PreparedStatement prepareStatement = conn.prepareStatement(query)) {
+    				int index = 1;
+    				for (Object object : parameters) {
+    					prepareStatement.setObject(index++, object);
+    				}
+
+    				return statementCallback.run(prepareStatement);
+    			}
+    		});
+	    } catch (SQLException e) {
+	        throw handleException(query, e);
+	    }
 	}
+
+    private RuntimeException handleException(String query, SQLException e) {
+        return ExceptionUtil.soften(e);
+    }
 
 	private <T> Optional<T> mapSingleRow(ResultSet rs, RowMapper<T> mapper) throws SQLException {
 		if (!rs.next()) {
