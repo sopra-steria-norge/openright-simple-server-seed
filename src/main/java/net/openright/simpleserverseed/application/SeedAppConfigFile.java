@@ -3,14 +3,10 @@ package net.openright.simpleserverseed.application;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import javax.naming.NamingException;
 import javax.sql.DataSource;
-
-import org.eclipse.jetty.plus.jndi.EnvEntry;
 
 import net.openright.infrastructure.config.AppConfigFile;
 import net.openright.infrastructure.db.Database;
-import net.openright.infrastructure.util.ExceptionUtil;
 import net.openright.infrastructure.util.IOUtil;
 
 public class SeedAppConfigFile extends AppConfigFile implements SeedAppConfig {
@@ -50,11 +46,6 @@ public class SeedAppConfigFile extends AppConfigFile implements SeedAppConfig {
 
     @Override
     public void start() {
-        try {
-            new EnvEntry("jdbc/seedappDs", createDataSource());
-            new EnvEntry("seedapp/config", this);
-        } catch (NamingException e) {
-            throw ExceptionUtil.soften(e);
-        }
+        this.database = new Database(createDataSource());
     }
 }

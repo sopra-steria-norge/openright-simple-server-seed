@@ -34,6 +34,7 @@ public class WebServer {
     public void bind() throws IOException {
         try {
             server = HttpServer.create(new InetSocketAddress(port), 0);
+            this.port = server.getAddress().getPort();
         } catch (BindException e) {
             throw new RuntimeException("Can't start server: Port already in use");
         }
