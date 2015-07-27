@@ -14,19 +14,20 @@ public class OrderApiTest {
     @Test
     public void shouldTransformEmptyOrder() throws Exception {
         Order order = OrderRepositoryTest.sampleOrder();
-        order.setId(SampleData.randomId());
         assertThat(controller.toOrder(controller.toJSON(order))).isEqualTo(order);
     }
 
     @Test
     public void shouldTransformOrders() throws Exception {
         Order order = sampleOrder();
-        assertThat(controller.toOrder(controller.toJSON(order))).isEqualTo(order);
+        Order transformed = controller.toOrder(controller.toJSON(order));
+        assertThat(transformed).isEqualTo(order);
+        assertThat(transformed.toString()).isEqualTo(order.toString());
+        assertThat(transformed.hashCode()).isEqualTo(order.hashCode());
     }
 
     private Order sampleOrder() {
         Order order = OrderRepositoryTest.sampleOrderWithLines(sampleProduct(), sampleProduct());
-        order.setId(SampleData.randomId());
         return order;
     }
 

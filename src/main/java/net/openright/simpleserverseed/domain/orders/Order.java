@@ -31,7 +31,7 @@ class Order {
         this.id = id;
     }
 
-    int getId() {
+    Integer getId() {
         return id;
     }
 

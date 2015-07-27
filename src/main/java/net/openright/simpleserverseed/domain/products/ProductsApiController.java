@@ -54,7 +54,6 @@ public class ProductsApiController implements ResourceApi {
 
     Product toProduct(JSONObject jsonObject) {
         Product product = new Product();
-        product.setId(jsonObject.getLong("id"));
         product.setTitle(jsonObject.getString("title"));
         product.setPrice(jsonObject.getDouble("price"));
         product.setDescription(jsonObject.getString("description"));
