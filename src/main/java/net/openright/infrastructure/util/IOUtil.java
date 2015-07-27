@@ -1,91 +1,123 @@
 package net.openright.infrastructure.util;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.Writer;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class IOUtil {
 
-	public static void extractResourceFile(String filename) {
-		File file = new File(filename);
-		if (file.exists())
-			return;
+    public static Path extractResourceFile(String filename) throws IOException {
+        Path file = Paths.get(filename);
+        if (!Files.exists(file)) {
+            Files.copy(getResourcePath("/" + filename), file);
+        }
+        return file;
+    }
 
-		try (InputStream input = IOUtil.class.getResourceAsStream("/" + filename)) {
-			if (input == null) {
-				throw new IllegalArgumentException("Can't find /" + filename + " in classpath");
-			}
+    public static String toString(URL url) {
+        try (InputStream content = (InputStream) url.getContent()) {
+            return toString(content);
+        } catch (IOException e) {
+            throw soften(e);
+        }
+    }
 
-			copy(input, file);
-		} catch (IOException e) {
-			throw ExceptionUtil.soften(e);
-		}
-	}
+    public static String toString(InputStream content) {
+        return toString(new InputStreamReader(content));
+    }
 
-	public static String toString(URL url) {
-		try (InputStream content = (InputStream) url.getContent()) {
-			return toString(content);
-		} catch (IOException e) {
-			throw ExceptionUtil.soften(e);
-		}
-	}
+    public static String toString(Reader reader) {
+        char[] buffer = new char[1024];
+        StringBuilder out = new StringBuilder();
 
-	public static String toString(InputStream content) {
-		return toString(new InputStreamReader(content));
-	}
+        try {
+            for (;;) {
+                int rsz = reader.read(buffer, 0, buffer.length);
+                if (rsz < 0)
+                    break;
+                out.append(buffer, 0, rsz);
+            }
+            return out.toString();
+        } catch (IOException e) {
+            throw soften(e);
+        }
+    }
 
-	public static String toString(Reader reader) {
-		char[] buffer = new char[1024];
-		StringBuilder out = new StringBuilder();
+    public static void copy(Path path, OutputStream output) {
+        try {
+            Files.copy(path, output);
+        } catch (IOException e) {
+            throw soften(e);
+        }
+    }
 
-		try {
-			for (;;) {
-				int rsz = reader.read(buffer, 0, buffer.length);
-				if (rsz < 0)
-					break;
-				out.append(buffer, 0, rsz);
-			}
-			return out.toString();
-		} catch (IOException e) {
-			throw ExceptionUtil.soften(e);
-		}
-	}
+    public static Path copy(URL url, Path file) {
+        if (Files.isDirectory(file)) {
+            file = file.resolve(Paths.get(url.getPath()).getFileName());
+        }
+        if (Files.exists(file)) {
+            return file;
+        }
+        try (InputStream content = (InputStream) url.getContent()) {
+            Files.copy(content, file);
+            return file;
+        } catch (IOException e) {
+            throw soften(e);
+        }
 
-	public static File copy(URL url, File file) {
-	    if (file.isDirectory()) {
-	        file = new File(file, new File(url.getPath()).getName());
-	    }
-		try (InputStream content = (InputStream) url.getContent()) {
-			copy(content, file);
-			return file;
-		} catch (IOException e) {
-			throw ExceptionUtil.soften(e);
-		}
+    }
 
-	}
+    public static void copy(InputStream in, OutputStream out) {
+        try {
+            byte[] buf = new byte[1024];
+            int count = 0;
+            while ((count = in.read(buf)) >= 0) {
+                out.write(buf, 0, count);
+            }
+        } catch (IOException e) {
+            throw soften(e);
+        }
+    }
 
-	public static void copy(InputStream content, File file) {
-		try (FileOutputStream output = new FileOutputStream(file)) {
-			copy(content, output);
-		} catch (IOException e) {
-			throw ExceptionUtil.soften(e);
-		}
-	}
+    public static Path getResourcePath(String substring) {
+        try {
+            URL resource = IOUtil.class.getResource(substring);
+            if (resource == null) {
+                throw ExceptionUtil.soften(new FileNotFoundException(substring));
+            }
+            return Paths.get(resource.toURI());
+        } catch (URISyntaxException e) {
+            throw ExceptionUtil.soften(e);
+        }
+    }
 
-	public static void copy(InputStream in, OutputStream out) {
-		try {
-			byte[] buf = new byte[1024];
-			int count = 0;
-			while ((count = in.read(buf)) >= 0) {
-				out.write(buf, 0, count);
-			}
-		} catch (IOException e) {
-			throw ExceptionUtil.soften(e);
-		}
-	}
+    public static int copy(String text, URI uri) {
+        try {
+            HttpURLConnection connection = (HttpURLConnection)uri.toURL().openConnection();
+            connection.setRequestMethod("POST");
+            connection.setDoOutput(true);
+            try (Writer writer = new OutputStreamWriter(connection.getOutputStream())) {
+                writer.write(text);
+            }
+            return connection.getResponseCode();
+        } catch (IOException e) {
+            throw soften(e);
+        }
+    }
+
+    private static RuntimeException soften(IOException e) {
+        return ExceptionUtil.soften(e);
+    }
 }

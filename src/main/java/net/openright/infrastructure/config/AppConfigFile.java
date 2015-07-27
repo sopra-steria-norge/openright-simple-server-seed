@@ -4,12 +4,12 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import javax.sql.DataSource;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Dictionary;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -23,16 +23,13 @@ public abstract class AppConfigFile {
     private long nextCheckTime = 0;
     private long lastLoadTime = 0;
     private Properties properties = new Properties();
-    private final File configFile;
+    private final Path configFile;
 
-	public AppConfigFile(String filename) {
-		SLF4JBridgeHandler.removeHandlersForRootLogger();
-		SLF4JBridgeHandler.install();
+	public AppConfigFile(Path configFile) {
+        this.configFile = configFile;
+    }
 
-		this.configFile = new File(filename);
-	}
-
-	public Dictionary<Object, Object> getProperties() {
+    public Dictionary<Object, Object> getProperties() {
 	    ensureConfigurationIsFresh();
         return properties;
     }
@@ -129,17 +126,21 @@ public abstract class AppConfigFile {
         nextCheckTime = System.currentTimeMillis() + 10000;
         log.trace("Rechecking {}", configFile);
 
-        if (!configFile.exists()) {
+        if (!Files.exists(configFile)) {
             log.error("Missing configuration file {}", configFile);
+            return;
         }
 
-        if (lastLoadTime >= configFile.lastModified()) return;
-        lastLoadTime = configFile.lastModified();
-        log.debug("Reloading {}", configFile);
 
-        try (FileInputStream inputStream = new FileInputStream(configFile)) {
-            properties.clear();
-            properties.load(inputStream);
+        try {
+            if (lastLoadTime >= Files.getLastModifiedTime(configFile).toMillis()) return;
+            lastLoadTime = Files.getLastModifiedTime(configFile).toMillis();
+            log.debug("Reloading {}", configFile);
+
+            try (FileInputStream inputStream = new FileInputStream(configFile.toFile())) {
+                properties.clear();
+                properties.load(inputStream);
+            }
         } catch (IOException e) {
             throw new RuntimeException("Failed to load " + configFile, e);
         }

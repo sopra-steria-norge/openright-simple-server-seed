@@ -9,5 +9,5 @@ public interface SeedAppConfig {
 
 	Database getDatabase();
 
-	void init() throws Exception;
+	void start();
 }

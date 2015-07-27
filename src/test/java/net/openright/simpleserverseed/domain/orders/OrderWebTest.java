@@ -1,11 +1,12 @@
 package net.openright.simpleserverseed.domain.orders;
 
-import net.openright.infrastructure.test.WebTestUtil;
-import net.openright.simpleserverseed.application.SeedAppServer;
-import net.openright.simpleserverseed.application.SimpleseedTestConfig;
-import net.openright.simpleserverseed.domain.products.Product;
-import net.openright.simpleserverseed.domain.products.ProductRepository;
-import net.openright.simpleserverseed.domain.products.ProductRepositoryTest;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -16,15 +17,17 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import net.openright.infrastructure.test.WebTestUtil;
+import net.openright.simpleserverseed.application.SeedWebServer;
+import net.openright.simpleserverseed.application.SimpleseedTestConfig;
+import net.openright.simpleserverseed.domain.products.Product;
+import net.openright.simpleserverseed.domain.products.ProductRepository;
+import net.openright.simpleserverseed.domain.products.ProductRepositoryTest;
 
 public class OrderWebTest {
     private static SimpleseedTestConfig config = SimpleseedTestConfig.instance();
-    private static SeedAppServer server = new SeedAppServer(config);
+    //private static SeedAppServer server = new SeedAppServer();
+    private static SeedWebServer server = new SeedWebServer(config);
     private static WebDriver browser;
     private static WebDriverWait wait;
     private OrdersRepository orderRepository = new OrdersRepository(config);
@@ -36,7 +39,7 @@ public class OrderWebTest {
     }
 
     @BeforeClass
-    public static void startBrowser() throws Exception {
+    public static void startBrowser() throws IOException {
         browser = WebTestUtil.createDriver(config.getWebDriverName());
         wait = new WebDriverWait(browser, 4);
     }
@@ -57,9 +60,9 @@ public class OrderWebTest {
     @Test
     public void shouldSeeCurrentOrders() throws Exception {
         Order order = OrderRepositoryTest.sampleOrder();
-        orderRepository.insert(order);    
+        orderRepository.insert(order);
         browser.get(server.getURI().toString());
-        
+
         List<String> orders = browser.findElement(By.id("ordersList"))
             .findElements(By.tagName("li"))
             .stream().map(WebElement::getText).collect(Collectors.toList());

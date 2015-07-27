@@ -27,18 +27,20 @@ public class SeedAppServer {
 		LogUtil.setupLogging("logging-simpleserverseed.xml");
 		IOUtil.extractResourceFile("seedapp.properties");
 
-		SeedAppConfig config = new SeedAppConfigFile("seedapp.properties");
-		config.init();
-
-		SeedAppServer server = new SeedAppServer(config);
-        server.start(config.getHttpPort());
+		SeedAppServer server = new SeedAppServer(new SeedAppConfigFile());
+        server.start();
 
         if (System.getProperty("startBrowser") != null) {
             Runtime.getRuntime().exec("cmd /c \"start " + server.getURI() + "\"");
         }
 	}
 
-	public void start(int port) throws Exception {
+	private void start() throws Exception {
+	    start(config.getHttpPort());
+    }
+
+    public void start(int port) throws Exception {
+	    config.start();
 
 		server = new Server(port);
 		server.setHandler(createHandlers());

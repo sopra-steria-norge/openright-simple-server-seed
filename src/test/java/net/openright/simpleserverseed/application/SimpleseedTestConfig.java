@@ -1,15 +1,17 @@
 package net.openright.simpleserverseed.application;
 
-import org.openqa.selenium.WebDriver;
+import java.nio.file.Paths;
 
 import javax.sql.DataSource;
+
+import org.openqa.selenium.WebDriver;
 
 public class SimpleseedTestConfig extends SeedAppConfigFile {
 
     private static SimpleseedTestConfig instance;
 
     private SimpleseedTestConfig() {
-        super("seedapp-test.properties");
+        super(Paths.get("seedapp-test.properties"));
     }
 
     @Override
@@ -25,7 +27,7 @@ public class SimpleseedTestConfig extends SeedAppConfigFile {
     public synchronized static SimpleseedTestConfig instance() {
         if (instance == null) {
             instance = new SimpleseedTestConfig();
-            instance.init();
+            instance.start();
         }
         return instance;
     }
