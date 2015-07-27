@@ -1,4 +1,4 @@
-package net.openright.simpleserverseed.application;
+package net.openright.infrastructure.httpserver;
 
 import java.io.IOException;
 import java.io.InputStream;

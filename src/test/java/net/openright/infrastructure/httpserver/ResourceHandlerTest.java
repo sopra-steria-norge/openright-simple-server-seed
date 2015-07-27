@@ -1,9 +1,11 @@
-package net.openright.simpleserverseed.application;
+package net.openright.infrastructure.httpserver;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
+
+import net.openright.infrastructure.httpserver.ResourceHandler;
 
 public class ResourceHandlerTest {
 

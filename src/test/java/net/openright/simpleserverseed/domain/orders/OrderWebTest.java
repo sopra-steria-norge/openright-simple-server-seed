@@ -26,8 +26,7 @@ import net.openright.simpleserverseed.domain.products.ProductRepositoryTest;
 
 public class OrderWebTest {
     private static SimpleseedTestConfig config = SimpleseedTestConfig.instance();
-    //private static SeedAppServer server = new SeedAppServer();
-    private static SeedWebServer server = new SeedWebServer(config);
+    private static SeedWebServer server = new SeedWebServer(config, 0);
     private static WebDriver browser;
     private static WebDriverWait wait;
     private OrdersRepository orderRepository = new OrdersRepository(config);
@@ -35,7 +34,7 @@ public class OrderWebTest {
 
     @BeforeClass
     public static void startServer() throws Exception {
-        server.start(0);
+        server.start();
     }
 
     @BeforeClass
