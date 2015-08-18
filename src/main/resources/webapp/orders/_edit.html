@@ -1,45 +1,71 @@
+
 <form id="orderForm">
 <script type="text/x-handlebars-template" id="orderFormTemplate">
-  <input type="hidden" name="order[id]" value="{{order.id}}" />
-  <div>
-    <label>Order title:</label>
-    <input type="text" name="order[title]" required placeholder="Title" value="{{order.title}}" />
-  </div>
-
-  <p>
-    <button>Save order</button>
-  </p>
-
-  <div id="orderContents">
-    <h4>Order contents</h4>
-    <div id="orderLines">
-      {{#each order.orderlines}}
-        {{> orderLine orderLine=this products=../products}}
-      {{/each}}
+  <div class="row">
+    <div class="small-12 columns">
+      <input type="hidden" name="order[id]" value="{{order.id}}" />
+      <label>Order title:</label>
+      <input type="text" name="order[title]" required placeholder="Title" value="{{order.title}}" />
     </div>
-    <button id="addOrderLine">Add line</button>
   </div>
 
-  <p>
-    <button>Save order</button>
-  </p>
+  <div class="row">
+    <div class="large-12 columns">
+      <h4>Order contents</h4>
+    </div>
+  </div>
+  <div id="orderLines">
+    {{#each order.orderlines}}
+      {{> orderLine orderLine=this products=../products}}
+    {{/each}}
+  </div>
+  <div class="row">
+    <div class="medium-12 columns">
+      <button id="addOrderLine" class="expand">
+        <i class="fa fa-plus"></i>
+        Add line
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="medium-12 columns">
+      <button class="expand">Save order</button>
+    </div>
+  </div>
 </script>
 </form>
 
 <script type="text/x-handlebars-template" id="orderLineTemplate">
-  <div class="orderLine">
-    <span>Product</span>
-    <select name="order[orderlines][][product]" class="productSelect" required>
-      <option value>(Not selected)</option>
-      {{#select orderLine.productId}}
-        {{#each products}}
-          <option value={{id}}>{{title}}</option>
-        {{/each}}
-      {{/select}}
-    </select>
-    <input type="number" name="order[orderlines][][amount]"
-        required min=1 step=1 placeholder="amount" value="{{orderLine.amount}}" />
-    <a class="deleteOrderLine" href="#">[x]</a>
+  <div class="row">
+    <div class="large-12 columns">
+      <div class="row">
+        <div class="medium-5 columns">
+          <label>Product
+            <select name="order[orderlines][][product]" class="productSelect" required>
+              <option value>(Not selected)</option>
+              {{#select orderLine.productId}}
+                {{#each products}}
+                  <option value={{id}}>{{title}}</option>
+                {{/each}}
+              {{/select}}
+            </select>
+          </label>
+        </div>
+        <div class="medium-4 columns">
+          <label>Amount
+            <input type="number" name="order[orderlines][][amount]"
+                required min=1 step=1 placeholder="amount" value="{{orderLine.amount}}" />
+          </label>
+        </div>
+        <div class="medium-3 columns">
+          <label class="show-for-medium-up">&nbsp;</label>
+          <a href="#" class="deleteOrderLine button postfix alert">
+            <i class="fa fa-trash"></i>
+            Delete
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
 </script>
 

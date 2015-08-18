@@ -1,40 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>The webshop</title>
-	<link rel="stylesheet" href="style/style.css" />
-		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-	
-<style type="text/css">
-</style>
+  <title>The webshop</title>
+  <link rel="stylesheet" href="style/style.css" />
+  <link rel="stylesheet" href="style/normalize.css">
+  <link rel="stylesheet" href="style/foundation.css">
+  <script src="vendor/modernizr.js"></script>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 </head>
 <body>
-	<header>
-		<h1>Webshop</h1>
-	</header>
+  <nav class="top-bar" data-topbar role="navigation">
+    <ul class="title-area">
+      <li class="name"><h1><a href="">Webshop</a></h1></li>
+      <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+    </ul>
+    <section class="top-bar-section">
+      <ul class="right">
+        <li class="active"><a href="#orders">Orders</a></li>
+        <li><a href="#products">Products</a></li>
+        <li><a href="#">About</a></li>
+      </ul>
+    </section>
+  </nav>
 
-	<nav>
-		<ul>
-			<li class="active"><a href="#orders">Orders</a></li>
-			<li><a href="#products">Products</a></li>
-		</ul>
-	</nav>
-
-	<section id="main">
-		<section id="notifications">
-		</section>
-
-		<section id="content">
-		Loading contents...
-		</section>
-	</section>
+  <div class="row">
+    <div class="large-12 columns">
+      <section id="notifications">
+      </section>
+  
+      <section id="content">
+        Loading contents...
+      </section>
+    </div>
+  </div>
 <script type="text/x-handlebars-template" id="loading-template">
 <div>Loading...</div>
 </script>
 
 <script type="text/x-handlebars-template" id="notification-template">
 <div class="notify {{type}}">
-  <h1>{{title}}</h1>
+  <h2 class="title">{{title}}</h2>
   <span class="alerticon fa fa-3x"></span>
   <p>{{message}}</p>
 </div></script>
@@ -42,10 +47,13 @@
 
 </body>
 <script src="/seedapp/vendor/jquery.js"></script>
+<script src="vendor/foundation.min.js"></script>
 <script src="/seedapp/vendor/handlebars.min.js"></script>
 <script src="/seedapp/js/seedApp.js"></script>
 <script type="text/javascript">
 var loadingTemplate = Handlebars.compile($("#loading-template").html());
+
+$(document).foundation();
 
 $(function() {
     $(window).bind('hashchange', displayCurrentLocation);

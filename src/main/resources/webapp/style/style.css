@@ -1,45 +1,3 @@
-/* cssreset.com */* { margin: 0;  padding: 0;}
-
-nav {
-    background-color: #999;
-    margin: 0;
-    overflow: hidden;
-}
-
-nav ul {
-    margin: 0;
-    padding: 0;
-}
-
-nav ul li {
-    display: inline-block;
-    list-style-type: none;
-    color: #aaa;
-    padding: 0.5em 0.5em;
-    line-height: 2em;
-    text-decoration: none;
-}
-
-nav ul li.active {
-    background-color:#FF0;
-}
-
-section#main {
-  padding: 0;
-  background-color:#FF0;
-}
-section#notifications {
-  padding: 0;
-}
-section#content {
-  padding: 0.5em 2em;
-}
-
-form div label {
-  display: block;
-  font-weight: bold;
-}
-
 input[type=number] {
   text-align: right;
 }
@@ -65,28 +23,20 @@ input[type=number] {
   box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 2px 0px;
 }
 
-.notify h1 {
+.notify h2 {
   margin-bottom: 6px;
   text-align: center;
   overflow: hidden;
 }
 
  
-.notify h1:before, .notify h1:after  {
+.notify h2:before, .notify h2:after  {
   /* Stripes around the header */
   content: "";
   display: inline-block;
-  width: 50%;
+  width: 20%;
   height: 1px;
   vertical-align: middle;
-}
-h1:before {    
-  left: -.5em;
-  margin: 0 0 0 -50%;
-}
-h1:after {    
-  left: .5em;
-  margin: 0 -50% 0 0;
 }
 
 .notify .alerticon { 
@@ -97,18 +47,18 @@ h1:after {
   margin-bottom: 10px;
 }
 
-.notify.info h1:before, .notify.info h1:after { background: #0080ff; }
-.notify.info h1, .info .alerticon { color: #0000a0; }
+.notify.info h2:before, .notify.info h2:after { background: #0080ff; }
+.notify.info h2, .info .alerticon { color: #0000a0; }
 .info .alerticon:before { content:"\f071"; }
 
-.notify.success h1:before, .notify.success h1:after { background: #cad8a9; }
-.notify.success h1, .success .alerticon { color: #678361; }
+.notify.success h2:before, .notify.success h2:after { background: #cad8a9; }
+.notify.success h2, .success .alerticon { color: #678361; }
 .success .alerticon:before { content:"\f058"; }
 
-.notify.warning h1:before, .notify.warning h1:after { background: #ff8040; }
-.notify.warning h1, .warning .alerticon { color: #ff5c0f; }
+.notify.warning h2:before, .notify.warning h2:after { background: #ff8040; }
+.notify.warning h2, .warning .alerticon { color: #ff5c0f; }
 .warning .alerticon:before { content:"\f071"; }
 
-.notify.error h1:before, .notify.error h1:after { background: #d6b8b7; }
-.notify.error h1, .error .alerticon { color: #6f423b; }
+.notify.error h2:before, .notify.error h2:after { background: #d6b8b7; }
+.notify.error h2, .error .alerticon { color: #6f423b; }
 .error .alerticon:before { content:"\f06a"; }

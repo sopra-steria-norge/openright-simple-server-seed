@@ -8,7 +8,6 @@ var ajax = {
       url : '/seedapp/' + localUrl,
       type : 'POST',
       data : JSON.stringify(object),
-      async : false,
       contentType : "application/json; charset=utf-8"
     });
   }

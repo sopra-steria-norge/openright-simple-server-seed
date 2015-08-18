@@ -76,7 +76,7 @@ public class OrderWebTest {
         WebElement notification = browser.findElement(By.cssSelector("#notifications .notify"));
         wait.until(ExpectedConditions.visibilityOf(notification));
         assertThat(notification.getAttribute("class")).contains("warning");
-        assertThat(notification.findElement(By.tagName("h1")).getText()).isEqualTo("Not found");
+        assertThat(notification.findElement(By.className("title")).getText()).isEqualTo("Not found");
     }
 
     @Test
