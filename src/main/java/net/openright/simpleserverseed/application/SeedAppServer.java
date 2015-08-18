@@ -8,6 +8,7 @@ import net.openright.infrastructure.util.LogUtil;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.MovedContextHandler;
 import org.eclipse.jetty.server.handler.ShutdownHandler;
 
 import java.io.File;
@@ -54,6 +55,7 @@ public class SeedAppServer {
 		handlers.addHandler(new ShutdownHandler("sgds", false, true));
 		handlers.addHandler(new EmbeddedWebAppContext("/seedapp"));
 		handlers.addHandler(new StatusHandler());
+        handlers.addHandler(new MovedContextHandler(null, "/", "/seedapp"));
 
 		return ServerUtil.createStatisticsHandler(
 				ServerUtil.createRequestLogHandler(handlers));
