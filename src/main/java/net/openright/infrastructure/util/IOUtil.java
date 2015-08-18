@@ -1,6 +1,5 @@
 package net.openright.infrastructure.util;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -10,7 +9,6 @@ import java.io.Reader;
 import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,12 +16,20 @@ import java.nio.file.Paths;
 
 public class IOUtil {
 
-    public static Path extractResourceFile(String filename) throws IOException {
-        Path file = Paths.get(filename);
-        if (!Files.exists(file)) {
-            Files.copy(getResourcePath("/" + filename), file);
+    public static Path extractResourceFile(String filename) {
+        Path path = Paths.get(filename);
+        if (Files.exists(path))
+            return path;
+
+        try (InputStream input = IOUtil.class.getResourceAsStream("/" + filename)) {
+            if (input == null) {
+                throw new IllegalArgumentException("Can't find /" + filename + " in classpath");
+            }
+            copy(input, path);
+            return path;
+        } catch (IOException e) {
+            throw ExceptionUtil.soften(e);
         }
-        return file;
     }
 
     public static String toString(URL url) {
@@ -63,6 +69,14 @@ public class IOUtil {
         }
     }
 
+    public static void copy(InputStream input, Path path) {
+        try {
+            Files.copy(input, path);
+        } catch (IOException e) {
+            throw soften(e);
+        }
+    }
+
     public static Path copy(URL url, Path file) {
         if (Files.isDirectory(file)) {
             file = file.resolve(Paths.get(url.getPath()).getFileName());
@@ -88,18 +102,6 @@ public class IOUtil {
             }
         } catch (IOException e) {
             throw soften(e);
-        }
-    }
-
-    public static Path getResourcePath(String substring) {
-        try {
-            URL resource = IOUtil.class.getResource(substring);
-            if (resource == null) {
-                throw ExceptionUtil.soften(new FileNotFoundException(substring));
-            }
-            return Paths.get(resource.toURI());
-        } catch (URISyntaxException e) {
-            throw ExceptionUtil.soften(e);
         }
     }
 
