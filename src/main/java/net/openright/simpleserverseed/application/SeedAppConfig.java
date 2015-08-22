@@ -1,13 +1,13 @@
 package net.openright.simpleserverseed.application;
 
-import net.openright.infrastructure.db.Database;
+import javax.sql.DataSource;
 
 
 public interface SeedAppConfig {
 
 	int getHttpPort();
 
-	Database getDatabase();
+	DataSource getDataSource();
 
 	void start();
 }

@@ -94,6 +94,11 @@
       <version>2.45.0</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.sql2o</groupId>
+      <artifactId>sql2o</artifactId>
+      <version>1.5.4</version>
+    </dependency>
   </dependencies>
 
   <build>

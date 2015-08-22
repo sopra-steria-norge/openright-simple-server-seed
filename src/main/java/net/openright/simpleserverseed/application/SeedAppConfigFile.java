@@ -1,21 +1,17 @@
 package net.openright.simpleserverseed.application;
 
+import net.openright.infrastructure.config.AppConfigFile;
+import net.openright.infrastructure.util.ExceptionUtil;
+import net.openright.infrastructure.util.IOUtil;
+import org.eclipse.jetty.plus.jndi.EnvEntry;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-
-import org.eclipse.jetty.plus.jndi.EnvEntry;
-
-import net.openright.infrastructure.config.AppConfigFile;
-import net.openright.infrastructure.db.Database;
-import net.openright.infrastructure.util.ExceptionUtil;
-import net.openright.infrastructure.util.IOUtil;
-
 public class SeedAppConfigFile extends AppConfigFile implements SeedAppConfig {
-
-	private Database database;
 
 	public SeedAppConfigFile() throws IOException {
 	    super(IOUtil.extractResourceFile("seedapp.properties"));
@@ -40,15 +36,16 @@ public class SeedAppConfigFile extends AppConfigFile implements SeedAppConfig {
 		return Integer.parseInt(getProperty("seed.http.port", "8000"));
 	}
 
-    @Override
-    public synchronized Database getDatabase() {
-        if (database == null) {
-            this.database = new Database("jdbc/seedappDs");
-        }
-        return database;
-    }
+	@Override
+	public DataSource getDataSource() {
+		try {
+			return (DataSource) new InitialContext().lookup("jdbc/seedappDs");
+		} catch (NamingException e) {
+			throw ExceptionUtil.soften(e);
+		}
+	}
 
-    @Override
+	@Override
     public void start() {
         try {
             new EnvEntry("jdbc/seedappDs", createDataSource());
