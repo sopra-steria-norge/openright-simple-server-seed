@@ -2,17 +2,17 @@
 
 <div id="products">
   Loading products...
-  <script type="text/x-handlebars-template" id="productTemplate">
-<ul>
-  {{#each .}}
-    <li>Product: <a href="#" data-product="{{ id }}">{{ title }}</a></li>
-  {{/each}}
-</ul>
-</script>
 </div>
 
 <button id="addProduct">Add new product</button>
 
+<script type="text/x-handlebars-template" id="productTemplate">
+  <ul>
+    {{#each .}}
+    <li>Product: <a href="#" data-product="{{ id }}">{{ title }}</a></li>
+    {{/each}}
+  </ul>
+</script>
 <script type="text/javascript">
   var productTemplate = Handlebars.compile($("#productTemplate").html());
 

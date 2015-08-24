@@ -2,17 +2,17 @@
 
 <div id="ordersList">
 Loading orders...
-<script type="text/x-handlebars-template" id="orderTemplate">
-<ul>
-  {{#each .}}
-    <li>Order: <a href="#" data-order="{{ id }}">{{ title }}</a></li>
-  {{/each}}
-</ul>
-</script>
 </div>
 
 <button id="addOrder">Add new order</button>
 
+<script type="text/x-handlebars-template" id="orderTemplate">
+    <ul>
+        {{#each .}}
+        <li>Order: <a href="#" data-order="{{ id }}">{{ title }}</a></li>
+        {{/each}}
+    </ul>
+</script>
 <script type="text/javascript">
 var orderTemplate = Handlebars.compile($("#orderTemplate").html());
 
