@@ -1,12 +1,11 @@
 package net.openright.simpleserverseed.domain.orders;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
+import net.openright.infrastructure.test.WebTestUtil;
+import net.openright.simpleserverseed.application.SeedAppServer;
+import net.openright.simpleserverseed.application.SimpleseedTestConfig;
+import net.openright.simpleserverseed.domain.products.Product;
+import net.openright.simpleserverseed.domain.products.ProductRepository;
+import net.openright.simpleserverseed.domain.products.ProductRepositoryTest;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -17,12 +16,12 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import net.openright.infrastructure.test.WebTestUtil;
-import net.openright.simpleserverseed.application.SeedAppServer;
-import net.openright.simpleserverseed.application.SimpleseedTestConfig;
-import net.openright.simpleserverseed.domain.products.Product;
-import net.openright.simpleserverseed.domain.products.ProductRepository;
-import net.openright.simpleserverseed.domain.products.ProductRepositoryTest;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class OrderWebTest {
     private static SimpleseedTestConfig config = SimpleseedTestConfig.instance();
@@ -155,10 +154,13 @@ public class OrderWebTest {
 
     @Test
     public void shouldUpdateExistingOrder() throws Exception {
+        Product productToBeDeleted = ProductRepositoryTest.sampleProduct();
+        productRepository.insert(productToBeDeleted);
         Product product = ProductRepositoryTest.sampleProduct();
         productRepository.insert(product);
 
         Order order = OrderRepositoryTest.sampleOrder();
+        order.addOrderLine(productToBeDeleted.getId(), 200);
         order.addOrderLine(product.getId(), 100);
         orderRepository.insert(order);
 
@@ -166,6 +168,8 @@ public class OrderWebTest {
 
         WebElement titleField = browser.findElement(By.name("order[title]"));
         assertThat(titleField.getAttribute("value")).isEqualTo(order.getTitle());
+
+        browser.findElement(By.className("deleteOrderLine")).click();
 
         WebElement amountField = browser.findElement(By.name("order[orderlines][][amount]"));
         assertThat(amountField.getAttribute("value")).isEqualTo("100");
@@ -175,8 +179,9 @@ public class OrderWebTest {
 
         browser.findElement(By.id("ordersList"));
 
+        assertThat(orderRepository.retrieve(order.getId()).getOrderLines()).hasSize(1);
         assertThat(orderRepository.retrieve(order.getId()).getOrderLines().get(0).getAmount())
-            .isEqualTo(1000);
+                .isEqualTo(1000);
     }
 
     private By optionWithText(String optionText) {
