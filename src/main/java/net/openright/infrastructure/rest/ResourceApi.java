@@ -1,21 +1,21 @@
 package net.openright.infrastructure.rest;
 
-import org.json.JSONObject;
+import org.jsonbuddy.JsonObject;
 
 public interface ResourceApi {
-    default String createResource(JSONObject jsonObject) {
+    default String createResource(JsonObject jsonObject) {
         throw new UnsupportedOperationException();
     }
 
-    default JSONObject getResource(String id) {
+    default JsonObject getResource(String id) {
         throw new UnsupportedOperationException();
     }
 
-    default void updateResource(String id, JSONObject jsonObject) {
+    default void updateResource(String id, JsonObject jsonObject) {
         throw new UnsupportedOperationException();
     }
 
-    default JSONObject listResources() {
+    default JsonObject listResources() {
         throw new UnsupportedOperationException();
     }
 }

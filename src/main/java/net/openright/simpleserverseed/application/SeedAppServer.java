@@ -15,55 +15,54 @@ import java.io.File;
 import java.net.URI;
 
 public class SeedAppServer {
-	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SeedAppServer.class);
-	private SeedAppConfig config;
-	private Server server;
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SeedAppServer.class);
+    private SeedAppConfig config;
+    private Server server;
 
-	public SeedAppServer(SeedAppConfig config) {
-		this.config = config;
-	}
+    public SeedAppServer(SeedAppConfig config) {
+        this.config = config;
+    }
 
-	public static void main(String[] args) throws Exception {
-		new File("logs").mkdirs();
-		LogUtil.setupLogging("logging-simpleserverseed.xml");
-		IOUtil.extractResourceFile("seedapp.properties");
+    public static void main(String[] args) throws Exception {
+        new File("logs").mkdirs();
+        LogUtil.setupLogging("logging-simpleserverseed.xml");
+        IOUtil.extractResourceFile("seedapp.properties");
 
-		SeedAppServer server = new SeedAppServer(new SeedAppConfigFile());
+        SeedAppServer server = new SeedAppServer(new SeedAppConfigFile());
         server.start();
 
         if (System.getProperty("startBrowser") != null) {
             Runtime.getRuntime().exec("cmd /c \"start " + server.getURI() + "\"");
         }
-	}
+    }
 
-	private void start() throws Exception {
-	    start(config.getHttpPort());
+    private void start() throws Exception {
+        start(config.getHttpPort());
     }
 
     public void start(int port) throws Exception {
-	    config.start();
+        config.start();
 
-		server = new Server(port);
-		server.setHandler(createHandlers());
-		server.start();
+        server = new Server(port);
+        server.setHandler(createHandlers());
+        server.start();
 
-		log.info("Started server " + server.getURI());
-	}
+        log.info("Started server " + server.getURI());
+    }
 
-	private Handler createHandlers() {
-		HandlerList handlers = new HandlerList();
-		handlers.addHandler(new ShutdownHandler("sgds", false, true));
-		handlers.addHandler(new EmbeddedWebAppContext("/seedapp"));
-		handlers.addHandler(new StatusHandler());
+    private Handler createHandlers() {
+        HandlerList handlers = new HandlerList();
+        handlers.addHandler(new ShutdownHandler("sgds", false, true));
+        handlers.addHandler(new EmbeddedWebAppContext("/seedapp"));
+        handlers.addHandler(new StatusHandler());
         handlers.addHandler(new MovedContextHandler(null, "/", "/seedapp"));
 
-		return ServerUtil.createStatisticsHandler(
-				ServerUtil.createRequestLogHandler(handlers));
-	}
+        return ServerUtil.createStatisticsHandler(
+                ServerUtil.createRequestLogHandler(handlers));
+    }
 
-	public URI getURI() {
-		return server.getURI();
-	}
-
+    public URI getURI() {
+        return server.getURI();
+    }
 
 }

@@ -14,7 +14,7 @@ class Order {
         this.title = title;
     }
 
-    public void addOrderLine(Long productId, int amount) {
+    public void addOrderLine(Long productId, long amount) {
         this.orderLines.add(new OrderLine(productId, amount));
     }
 

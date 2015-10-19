@@ -2,12 +2,11 @@ package net.openright.simpleserverseed.application;
 
 import net.openright.infrastructure.db.Database;
 
-
 public interface SeedAppConfig {
 
-	int getHttpPort();
+    int getHttpPort();
 
-	Database getDatabase();
+    Database getDatabase();
 
-	void start();
+    void start();
 }

@@ -1,13 +1,13 @@
 package net.openright.simpleserverseed.domain.products;
 
-import net.openright.infrastructure.rest.ResourceApi;
-import net.openright.simpleserverseed.application.SeedAppConfig;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+import org.jsonbuddy.JsonArray;
+import org.jsonbuddy.JsonObject;
+import org.jsonbuddy.JsonTextValue;
+
+import net.openright.infrastructure.rest.ResourceApi;
+import net.openright.simpleserverseed.application.SeedAppConfig;
 
 public class ProductsApiController implements ResourceApi {
 
@@ -18,46 +18,52 @@ public class ProductsApiController implements ResourceApi {
     }
 
     @Override
-    public JSONObject listResources() {
-        return new JSONObject()
-            .put("products", mapToJSON(repository.list(), this::toJSON));
+    public JsonObject listResources() {
+        return new JsonObject()
+            .withValue("products", mapToJSON(repository.list(), this::toJSON));
     }
 
     @Override
-    public JSONObject getResource(String id) {
+    public JsonObject getResource(String id) {
         return toJSON(repository.retrieve(Long.valueOf(id)));
     }
 
     @Override
-    public String createResource(JSONObject jsonObject) {
-        Product product = toProduct(jsonObject);
+    public String createResource(JsonObject JsonObject) {
+        Product product = toProduct(JsonObject);
         repository.insert(product);
         return String.valueOf(product.getId());
     }
 
     @Override
-    public void updateResource(String id, JSONObject jsonObject) {
-        repository.update(Long.valueOf(id), toProduct(jsonObject));
+    public void updateResource(String id, JsonObject JsonObject) {
+        repository.update(Long.valueOf(id), toProduct(JsonObject));
     }
 
-    private <T> JSONArray mapToJSON(List<T> list, Function<T, JSONObject> mapper) {
-        return new JSONArray(list.stream().map(mapper).collect(Collectors.toList()));
+    private <T> JsonArray mapToJSON(List<T> list, Function<T, JsonObject> mapper) {
+        return JsonArray.fromNodeSteam(list.stream().map(mapper));
     }
 
-    private JSONObject toJSON(Product product) {
-        return new JSONObject()
-            .put("id", product.getId())
-            .put("title", product.getTitle())
-            .put("price", product.getPrice())
-            .put("description", product.getDescription());
+    private JsonObject toJSON(Product product) {
+        return new JsonObject()
+            .withValue("id", product.getId())
+            .withValue("title", product.getTitle())
+            .withValue("price", product.getPrice())
+            .withValue("description", product.getDescription());
     }
 
-    private Product toProduct(JSONObject jsonObject) {
+    private Product toProduct(JsonObject jsonObject) {
         Product product = new Product();
-        product.setTitle(jsonObject.getString("title"));
-        product.setPrice(jsonObject.getDouble("price"));
-        product.setDescription(jsonObject.getString("description"));
+        product.setTitle(jsonObject.requiredString("title"));
+        product.setPrice(requiredDouble(jsonObject, "price"));
+        product.setDescription(jsonObject.requiredString("description"));
         return product;
+    }
+
+    private double requiredDouble(JsonObject jsonObject, String string) {
+        return jsonObject.value(string)
+                .map(n -> Double.parseDouble(((JsonTextValue)n).textValue()))
+                .get();
     }
 
 }

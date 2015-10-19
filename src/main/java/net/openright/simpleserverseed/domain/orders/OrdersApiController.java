@@ -2,12 +2,13 @@ package net.openright.simpleserverseed.domain.orders;
 
 import net.openright.infrastructure.rest.ResourceApi;
 import net.openright.simpleserverseed.application.SeedAppConfig;
-import org.json.JSONArray;
-import org.json.JSONObject;
+
+import org.jsonbuddy.JsonArray;
+import org.jsonbuddy.JsonNode;
+import org.jsonbuddy.JsonObject;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class OrdersApiController implements ResourceApi {
 
@@ -18,57 +19,55 @@ public class OrdersApiController implements ResourceApi {
     }
 
     @Override
-    public JSONObject getResource(String id) {
+    public JsonObject getResource(String id) {
         return toJSON(repository.retrieve(Integer.parseInt(id)));
     }
 
     @Override
-    public JSONObject listResources() {
-        return new JSONObject()
-            .put("orders", mapToJSON(repository.list(), this::toJSON));
+    public JsonObject listResources() {
+        return new JsonObject()
+            .withValue("orders", mapToJSON(repository.list(), this::toJSON));
     }
 
     @Override
-    public String createResource(JSONObject jsonObject) {
+    public String createResource(JsonObject jsonObject) {
         Order order = toOrder(jsonObject);
         repository.insert(order);
         return String.valueOf(order.getId());
     }
 
     @Override
-    public void updateResource(String id, JSONObject jsonObject) {
+    public void updateResource(String id, JsonObject jsonObject) {
         repository.update(Integer.parseInt(id), toOrder(jsonObject));
     }
 
-    private Order toOrder(JSONObject jsonObject) {
-        Order order = new Order(jsonObject.getString("title"));
+    private Order toOrder(JsonObject jsonObject) {
+        Order order = new Order(jsonObject.requiredString("title"));
 
-        JSONArray jsonArray = jsonObject.getJSONArray("orderlines");
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject orderLine = jsonArray.getJSONObject(i);
-            if (orderLine.getString("amount").isEmpty()) {
-                continue;
+        for (JsonNode orderLineNode : jsonObject.requiredArray("orderLines")) {
+            JsonObject orderLine = (JsonObject)orderLineNode;
+            if (orderLine.longValue("amount").isPresent()) {
+                order.addOrderLine(orderLine.requiredLong("product"), orderLine.requiredLong("amount"));
             }
-            order.addOrderLine(orderLine.optLong("product"), orderLine.optInt("amount"));
         }
 
         return order;
     }
 
-    private JSONObject toJSON(Order order) {
-        return new JSONObject()
-            .put("id", order.getId())
-            .put("title", order.getTitle())
-            .put("orderlines", mapToJSON(order.getOrderLines(), this::toJSON));
+    private JsonObject toJSON(Order order) {
+        return new JsonObject()
+            .withValue("id", order.getId())
+            .withValue("title", order.getTitle())
+            .withValue("orderlines", mapToJSON(order.getOrderLines(), this::toJSON));
     }
 
-    private JSONObject toJSON(OrderLine line) {
-        return new JSONObject()
-            .put("productId", line.getProductId())
-            .put("amount", line.getAmount());
+    private JsonObject toJSON(OrderLine line) {
+        return new JsonObject()
+            .withValue("productId", line.getProductId())
+            .withValue("amount", line.getAmount());
     }
 
-    private <T> JSONArray mapToJSON(List<T> list, Function<T, JSONObject> mapper) {
-        return new JSONArray(list.stream().map(mapper).collect(Collectors.toList()));
+    private <T> JsonArray mapToJSON(List<T> list, Function<T, JsonNode> mapper) {
+        return JsonArray.fromNodeSteam(list.stream().map(mapper));
     }
 }
