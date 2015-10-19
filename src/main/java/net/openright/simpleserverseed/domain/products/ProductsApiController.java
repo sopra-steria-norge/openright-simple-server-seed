@@ -1,7 +1,5 @@
 package net.openright.simpleserverseed.domain.products;
 
-import java.util.List;
-import java.util.function.Function;
 import org.jsonbuddy.JsonArray;
 import org.jsonbuddy.JsonObject;
 import org.jsonbuddy.JsonTextValue;
@@ -20,7 +18,8 @@ public class ProductsApiController implements ResourceApi {
     @Override
     public JsonObject listResources() {
         return new JsonObject()
-            .withValue("products", mapToJSON(repository.list(), this::toJSON));
+            .withValue("products",
+                    JsonArray.fromStream(repository.list().stream().map(this::toJSON)));
     }
 
     @Override
@@ -38,10 +37,6 @@ public class ProductsApiController implements ResourceApi {
     @Override
     public void updateResource(String id, JsonObject JsonObject) {
         repository.update(Long.valueOf(id), toProduct(JsonObject));
-    }
-
-    private <T> JsonArray mapToJSON(List<T> list, Function<T, JsonObject> mapper) {
-        return JsonArray.fromNodeSteam(list.stream().map(mapper));
     }
 
     private JsonObject toJSON(Product product) {
