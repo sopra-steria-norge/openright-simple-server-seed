@@ -44,7 +44,7 @@ public class OrdersApiController implements ResourceApi {
     private Order toOrder(JsonObject jsonObject) {
         Order order = new Order(jsonObject.requiredString("title"));
 
-        for (JsonNode orderLineNode : jsonObject.requiredArray("orderLines")) {
+        for (JsonNode orderLineNode : jsonObject.requiredArray("orderlines")) {
             JsonObject orderLine = (JsonObject)orderLineNode;
             if (orderLine.longValue("amount").isPresent()) {
                 order.addOrderLine(orderLine.requiredLong("product"), orderLine.requiredLong("amount"));
