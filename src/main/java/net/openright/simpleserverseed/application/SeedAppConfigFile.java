@@ -1,17 +1,16 @@
 package net.openright.simpleserverseed.application;
 
-import java.io.IOException;
-import java.nio.file.Path;
-
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-
-import org.eclipse.jetty.plus.jndi.EnvEntry;
-
 import net.openright.infrastructure.config.AppConfigFile;
 import net.openright.infrastructure.db.Database;
 import net.openright.infrastructure.util.ExceptionUtil;
 import net.openright.infrastructure.util.IOUtil;
+import org.eclipse.jetty.plus.jndi.EnvEntry;
+
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 
 public class SeedAppConfigFile extends AppConfigFile implements SeedAppConfig {
 
@@ -50,6 +49,8 @@ public class SeedAppConfigFile extends AppConfigFile implements SeedAppConfig {
 
     @Override
     public void start() {
+        new File("logs").mkdirs();
+
         try {
             new EnvEntry("jdbc/seedappDs", createDataSource());
             new EnvEntry("seedapp/config", this);

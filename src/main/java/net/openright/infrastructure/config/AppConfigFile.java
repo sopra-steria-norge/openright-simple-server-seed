@@ -87,7 +87,6 @@ public abstract class AppConfigFile {
         dataSource.setPassword(getProperty(prefix + ".db.password", dataSource.getUsername()));
         dataSource.setJdbcUrl(
                 getProperty(prefix + ".db.url", "jdbc:postgresql://localhost:5432/" + dataSource.getUsername()));
-        dataSource.setMaximumPoolSize(100);
         return dataSource;
     }
 

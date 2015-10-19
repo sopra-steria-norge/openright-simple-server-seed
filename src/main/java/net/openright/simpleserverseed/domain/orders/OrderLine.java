@@ -9,14 +9,14 @@ class OrderLine {
 
     private String title;
     private Long productId;
-    private int amount;
+    private long amount;
     private Optional<Product> product = Optional.empty();
 
     OrderLine(String title) {
         this.title = title;
     }
 
-    public OrderLine(Long productId, int amount) {
+    public OrderLine(Long productId, long amount) {
         this(amount + " of product " + productId);
         this.productId = productId;
         this.amount = amount;
@@ -34,7 +34,7 @@ class OrderLine {
         return productId;
     }
 
-    int getAmount() {
+    long getAmount() {
         return amount;
     }
 
