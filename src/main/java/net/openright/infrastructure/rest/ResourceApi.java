@@ -2,7 +2,9 @@ package net.openright.infrastructure.rest;
 
 import org.jsonbuddy.JsonObject;
 
+@SuppressWarnings("unused")
 public interface ResourceApi {
+
     default String createResource(JsonObject jsonObject) {
         throw new UnsupportedOperationException();
     }

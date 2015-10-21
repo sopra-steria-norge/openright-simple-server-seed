@@ -7,13 +7,10 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.ie.InternetExplorerDriver;
 
 import net.openright.infrastructure.util.IOUtil;
 
@@ -73,8 +70,9 @@ public class WebTestUtil {
     }
 
     private static void extractZipEntry(Path zippedFile, Path driverFile) throws IOException {
-        FileSystem zipFs = FileSystems.newFileSystem(zippedFile, null);
-        Files.copy(zipFs.getPath(driverFile.getFileName().toString()), driverFile);
+        try(FileSystem zipFs = FileSystems.newFileSystem(zippedFile, null)) {
+            Files.copy(zipFs.getPath(driverFile.getFileName().toString()), driverFile);            
+        }
     }
 
 }
