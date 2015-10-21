@@ -1,21 +1,13 @@
 package net.openright.infrastructure.test;
 
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-
+import net.openright.infrastructure.util.IOUtil;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.ie.InternetExplorerDriver;
 
-import net.openright.infrastructure.util.IOUtil;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.*;
 
 public class WebTestUtil {
 

@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 
 public class SeedAppFrontServlet extends ApiFrontController {
 
+    private static final long serialVersionUID = -7849698810964144396L;
     private SeedAppConfig config;
 
     @Override
