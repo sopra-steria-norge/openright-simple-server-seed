@@ -3,6 +3,9 @@ package net.openright.simpleserverseed.domain.orders;
 import net.openright.infrastructure.rest.ResourceApi;
 import net.openright.simpleserverseed.application.SeedAppConfig;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.jsonbuddy.JsonArray;
 import org.jsonbuddy.JsonObject;
 
@@ -22,8 +25,7 @@ public class OrdersApiController implements ResourceApi {
     @Override
     public JsonObject listResources() {
         return new JsonObject()
-            .withValue("orders",
-                    JsonArray.fromStream(repository.list().stream().map(this::toJSON)));
+            .put("orders", JsonArray.map(repository.list(), this::toJSON));
     }
 
     @Override
@@ -39,27 +41,28 @@ public class OrdersApiController implements ResourceApi {
     }
 
     private Order toOrder(JsonObject jsonObject) {
-        Order order = new Order(jsonObject.requiredString("title"));
+        return new Order(jsonObject.requiredString("title"))
+                .withOrderLines(toOrderLines(jsonObject.requiredArray("orderlines")));
+    }
 
-        jsonObject.requiredArray("orderlines").nodeStream()
+    private List<OrderLine> toOrderLines(JsonArray orderLines) {
+        return orderLines.nodeStream()
             .map(n -> (JsonObject)n)
-            .filter(o -> o.longValue("amount") != null)
-            .forEach(o -> order.addOrderLine(o.requiredLong("product"), o.requiredLong("amount")));
-
-        return order;
+            .filter(o -> o.longValue("amount").isPresent())
+            .map(o -> new OrderLine(o.requiredLong("product"), o.requiredLong("amount")))
+            .collect(Collectors.toList());
     }
 
     private JsonObject toJSON(Order order) {
         return new JsonObject()
-            .withValue("id", order.getId())
-            .withValue("title", order.getTitle())
-            .withValue("orderlines",
-                    JsonArray.fromStream(order.getOrderLines().stream().map(this::toJSON)));
+            .put("id", order.getId())
+            .put("title", order.getTitle())
+            .put("orderlines", JsonArray.map(order.getOrderLines(), this::toJSON));
     }
 
     private JsonObject toJSON(OrderLine line) {
         return new JsonObject()
-            .withValue("productId", line.getProductId())
-            .withValue("amount", line.getAmount());
+            .put("productId", line.getProductId())
+            .put("amount", line.getAmount());
     }
 }
