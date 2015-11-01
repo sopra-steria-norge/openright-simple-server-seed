@@ -4,9 +4,6 @@ import net.openright.infrastructure.rest.ApiFrontController;
 import net.openright.infrastructure.rest.Controller;
 import net.openright.infrastructure.rest.JsonResourceController;
 import net.openright.infrastructure.util.ExceptionUtil;
-import net.openright.simpleserverseed.domain.orders.OrdersApiController;
-import net.openright.simpleserverseed.domain.products.ProductsApiController;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
@@ -28,8 +25,6 @@ public class SeedAppFrontServlet extends ApiFrontController {
     @Override
     protected Controller getControllerForPath(String prefix) {
         switch (prefix) {
-            case "orders": return new JsonResourceController(new OrdersApiController(config));
-            case "products": return new JsonResourceController(new ProductsApiController(config));
             default: return null;
         }
     }
