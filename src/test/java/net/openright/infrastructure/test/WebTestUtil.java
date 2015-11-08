@@ -77,8 +77,9 @@ public class WebTestUtil {
     }
 
     private static void extractZipEntry(Path zippedFile, Path driverFile) throws IOException {
-        FileSystem zipFs = FileSystems.newFileSystem(zippedFile, null);
-        Files.copy(zipFs.getPath(driverFile.getFileName().toString()), driverFile);
+        try ( FileSystem zipFs = FileSystems.newFileSystem(zippedFile, null) ) {
+            Files.copy(zipFs.getPath(driverFile.getFileName().toString()), driverFile);
+        }
     }
 
 }

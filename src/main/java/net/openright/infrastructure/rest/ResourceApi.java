@@ -2,7 +2,9 @@ package net.openright.infrastructure.rest;
 
 import org.json.JSONObject;
 
+@SuppressWarnings("unused")
 public interface ResourceApi {
+
     default String createResource(JSONObject jsonObject) {
         throw new UnsupportedOperationException();
     }
