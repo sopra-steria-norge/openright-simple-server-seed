@@ -18,19 +18,19 @@ import java.util.regex.Pattern;
 
 public abstract class AppConfigFile {
 
-	private static Logger log = LoggerFactory.getLogger(AppConfigFile.class);
+    private static Logger log = LoggerFactory.getLogger(AppConfigFile.class);
 
     private long nextCheckTime = 0;
     private long lastLoadTime = 0;
     private Properties properties = new Properties();
     private final Path configFile;
 
-	public AppConfigFile(Path configFile) {
+    public AppConfigFile(Path configFile) {
         this.configFile = configFile;
     }
 
     public Dictionary<Object, Object> getProperties() {
-	    ensureConfigurationIsFresh();
+        ensureConfigurationIsFresh();
         return properties;
     }
 
@@ -53,10 +53,10 @@ public abstract class AppConfigFile {
         return dataSource;
     }
 
-	protected DataSource createDataSource(String prefix) {
-		DataSource dataSource = createDataSource(prefix, prefix);
+    protected DataSource createDataSource(String prefix) {
+        DataSource dataSource = createDataSource(prefix, prefix);
         return migrateDataSource(prefix, dataSource);
-	}
+    }
 
     protected DataSource migrateDataSource(String prefix, DataSource dataSource) {
         Flyway flyway = new Flyway();
@@ -68,27 +68,28 @@ public abstract class AppConfigFile {
     }
 
     protected DataSource createTestDataSource(String prefix) {
-		DataSource dataSource = createDataSource(prefix, prefix + "_test");
+        DataSource dataSource = createDataSource(prefix, prefix + "_test");
 
-		Flyway flyway = new Flyway();
-		flyway.setDataSource(dataSource);
-		flyway.setLocations("classpath:db/" + prefix);
-		if ("true".equals(getProperty(prefix + ".db.test.clean", "false"))) {
-			flyway.clean();
-		}
-		flyway.migrate();
+        Flyway flyway = new Flyway();
+        flyway.setDataSource(dataSource);
+        flyway.setLocations("classpath:db/" + prefix);
+        if ("true".equals(getProperty(prefix + ".db.test.clean", "false"))) {
+            flyway.clean();
+        }
+        flyway.migrate();
 
-		return dataSource;
-	}
+        return dataSource;
+    }
 
-	private DataSource createDataSource(String prefix, String defaultName) {
-		HikariDataSource dataSource = new HikariDataSource();
-		dataSource.setUsername(getProperty(prefix + ".db.username", defaultName));
-		dataSource.setPassword(getProperty(prefix + ".db.password", dataSource.getUsername()));
-		dataSource.setJdbcUrl(
-				getProperty(prefix + ".db.url", "jdbc:postgresql://localhost:5432/" + dataSource.getUsername()));
-		return dataSource;
-	}
+    private DataSource createDataSource(String prefix, String defaultName) {
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setUsername(getProperty(prefix + ".db.username", defaultName));
+        dataSource.setPassword(getProperty(prefix + ".db.password", dataSource.getUsername()));
+        dataSource.setJdbcUrl(
+                getProperty(prefix + ".db.url", "jdbc:postgresql://localhost:5432/" + dataSource.getUsername()));
+        dataSource.setMaximumPoolSize(100);
+        return dataSource;
+    }
 
     public String getProperty(String propertyName, String defaultValue) {
         String result = getProperty(propertyName);

@@ -15,28 +15,28 @@ import com.codahale.metrics.servlets.MetricsServlet;
 
 public class StatusHandler extends ServletContextHandler {
 
-	public StatusHandler() {
-		setContextPath("/status");
+    public StatusHandler() {
+        setContextPath("/status");
 
-		addServlet(new ServletHolder(new AdminServlet()), "/admin/*");
+        addServlet(new ServletHolder(new AdminServlet()), "/admin/*");
 
-		setAttribute(MetricsServlet.METRICS_REGISTRY, createMetricsRegistry());
+        setAttribute(MetricsServlet.METRICS_REGISTRY, createMetricsRegistry());
         setAttribute(HealthCheckServlet.HEALTH_CHECK_REGISTRY, createHealthRegistry());
-	}
+    }
 
-	private Object createMetricsRegistry() {
+    private Object createMetricsRegistry() {
         MetricRegistry metricRegistry = new MetricRegistry();
         metricRegistry.register("jvm/gc", new GarbageCollectorMetricSet());
         metricRegistry.register("jvm/memory", new MemoryUsageGaugeSet());
         metricRegistry.register("jvm/thread-states", new ThreadStatesGaugeSet());
         metricRegistry.register("jvm/fd/usage", new FileDescriptorRatioGauge());
-		return metricRegistry;
-	}
+        return metricRegistry;
+    }
 
-	private Object createHealthRegistry() {
+    private Object createHealthRegistry() {
         HealthCheckRegistry healthCheckRegistry = new HealthCheckRegistry();
-		return healthCheckRegistry;
-	}
+        return healthCheckRegistry;
+    }
 
 
 }

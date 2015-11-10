@@ -5,16 +5,16 @@ import org.eclipse.jetty.webapp.WebAppContext;
 
 public class EmbeddedWebAppContext extends WebAppContext {
 
-	public EmbeddedWebAppContext(String contextPath) {
-		setContextPath(contextPath);
-		setBaseResource(Resource.newClassPathResource("/webapp"));
+    public EmbeddedWebAppContext(String contextPath) {
+        setContextPath(contextPath);
+        setBaseResource(Resource.newClassPathResource("/webapp"));
 
-		avoidFileLocking();
-	}
+        avoidFileLocking();
+    }
 
-	private String avoidFileLocking() {
-		return setInitParameter("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
-	}
+    private String avoidFileLocking() {
+        return setInitParameter("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
+    }
 
 
 }

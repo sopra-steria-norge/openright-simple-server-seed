@@ -1,13 +1,18 @@
 Sopra Steria reference Java architecture
 ================================
 
+This application demonstrates a simple JavaScript + Java servlet + PostgreSQL database application. It introduces all the technologies needed to build and test all layers of the application.
+
+A running version of the code can be examined at http://openright-orders.herokuapp.com
+
+The goal of the openright Sopra Steria reference application is to create a full stack application that any developer can master. In order to achieve this goal, we avoid "clever" technologies. This includes technologies that rely on reflection or classpath manipulation as well as front-end technologies that rely on data-binding. It's quite possible to add such technologies to the reference, but we don't consider it a good starting point on the path to mastery.
+
 * Any change developers make during development should be reflected in the running application within few seconds
 * The application starting point should minimize the number of technologies and especially limit the use of sophisticated technologies
 * The application should support the latest version of any involved technologies
 * The application should promote cross-tier understanding
 * The application should answer deployment considerations in deployment into existing infrastructures, creating a virtualized ecosystem of servers and options in between
 
-The goal of the reference application is to create a full stack application that any developer can master. In order to achieve this goal, we avoid "clever" technologies. This includes technologies that rely on reflection or classpath manipulation. It's quite possible to add such technologies to the reference, but we don't consider it a good starting point.
 
 This guide covers development and deployment scenarios with an application build on the reference architecture:
 
@@ -67,10 +72,11 @@ Getting started developing
 
 ### Steps
 
-1. Retrieve the source code from ....:  `git clone ...`
+1. Retrieve the source code from github:  `git clone https://github.com/steria/openright-simple-server-seed.git`
+  * For IntelliJ just choose `VCS` > `Checkout from Version Control` > `Github` and enter the repository url.
 2. Import the project into your IDE
   * For Eclipse, run `mvn eclipse:eclipse -DdownloadSources` from the command line and do `File` > `Import...` > `Existing project into workspace` in Eclipse
-  * For IntelliJ, 
+  * This should be pretty much automatic with IntelliJ
 3. Create the database schema
   * Log in with the root user on PostgreSQL (locally)
   * `CREATE USER seed WITH PASSWORD 'seed'`
@@ -79,7 +85,7 @@ Getting started developing
   * `CREATE DATABASE seed_test OWNER seed_test`
 4. Run the tests
   * In Eclipse, right click on the project and select `Run As` > `JUnit test`
-  * In IntelliJ, ...
+  * In IntelliJ, right click on the project and select `Run 'All tests'`
 5. Run the `net.openright.simpleserverseed.SeedAppServer` main class in the debugger
 6. Visit the application at http://localhost:3000/
 7. You can edit client HTML, JavaScript or CSS under `src/main/resources/webapp`. Any changes will be reflected when you refresh the browser
@@ -88,7 +94,8 @@ Getting started developing
 0. To change the database schema, add new migrations under `src/main/resources/db`. The changes will be reflected when you restart the application server
 
 ### Configuration (Optional)
-The application starts with a working default configuration given you have followed the steps above. Default values are set in AppConfigFile.java. Two configuration files are loaded if you create them.
+
+The application starts with a working default configuration given you have followed the steps above. Default values are set in SeedAppConfigFile.java. Two configuration files are loaded if you create them.
 
 1. seedapp.properties - This configuration is loaded when you run SeedAppServer.java
 2. seedapp-test.properties - This configuration is loaded by the JUnit tests.
@@ -142,17 +149,16 @@ Development quick guide
 
 ### Adding view
 
-E.g. a new view to list users.
+E.g. a new view to list users. See `src/main/resources/webapp/products` as a reference.
 
 1. Add 'Users' as a link to `#users` the top level menu in `src/main/resources/webapp/index.html` in the nav section
-  * Notice: Indicating which menu item is active is not yet implemented 
 2. Add `src/main/resources/webapp/users/index.html`
 3. Make `users/index.html` display 'users/list'
 4. Add `src/main/resources/webapp/users/_list.html` with the content of the list view
 
 ### Adding a JavaScript read view
 
-E.g. a new view to list users.
+E.g. a new view to list users. See `src\main\resources\webapp\products\_list.html`as a reference.
 
 1. Create a Mustache template for the user list: `<script type="text/x-handlebars-template" id="usersTemplate">`
 2. Load the template `var usersTemplate = Handlebars.compile($("#usersTemplate").html());`
@@ -162,18 +168,24 @@ E.g. a new view to list users.
 
 ### Adding a JavaScript write view
 
+E.g. a new view to create users. See `src\main\resources\webapp\products\_edit.html`as a reference.
+
 1. The client delegate JavaScript (with promises)
 2. Posting data from a form
 2. Validation with HTML5
 3. Client side validation
 4. Handling responses and errors
 
-### Providing a JSON or XML endpoint
+### Providing a JSON (or XML) endpoint
 
-1. The naming standard and superclass for the Controller
-2. Mapping to and from JSON
-   * Alternative: Mapping to and from XML
-3. Mapping to and from database
+All requests to `.../api` will be routed to SeedAppFrontServlet.
+
+1. Add the routing to `SeedAppFrontServlet.getControllerForPath`
+  * E.g. `case "orders": return new JsonResourceController(new UsersApiController(config));`
+2. Create the resource controller as an implementation of `ResourceApi`
+   * E.g. `public class UsersApiController implements ResourceApi`
+3. Create a repository to encapsulate the database logic
+4. Map from the domain/persistent object to JSON in the ResourceApi controller class
 
 ### Consuming a JSON or XML endpoint
 
