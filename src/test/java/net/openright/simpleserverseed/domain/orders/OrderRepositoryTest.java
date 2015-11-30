@@ -1,19 +1,19 @@
 package net.openright.simpleserverseed.domain.orders;
 
 import net.openright.infrastructure.test.SampleData;
-import net.openright.simpleserverseed.application.SeedAppConfig;
-import net.openright.simpleserverseed.application.SimpleseedTestConfig;
+import net.openright.simpleserverseed.application.InMemTestClass;
 import net.openright.simpleserverseed.domain.products.Product;
 import net.openright.simpleserverseed.domain.products.ProductRepository;
 import net.openright.simpleserverseed.domain.products.ProductRepositoryTest;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Objects;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OrderRepositoryTest {
+public class OrderRepositoryTest extends InMemTestClass {
 
-    private SeedAppConfig config = SimpleseedTestConfig.instance();
     private OrdersRepository repository = new OrdersRepository(config);
     private ProductRepository productRepository = new ProductRepository(config);
     private Product product = ProductRepositoryTest.sampleProduct();
@@ -30,7 +30,7 @@ public class OrderRepositoryTest {
         assertThat(repository.list()).contains(order);
 
         assertThat(repository.retrieve(order.getId()))
-            .isEqualToComparingFieldByField(order);
+                .isEqualToComparingFieldByField(order);
     }
 
     @Test
@@ -39,8 +39,8 @@ public class OrderRepositoryTest {
         order.addOrderLine(product.getId(), 2);
         repository.insert(order);
 
-        Order savedOrder =  repository.list().stream()
-                .filter(o -> o.getId() == order.getId())
+        Order savedOrder = repository.list().stream()
+                .filter(o -> Objects.equals(o.getId(), order.getId()))
                 .findFirst().get();
         assertThat(savedOrder.getOrderLines()).isEmpty();
     }
@@ -53,9 +53,9 @@ public class OrderRepositoryTest {
 
         Order savedOrder = repository.retrieve(order.getId());
         assertThat(savedOrder.getOrderLines().get(0).getProduct().get())
-            .isEqualTo(product);
+                .isEqualTo(product);
         assertThat(savedOrder.getOrderLines().get(0).getAmount())
-            .isEqualTo(2);
+                .isEqualTo(2);
     }
 
     @Test
@@ -69,9 +69,9 @@ public class OrderRepositoryTest {
         repository.update(order.getId(), order);
 
         assertThat(repository.retrieve(order.getId()).getTitle())
-            .isEqualTo(order.getTitle());
+                .isEqualTo(order.getTitle());
         assertThat(repository.retrieve(order.getId()).getOrderLines().get(0).getAmount())
-            .isEqualTo(order.getOrderLines().get(0).getAmount());
+                .isEqualTo(order.getOrderLines().get(0).getAmount());
     }
 
     @Test
@@ -89,7 +89,7 @@ public class OrderRepositoryTest {
         Order savedOrder = repository.retrieve(order.getId());
         assertThat(savedOrder).isEqualToComparingFieldByField(order);
         assertThat(savedOrder.getTotalAmount())
-            .isEqualTo(10 * product.getPrice() + 100 * product2.getPrice());
+                .isEqualTo(10 * product.getPrice() + 100 * product2.getPrice());
     }
 
     public static Order sampleOrder() {

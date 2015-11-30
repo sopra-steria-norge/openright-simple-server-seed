@@ -1,15 +1,13 @@
 package net.openright.simpleserverseed.domain.products;
 
 import net.openright.infrastructure.test.SampleData;
-import net.openright.simpleserverseed.application.SeedAppConfig;
-import net.openright.simpleserverseed.application.SimpleseedTestConfig;
+import net.openright.simpleserverseed.application.InMemTestClass;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ProductRepositoryTest {
+public class ProductRepositoryTest extends InMemTestClass {
 
-    private SeedAppConfig config = SimpleseedTestConfig.instance();
     private ProductRepository repository = new ProductRepository(config);
 
     @Test
@@ -18,7 +16,7 @@ public class ProductRepositoryTest {
         repository.insert(product);
 
         assertThat(repository.retrieve(product.getId()))
-            .isEqualToComparingFieldByField(product);
+                .isEqualToComparingFieldByField(product);
     }
 
     @Test
@@ -30,7 +28,7 @@ public class ProductRepositoryTest {
         repository.update(product.getId(), product);
 
         assertThat(repository.retrieve(product.getId()).getTitle())
-            .isEqualTo("New title");
+                .isEqualTo("New title");
     }
 
     @Test
@@ -45,8 +43,8 @@ public class ProductRepositoryTest {
         repository.insert(inactiveProduct);
 
         assertThat(repository.list())
-            .containsSubsequence(product2, product1)
-            .doesNotContain(inactiveProduct);
+                .containsSubsequence(product2, product1)
+                .doesNotContain(inactiveProduct);
     }
 
     private static Product sampleProduct(String prefix) {
