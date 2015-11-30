@@ -19,7 +19,7 @@ public class OrdersApiController implements ResourceApi {
 
     @Override
     public JSONObject getResource(String id) {
-        return toJSON(repository.retrieve(Integer.parseInt(id)));
+        return toJSON(repository.retrieve(Long.parseLong(id)));
     }
 
     @Override
@@ -37,7 +37,7 @@ public class OrdersApiController implements ResourceApi {
 
     @Override
     public void updateResource(String id, JSONObject jsonObject) {
-        repository.update(Integer.parseInt(id), toOrder(jsonObject));
+        repository.update(Long.parseLong(id), toOrder(jsonObject));
     }
 
     private Order toOrder(JSONObject jsonObject) {

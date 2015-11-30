@@ -17,8 +17,9 @@ public class ProductRepository {
     }
 
     public void insert(Product product) {
-        product.setId(db.insert("insert into products (price, active, description, title) values (?,?,?,?) returning id",
-                product.getPrice(), product.isActive(), product.getDescription(), product.getTitle()));
+        product.setId(db.getNextValue("idgenerator"));
+        db.insert("insert into products (id, price, active, description, title) values (?,?,?,?,?)",
+                product.getId(), product.getPrice(), product.isActive(), product.getDescription(), product.getTitle());
     }
 
     public Product retrieve(long id) {

@@ -1,5 +1,5 @@
 create table Products (
-	id serial primary key,
+	id int primary key,
 	title text NOT NULL,
 	description text NULL,
 	active boolean not null default true,

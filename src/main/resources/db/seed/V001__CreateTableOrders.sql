@@ -1,5 +1,7 @@
+CREATE SEQUENCE idgenerator START 1;
+
 create table Orders (
-	id serial primary key,
+	id int primary key,
 	title text NOT NULL
 );
 

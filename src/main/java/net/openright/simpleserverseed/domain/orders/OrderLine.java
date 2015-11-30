@@ -7,6 +7,7 @@ import net.openright.simpleserverseed.domain.products.Product;
 
 class OrderLine {
 
+    private Long id;
     private String title;
     private Long productId;
     private int amount;
@@ -20,6 +21,14 @@ class OrderLine {
         this(amount + " of product " + productId);
         this.productId = productId;
         this.amount = amount;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     String getTitle() {

@@ -21,13 +21,13 @@ class OrdersRepository {
         return database.queryForList("select * from orders order by title", this::toOrder);
     }
 
-    Order retrieve(int id) {
+    Order retrieve(Long id) {
         return database.queryForSingle("select * from orders where id = ?", id,
                 row -> toOrderWithOrderLines(id, row))
                 .orElseThrow(notFound(getClass(), id));
     }
 
-    private Supplier<RequestException> notFound(Class<?> clazz, int id) {
+    private Supplier<RequestException> notFound(Class<?> clazz, Long id) {
         String className = clazz.getName();
         return () -> new RequestException(404, "Can't find " + className + " with id " + id);
     }
@@ -36,13 +36,13 @@ class OrdersRepository {
         validateOrder(order);
 
         database.doInTransaction(() -> {
-            int orderId = database.insert("insert into orders (title) values (?) returning id", order.getTitle());
-            order.setId(orderId);
+            order.setId(database.getNextValue("idgenerator"));
+            database.insert("insert into orders (id, title) values (?, ?)", order.getId(), order.getTitle());
             insertOrderLines(order.getId(), order);
         });
     }
 
-    public void update(int orderId, Order order) {
+    public void update(Long orderId, Order order) {
         validateOrder(order);
 
         database.doInTransaction(() -> {
@@ -53,25 +53,26 @@ class OrdersRepository {
     }
 
 
-    private List<OrderLine> queryForOrderLines(int orderId) {
+    private List<OrderLine> queryForOrderLines(Long orderId) {
         return database
                 .queryForList(
                         "select * from order_lines INNER JOIN products on products.id = order_lines.product_id where order_id = ?",
                         this::toOrderLine, orderId);
     }
 
-    private void deleteOrderLines(int orderId) {
+    private void deleteOrderLines(Long orderId) {
         database.executeOperation("delete from order_lines where order_id = ?", orderId);
     }
 
-    private void updateOrder(int orderId, Order order) {
+    private void updateOrder(Long orderId, Order order) {
         database.executeOperation("update orders set title = ? where id = ?", order.getTitle(), orderId);
     }
 
-    private void insertOrderLines(int orderId, Order order) {
+    private void insertOrderLines(long orderId, Order order) {
         for (OrderLine orderLine : order.getOrderLines()) {
-            database.executeOperation("insert into order_lines (amount, product_id, title, order_id) values (?, ?, ?, ?)",
-                    orderLine.getAmount(), orderLine.getProductId(), orderLine.getTitle(), orderId);
+            orderLine.setId(database.getNextValue("idgenerator"));
+            database.executeOperation("insert into order_lines (id, amount, product_id, title, order_id) values (?, ?, ?, ?, ?)",
+                    orderLine.getId(), orderLine.getAmount(), orderLine.getProductId(), orderLine.getTitle(), orderId);
         }
     }
 
@@ -84,13 +85,13 @@ class OrdersRepository {
         }
     }
 
-    private Order toOrderWithOrderLines(int id, Database.Row row) throws SQLException {
+    private Order toOrderWithOrderLines(Long id, Database.Row row) throws SQLException {
         return toOrder(row).withOrderLines(queryForOrderLines(id));
     }
 
     private Order toOrder(Database.Row row) throws SQLException {
-        Order order = new Order(row.getString("title"));
-        order.setId(row.getInt("id"));
+        Order order = new Order(row.getString("orders", "title"));
+        order.setId(row.getLong("orders", "id"));
         return order;
     }
 

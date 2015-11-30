@@ -16,7 +16,10 @@ public class SimpleseedTestConfig extends SeedAppConfigFile {
 
     @Override
     public DataSource createDataSource() {
-        return createTestDataSource("seed");
+        String dbUrl = getProperty("seed.db.url", "jdbc:hsqldb:mem:seed-test");
+        String dbUser = getProperty("seed.db.user", "SA");
+        String dbPassword = getProperty("seed.db.password", "");
+        return new InMemDb().getDataSource(dbUrl, dbUser, dbPassword);
     }
 
     public String getWebDriverName() {

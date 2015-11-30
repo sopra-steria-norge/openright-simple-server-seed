@@ -31,8 +31,8 @@ public class Database {
         public Row(ResultSet rs) throws SQLException {
             this.rs = rs;
             for (int i = 1; i < rs.getMetaData().getColumnCount() + 1; i++) {
-                String tableName = rs.getMetaData().getTableName(i);
-                String columnName = rs.getMetaData().getColumnName(i);
+                String tableName = rs.getMetaData().getTableName(i).toLowerCase();
+                String columnName = rs.getMetaData().getColumnName(i).toLowerCase();
 
                 this.columnMap.put(tableName + "." + columnName, i);
             }
@@ -96,13 +96,25 @@ public class Database {
      *            values for the prepared statement.
      * @return the database field id from the inserted element.
      */
-    public int insert(String query, Object... parameters) {
-        return executeDbOperation(query, Arrays.asList(parameters), stmt -> {
-            try (ResultSet rs = stmt.executeQuery()) {
-                rs.next();
-                return rs.getInt("id");
-            }
-        });
+    public void insert(String query, Object... parameters) {
+        executeDbOperation(query, Arrays.asList(parameters), PreparedStatement::executeUpdate);
+    }
+
+    public Long getNextValue(String sequenceName) {
+        try {
+            return doWithConnection(conn -> {
+                log.info("Executing: {}", sequenceName);
+                try (PreparedStatement prepareStatement = conn.prepareStatement(DBFunctions.instance().nextValue(sequenceName))) {
+                    ResultSet rs;
+                    rs = prepareStatement.executeQuery();
+                    rs.next();
+
+                    return rs.getLong(1);
+                }
+            });
+        } catch (SQLException e) {
+            throw handleException(e);
+        }
     }
 
     /**
