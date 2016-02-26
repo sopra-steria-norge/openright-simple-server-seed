@@ -3,7 +3,7 @@ package net.openright.simpleserverseed.application;
 import org.junit.Before;
 
 public class InMemTestClass {
-    protected SeedAppConfig config = SimpleseedTestConfig.instance();
+    protected static SimpleseedTestConfig config = SimpleseedTestConfig.instance();
 
     @Before
     public void cleanDb(){

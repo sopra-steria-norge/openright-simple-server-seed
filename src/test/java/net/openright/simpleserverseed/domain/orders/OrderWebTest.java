@@ -1,8 +1,8 @@
 package net.openright.simpleserverseed.domain.orders;
 
 import net.openright.infrastructure.test.WebTestUtil;
+import net.openright.simpleserverseed.application.InMemTestClass;
 import net.openright.simpleserverseed.application.SeedAppServer;
-import net.openright.simpleserverseed.application.SimpleseedTestConfig;
 import net.openright.simpleserverseed.domain.products.Product;
 import net.openright.simpleserverseed.domain.products.ProductRepository;
 import net.openright.simpleserverseed.domain.products.ProductRepositoryTest;
@@ -23,8 +23,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OrderWebTest {
-    private static SimpleseedTestConfig config = SimpleseedTestConfig.instance();
+public class OrderWebTest extends InMemTestClass {
     private static SeedAppServer server = new SeedAppServer(config);
     private static WebDriver browser;
     private static WebDriverWait wait;
@@ -62,8 +61,8 @@ public class OrderWebTest {
         browser.get(server.getURI().toString());
 
         List<String> orders = browser.findElement(By.id("ordersList"))
-            .findElements(By.tagName("li"))
-            .stream().map(WebElement::getText).collect(Collectors.toList());
+                .findElements(By.tagName("li"))
+                .stream().map(WebElement::getText).collect(Collectors.toList());
 
         assertThat(orders).contains("Order: " + order.getTitle());
     }
@@ -90,9 +89,9 @@ public class OrderWebTest {
         titleField.clear();
         titleField.sendKeys(newProduct.getTitle());
         browser.findElement(By.name("product[price]"))
-            .sendKeys(String.valueOf(newProduct.getPrice()));
+                .sendKeys(String.valueOf(newProduct.getPrice()));
         browser.findElement(By.name("product[description]"))
-            .sendKeys(String.valueOf(newProduct.getDescription()));
+                .sendKeys(String.valueOf(newProduct.getDescription()));
         titleField.submit();
 
         browser.findElement(By.id("products"));
@@ -101,7 +100,7 @@ public class OrderWebTest {
                 .filter(p -> p.getTitle().equals(newProduct.getTitle()))
                 .findFirst().get();
         assertThat(product)
-            .isEqualToIgnoringGivenFields(newProduct, "id");
+                .isEqualToIgnoringGivenFields(newProduct, "id");
     }
 
     @Test
@@ -120,7 +119,7 @@ public class OrderWebTest {
 
         browser.findElement(By.id("products"));
         assertThat(productRepository.retrieve(product.getId()).getTitle())
-            .isEqualTo("New title");
+                .isEqualTo("New title");
     }
 
     @Test
@@ -139,17 +138,17 @@ public class OrderWebTest {
         browser.findElement(By.id("addOrderLine")).click();
 
         browser.findElement(By.cssSelector("#orderLines .productSelect"))
-            .findElement(optionWithText(product.getTitle()))
-            .click();
+                .findElement(optionWithText(product.getTitle()))
+                .click();
         browser.findElement(By.cssSelector("#orderLines input[name='order[orderlines][][amount]']"))
-            .sendKeys("120");
+                .sendKeys("120");
 
         titleField.submit();
 
         browser.findElement(By.id("ordersList"));
 
         assertThat(orderRepository.list().stream().map(Order::getTitle).collect(Collectors.toList()))
-            .contains(orderTitle);
+                .contains(orderTitle);
     }
 
     @Test

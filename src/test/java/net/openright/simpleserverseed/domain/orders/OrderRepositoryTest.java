@@ -27,10 +27,9 @@ public class OrderRepositoryTest extends InMemTestClass {
     public void shouldRetrieveSavedOrdersWithoutOrderLines() throws Exception {
         Order order = sampleOrder();
         repository.insert(order);
-        assertThat(repository.list()).contains(order);
+        assertThat(repository.list()).containsOnly(order);
 
-        assertThat(repository.retrieve(order.getId()))
-                .isEqualToComparingFieldByField(order);
+        assertThat(repository.retrieve(order.getId())).isEqualToComparingFieldByField(order);
     }
 
     @Test
