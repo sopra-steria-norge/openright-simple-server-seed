@@ -46,8 +46,7 @@ public class OrdersApiController implements ResourceApi {
     }
 
     private List<OrderLine> toOrderLines(JsonArray orderLines) {
-        return orderLines.nodeStream()
-            .map(n -> (JsonObject)n)
+        return orderLines.objectStream()
             .filter(o -> o.longValue("amount").isPresent())
             .map(o -> new OrderLine(o.requiredLong("product"), o.requiredLong("amount")))
             .collect(Collectors.toList());
