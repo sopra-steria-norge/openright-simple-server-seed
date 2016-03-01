@@ -49,7 +49,7 @@ public class WebTestUtil {
 
             List<String> msieVersions = new ArrayList<>();
             JSONObject storageContents = XML.toJSONObject(IOUtil.toString(msieDriverUrl));
-            JSONArray jsonArray = storageContents.getJSONObject("ListBucketResult").getJSONArray("Contents");
+            JsonArray jsonArray = storageContents.getJSONObject("ListBucketResult").getJsonArray("Contents");
             for (int i = 0; i < jsonArray.length(); i++) {
                 String file = jsonArray.getJSONObject(i).getString("Key");
                 if (file.contains("IEDriver")) {
