@@ -41,7 +41,7 @@
       <div class="row">
         <div class="medium-5 columns">
           <label>Product
-            <select name="order[orderlines][][product]" class="productSelect" required>
+            <select name="order[orderlines][][productId]" class="productSelect" required>
               <option value>(Not selected)</option>
               {{#select orderLine.productId}}
                 {{#each products}}
