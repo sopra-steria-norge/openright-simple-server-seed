@@ -1,5 +1,7 @@
 package net.openright.simpleserverseed.domain.products;
 
+import org.json.JSONObject;
+
 import java.util.Objects;
 
 public class Product {

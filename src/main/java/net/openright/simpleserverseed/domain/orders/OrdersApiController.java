@@ -1,7 +1,9 @@
 package net.openright.simpleserverseed.domain.orders;
 
+import net.openright.infrastructure.rest.RequestException;
 import net.openright.infrastructure.rest.ResourceApi;
 import net.openright.simpleserverseed.application.SeedAppConfig;
+import net.openright.simpleserverseed.domain.couponValidator.CoupongValidatorGateway;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -12,9 +14,11 @@ import java.util.stream.Collectors;
 public class OrdersApiController implements ResourceApi {
 
     private OrdersRepository repository;
+    private CoupongValidatorGateway coupongValidatorGateway;
 
-    public OrdersApiController(SeedAppConfig config) {
+    public OrdersApiController(SeedAppConfig config, CoupongValidatorGateway coupongValidatorGateway) {
         this.repository = new OrdersRepository(config);
+        this.coupongValidatorGateway = coupongValidatorGateway;
     }
 
     @Override
@@ -32,7 +36,28 @@ public class OrdersApiController implements ResourceApi {
     public String createResource(JSONObject jsonObject) {
         Order order = toOrder(jsonObject);
         repository.insert(order);
+        double price = calculatePrice(order, jsonObject.getString("coupon"));
+        repository.insertOrderPrice(order.getId(), price);
         return String.valueOf(order.getId());
+    }
+
+    private double calculatePrice(Order order, String coupon) {
+        double price = getPrice(order);
+        if(coupon == null || coupon.isEmpty()){
+            return price;
+        }
+
+        if(coupongValidatorGateway.validate(coupon)){
+            return price * 0.5;
+        }
+
+        throw new RequestException("Invalid code");
+    }
+
+    private double getPrice(Order order) {
+        return repository.retrieve(order.getId()).getOrderLines().stream()
+                .map(OrderLine::getPrice)
+                .reduce(0.0, (a, b) -> a+b);
     }
 
     @Override

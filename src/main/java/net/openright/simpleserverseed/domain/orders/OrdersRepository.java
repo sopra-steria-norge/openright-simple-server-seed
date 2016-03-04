@@ -44,12 +44,9 @@ class OrdersRepository {
 
     public void update(Long orderId, Order order) {
         validateOrder(order);
-
-        database.doInTransaction(() -> {
-            updateOrder(orderId, order);
-            deleteOrderLines(orderId);
-            insertOrderLines(orderId, order);
-        });
+        updateOrder(orderId, order);
+        deleteOrderLines(orderId);
+        insertOrderLines(orderId, order);
     }
 
 
@@ -66,6 +63,16 @@ class OrdersRepository {
 
     private void updateOrder(Long orderId, Order order) {
         database.executeOperation("update orders set title = ? where id = ?", order.getTitle(), orderId);
+    }
+
+    public void insertOrderPrice(long orderId, double price) {
+            database.executeOperation("insert into order_price (order_id, price) values (?, ?)", orderId, price);
+    }
+
+    public Double getOrderPrice(Long orderId) {
+        return database.queryForSingle("select * from order_price where order_id = ?", orderId,
+                row -> row.getDouble("order_price", "price"))
+                .orElse(null);
     }
 
     private void insertOrderLines(long orderId, Order order) {
@@ -86,7 +93,7 @@ class OrdersRepository {
     }
 
     private Order toOrderWithOrderLines(Long id, Database.Row row) throws SQLException {
-        return toOrder(row).withOrderLines(queryForOrderLines(id));
+        return toOrder(row).withOrderLines(queryForOrderLines(id)).withPrice(getOrderPrice(id));
     }
 
     private Order toOrder(Database.Row row) throws SQLException {

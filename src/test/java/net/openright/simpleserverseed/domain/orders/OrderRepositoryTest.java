@@ -84,11 +84,13 @@ public class OrderRepositoryTest extends InMemTestClass {
         order.addOrderLine(product2.getId(), 100);
 
         repository.insert(order);
+        double expectedPrice = 10 * product.getPrice() + 100 * product2.getPrice();
+        repository.insertOrderPrice(order.getId(), expectedPrice);
 
         Order savedOrder = repository.retrieve(order.getId());
         assertThat(savedOrder).isEqualToComparingFieldByField(order);
         assertThat(savedOrder.getTotalAmount())
-                .isEqualTo(10 * product.getPrice() + 100 * product2.getPrice());
+                .isEqualTo(expectedPrice);
     }
 
     public static Order sampleOrder() {

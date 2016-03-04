@@ -9,6 +9,7 @@ class Order {
     private String title;
     private Long id;
     private List<OrderLine> orderLines = new ArrayList<>();
+    private Double price;
 
     Order(String title) {
         this.title = title;
@@ -18,12 +19,17 @@ class Order {
         this.orderLines.add(new OrderLine(productId, amount));
     }
 
-    public double getTotalAmount() {
-        return orderLines.stream().map(line -> line.getPrice()).reduce(0.0, (a,b) -> a+b);
+    public Double getTotalAmount() {
+        return price;
     }
 
     Order withOrderLines(List<OrderLine> orderLines) {
         this.orderLines = orderLines;
+        return this;
+    }
+
+    Order withPrice(Double price) {
+        this.price = price;
         return this;
     }
 

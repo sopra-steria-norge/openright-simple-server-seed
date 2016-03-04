@@ -1,5 +1,8 @@
 package net.openright.infrastructure.rest;
 
+import net.openright.infrastructure.db.Database;
+import net.openright.infrastructure.util.ExceptionUtil;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -10,7 +13,13 @@ public abstract class ApiFrontController extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            getController(req).handle(req, resp);
+            getDatabase().doInTransaction(() -> {
+                try {
+                    getController(req).handle(req, resp);
+                } catch (Exception e) {
+                    throw ExceptionUtil.soften(e);
+                }
+            });
         } catch (RequestException e) {
             resp.sendError(e.getStatusCode(), e.getMessage());
         }
@@ -23,4 +32,6 @@ public abstract class ApiFrontController extends HttpServlet {
     }
 
     protected abstract Controller getControllerForPath(String prefix);
+
+    protected abstract Database getDatabase();
 }

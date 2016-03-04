@@ -193,9 +193,14 @@ public class Database {
      */
     public void doInTransaction(Runnable operation) {
         try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
             threadConnection.set(connection);
             try {
                 operation.run();
+                connection.commit();
+            } catch (Exception e) {
+                threadConnection.get().rollback();
+                throw ExceptionUtil.soften(e);
             } finally {
                 threadConnection.set(null);
             }

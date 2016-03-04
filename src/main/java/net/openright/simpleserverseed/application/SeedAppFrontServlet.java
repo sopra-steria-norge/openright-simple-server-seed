@@ -1,9 +1,11 @@
 package net.openright.simpleserverseed.application;
 
+import net.openright.infrastructure.db.Database;
 import net.openright.infrastructure.rest.ApiFrontController;
 import net.openright.infrastructure.rest.Controller;
 import net.openright.infrastructure.rest.JsonResourceController;
 import net.openright.infrastructure.util.ExceptionUtil;
+import net.openright.simpleserverseed.domain.couponValidator.CoupongValidatorGateway;
 import net.openright.simpleserverseed.domain.orders.OrdersApiController;
 import net.openright.simpleserverseed.domain.products.ProductsApiController;
 
@@ -27,9 +29,14 @@ public class SeedAppFrontServlet extends ApiFrontController {
     @Override
     protected Controller getControllerForPath(String prefix) {
         switch (prefix) {
-            case "orders": return new JsonResourceController(new OrdersApiController(config));
+            case "orders": return new JsonResourceController(new OrdersApiController(config, new CoupongValidatorGateway()));
             case "products": return new JsonResourceController(new ProductsApiController(config));
             default: return null;
         }
+    }
+
+    @Override
+    protected Database getDatabase() {
+        return config.getDatabase();
     }
 }
