@@ -124,7 +124,7 @@ public class OrderWebTest {
     }
 
     @Test
-    public void shouldInsertNewOrders() throws Exception {
+    public void shouldAddOrder() throws Exception {
         Product product = ProductRepositoryTest.sampleProduct();
         productRepository.insert(product);
 

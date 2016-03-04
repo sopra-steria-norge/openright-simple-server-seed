@@ -1,15 +1,17 @@
 package net.openright.infrastructure.rest;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Writer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Writer;
+
+import org.jsonbuddy.JsonObject;
+import org.jsonbuddy.JsonValueNotPresentException;
+import org.jsonbuddy.parse.JsonParser;
 
 public class JsonResourceController implements Controller {
     private final ResourceApi resourceApi;
@@ -22,7 +24,7 @@ public class JsonResourceController implements Controller {
     public void handle(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         try {
             doHandle(req, resp);
-        } catch (JSONException e) {
+        } catch (JsonValueNotPresentException e) {
             throw new RequestException(400, e.getMessage());
         }
     }
@@ -54,14 +56,15 @@ public class JsonResourceController implements Controller {
     }
 
     private void updateResource(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        JsonObject jsonObject;
         try (BufferedReader reader = req.getReader()) {
-            JSONObject jsonObject = new JSONObject(new JSONTokener(reader));
-            resourceApi.updateResource(getResourceId(req), jsonObject);
-            resp.setStatus(HttpServletResponse.SC_OK);
+            jsonObject = JsonParser.parseToObject(reader);
         }
+        resourceApi.updateResource(getResourceId(req), jsonObject);
+        resp.setStatus(HttpServletResponse.SC_OK);
     }
 
-    private void sendResponse(HttpServletResponse resp, JSONObject response) throws IOException {
+    private void sendResponse(HttpServletResponse resp, JsonObject response) throws IOException {
         resp.setHeader("Expires", "-1");
         if (response == null) {
             resp.setStatus(204);
@@ -74,9 +77,9 @@ public class JsonResourceController implements Controller {
     }
 
     private void createResource(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        JSONObject jsonObject;
+        JsonObject jsonObject;
         try (BufferedReader reader = req.getReader()) {
-            jsonObject = new JSONObject(new JSONTokener(reader));
+            jsonObject = JsonParser.parseToObject(reader);
         }
         if (getResourceId(req) != null) {
             resourceApi.updateResource(getResourceId(req), jsonObject);

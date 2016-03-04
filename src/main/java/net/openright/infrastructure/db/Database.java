@@ -157,7 +157,6 @@ public class Database {
         return queryForSingle(query, Collections.singletonList(parameter), mapper);
     }
 
-
     /**
      * Update or delete operation sent to the database.
      *
@@ -177,7 +176,9 @@ public class Database {
      * {@link #queryForSingle(String, RowMapper, Object...) queryForSingle} or
      * {@link #executeOperation(String, Object...) executeOperation}
      *
-     * @param operation is a functional interface to allow transaction to run in a thread.
+     * @param operation
+     *            is a functional interface to allow transaction to run in a
+     *            thread.
      */
     public void doInTransaction(Runnable operation) {
         try (Connection connection = dataSource.getConnection()) {
@@ -210,7 +211,8 @@ public class Database {
         T run(PreparedStatement stmt) throws SQLException;
     }
 
-    private <T> T executeDbOperation(String query, Collection<Object> parameters, StatementCallback<T> statementCallback) {
+    private <T> T executeDbOperation(String query, Collection<Object> parameters,
+            StatementCallback<T> statementCallback) {
         try {
             return doWithConnection(conn -> {
                 log.info("Executing: {} with params {}", query, parameters);
