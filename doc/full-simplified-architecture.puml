@@ -1,0 +1,34 @@
+@startuml
+  skinparam componentStyle uml2
+  package "Application" {
+    node Client {
+      [Frame] --> [Product]
+      [Frame] --> [Orders]
+	    [Orders] --> [jQuery.AJAX]
+      package "Product" {
+        [product view 1.html] --> [ProductController.js]
+        [product view 2.html] --> [ProductController.js]
+        [ProductController.js] --> [jQuery.AJAX]
+      }
+      package "Orders"
+    }
+    node Server {
+      [Database.java]
+      [jQuery.AJAX] --> [FrontController]
+      folder "ProductServer" {
+        [FrontController] --> [ProductController]
+        [Product domain]
+        [ProductController] --> [ProductRepository]
+        [ProductRepository] --> [Database.java]
+      }
+      package "OrderServer"
+      [OrderServer] --> [Database.java]
+      [FrontController] --> [OrderServer]
+    }
+    [Database.java] --> [Database]
+    database Database {
+      folder "Products table"
+      folder "Orders table"
+    }
+  }
+@enduml;

@@ -1,0 +1,61 @@
+@startuml
+skinparam componentStyle uml2
+
+package "controllers" {
+    [FooController]
+    [BarController]
+    [BazController]
+}
+
+package "Services" as svc {
+    [BarService]
+    [BazService]
+}
+
+note left of svc: (Optional) When you want to reduce the amount \n\
+of code in a controller or gateway or reuse code between controllers\n\
+this calls for a service.
+
+package "Boundary" as boundary {
+    [FooRepository]
+    [BarRepository]
+    [BazRepository]
+    [SomeRemoteService]
+}
+
+note right of boundary: Communicate with external system, or database.\n\
+Repositories can either return domain objects that\n\
+map directly to db rows, or aggregates of such objects.
+
+package "infrastructure" {
+    package "openright-fluent-jdbc" {
+        [DatabaseTable]
+        [SelectStatementBuilder]
+        [CreateOrUpdateStatementBuilder]
+    }
+
+    package "openright-rest-client + json buddy" {
+        [JsonObject]
+        [JsonArray]
+        [JsonObjectRequest]
+    }
+}
+
+[FooController] --> [FooRepository]
+[BarController] --> [BarService]
+[BazController] --> [BazService]
+
+[BarService] --> [BarRepository]
+[BarService] --> [BazService]
+[BazService] --> [BazRepository]
+[BarService] --> [SomeRemoteService]
+
+[FooRepository] --> [DatabaseTable]
+[BarRepository]--> [FooRepository]
+[BarRepository] --> [DatabaseTable]
+[SomeRemoteService] --> [JsonObjectRequest]
+
+[DatabaseTable] --> [SelectStatementBuilder]
+[DatabaseTable] --> [CreateOrUpdateStatementBuilder]
+
+@enduml

@@ -1,25 +1,49 @@
 Sopra Steria reference Java architecture
 ================================
 
-This application demonstrates a simple JavaScript + Java servlet + PostgreSQL database application. It introduces all the technologies needed to build and test all layers of the application.
+A senior developer should master the total technologies to create and run a complete, if simple, application.
+The Openright Seed project aims to teach you everything you need to accomplish this.
+
+Th application demonstrates a simple JavaScript + Java servlet + PostgreSQL database application.
+It introduces all the technologies needed to build and test all layers of the application. To make it as
+easy as possible to understand, we have picked technologies that are as simple as possible, yet suitable
+for production use. we avoid "clever" technologies. This includes technologies that rely on reflection or
+classpath manipulation as well as front-end technologies that rely on data-binding.
+It's quite possible to add such technologies to the reference, but we don't consider it a good starting point
+on the path to mastery.
 
 A running version of the code can be examined at http://openright-orders.herokuapp.com
 
-The goal of the openright Sopra Steria reference application is to create a full stack application that any developer can master. In order to achieve this goal, we avoid "clever" technologies. This includes technologies that rely on reflection or classpath manipulation as well as front-end technologies that rely on data-binding. It's quite possible to add such technologies to the reference, but we don't consider it a good starting point on the path to mastery.
 
 * Any change developers make during development should be reflected in the running application within few seconds
 * The application starting point should minimize the number of technologies and especially limit the use of sophisticated technologies
 * The application should support the latest version of any involved technologies
 * The application should promote cross-tier understanding
-* The application should answer deployment considerations in deployment into existing infrastructures, creating a virtualized ecosystem of servers and options in between
+* The application should answer deployment considerations
+
+The application can be used to illustrate the following lessons:
+
+* Operations: Create a portable, complete, self-executable Jar-file by use of the shade-maven-plugin
+  * This is the technique used by DropWizard
+  * A similar effect is achieved differently with Spring Boot
+* Operations: Start the application with your own main() method
+* Development: JavaScript-to-database tests with WebDriver
+* Front-end: URL-driven Single-Page Application (SPA) via window.onhashchange
+* Front-end: Rendering AJAX results with Handlebars
+* Front-end: Serializing forms as JSON and posting to REST
+* Backend: Injecting dependencies manually through a FrontController
+* Backend: Parsing JSON with JSON-buddy
+* Backend: Developing and testing Repositories
+* Operations: Managing migrations with Flyway
+
+Natural growth:
+
+* Replace templates with React
+* Replace SQL/JDBC code with openright-fluent-jdbc
+* Introduce Gateways to communicate with other applications (like Repositories)
+* Introduce Services to reuse functionality between controllers and to reduce complexity in endpoints
 
 
-This guide covers development and deployment scenarios with an application build on the reference architecture:
-
-* Downloading the source and getting started developing
-* Deploying on a local box with just a JVM
-* Deploying on an existing application server
-* Deploying a cluster of servers
 
 ![Alt text](http://g.gravizo.com/g?
 @startuml;
@@ -69,6 +93,7 @@ Getting started developing
 * Maven 3
 * PostgreSQL
 * Recommended: An SQL client (we recommend  [dbeaver](http://dbeaver.jkiss.org/))
+* Recommended: An account at Github and at Heroku (free)
 
 ### Steps
 
@@ -106,6 +131,27 @@ seed.db.username=some_database_user
 seed.db.password=a_password_for_the_database_user
 ```
 By default, the database settings use Postgresql on localhost with «seed» as username and password when running the dev server and «seed_test” when running unit tests.
+
+### Deploying to Heroku cloud
+
+1. Clone this project on github.com
+2. Sign up for a Heroku account
+3. Under the "+" menu in Heroku, select "Create a new app"
+4. Under the "Resources" pane, add Postgres as a resource
+5. Under the "Deploy" pane, click "Connect to Github"
+6. Connect the cloned repository
+7. At the bottom of the screen, select Deploy branch
+8. Under the "..." overflow menu, select "Open app"
+
+You can now see your app running on the web.
+
+The ingredients that make this happen are:
+* `pom.xml` makes Heroku figure out that this is a Maven project and run "mvn install"
+* `Procfile`` points out to Heroku the command to run to start the server
+* `SeedAppConfigFile.createDataSource` calls `AppConfigFile.createDataSourceFromEnv` which reads the DATABASE_URL
+  environment property set by Heroku
+
+
 
 Development quick guide
 ------------------------------
@@ -195,41 +241,6 @@ All requests to `.../api` will be routed to SeedAppFrontServlet.
   * Alternative: Mapping with XML
   * Alternative: Mapping with a specialized format (EDIFACT, fixed width records)
 
-### Publishing messages with an HTTP feed
-
-![Feeds](http://g.gravizo.com/g?
-@startuml;
-  node Client;
-  Client --> HTTP;
-  node Server {;
-    HTTP --> [FeedController] <<<&rss> rss>>;
-    [FeedController] --> [Repository];
-    HTTP --> [Controller];
-    Controller --> [FeedCache];
-    Controller --> [FeedGateway];
-    [FeedGateway] --> HTTP;
-  };
-  database Database;
-  [Repository] --> [Database];
-@enduml
-)
-
-1. Starting with the XML endpoint
-2. Use RSS (or Atom) - optional
-3. Add a `since` http parameter
-  * Micro-caching
-4. Use the `since` parameter into the database
-
-### Consuming messages with an HTTP feed
-
-1. Starting by consuming an XML endpoint
-2. Keep track of the last timestamp
-  * Micro-caching
-
-### Batching jobs for later processing
-
-1. Create a new subclass of `com.soprasteria.infrastructure.queue.WorkItem`
-2. Implement `WorkItem#process(Database)` with the logic to process one work item
 
 ### Saving data in the database
 
@@ -252,54 +263,3 @@ Deploying on a standalone JVM
 6. Visit the application at http://localhost:8000/seedapp
 7. Visit the status page for the application at http://localhost:8000/status/admin
 
-Other deployment options
----------------------------------------------------
-
-### Deploying to an existing app server
-
-In order to deploy to an app server, a war-file needs to be built instead of a Jar file. Here is one way to do it:
-
-* Move `src/main/resources` to `src/main/webapp`
-* Change the artifact type of the project from `jar` to `war`
-* Move the Server class to `src/test` instead of `src\main`
-* The call in EmbeddedWebAppContext to setBaseResource(Resource.newClassPathResource("/webapp")) must instead be setBaseResource(Resource.newResource("src/main/webapp"))
-
-_Note: The application assumes that its dependencies are before the app server jars. Make sure that you deploy with the "prefer application classpath" option_
-
-
-
-Creating a virtualized server ecosystem with Vagrant (TODO)
------------------------------------------------------------
-(We prefer using Vagrant to build a VMWare image that can be deployed directly on a VMWare cluster. If the application is given existing infrastructure to run on, Docker would be a better choice)
-
-(Virtualization is an area in a lot of flux, and new solutions are likely to appear)
-
-### Prerequisites
-
-* VirtualBox
-* Vagrant (requires Ruby)
-
-### Running locally in VirtualBox
-
-1. Go to the `src/main/vagrant` directory
-2. Edit the IP addresses for the servers in ...
-2. Create the database server: `cd pgsql-01-prime; vagrant up`
-3. Create the database backup server `cd pgsql-02-standby; vagrant up`
-4. Create the app servers:
-  * `cd app-01; vagrant up`
-  * `cd app-02; vagrant up`
-  * `cd app-03; vagrant up`
-5. Create the proxy servers:
-  * `cd web-01; vagrant up`
-  * `cd web-02; vagrant up`
-6. Going to http://web-01 or http://web-02 will access the application.
-7. The application should gracefully handle traffic as long as at least one app server is up
-   * `cd app-01; vagrant destroy`
-   * `cd app-02; vagrant destroy`
-   * Refresh the application - it should still work as app-03 is running
-8. When the primary database goes down, the application can recover by using the secondary
-  * `ssh vagrant@pgsql-02-standby <command to make it primary>`
-  * (Some magic to make the app servers switch)
-  * How to create a new standby based on 02.
-
-### Creating VMWare images
