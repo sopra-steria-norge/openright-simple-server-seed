@@ -173,7 +173,7 @@ public class Database {
      * Create a transaction for multiple database operations like
      * {@link #insert(String, Object...) insert},
      * {@link #queryForList(String, RowMapper, Object...) queryForList},
-     * {@link #queryForSingle(String, RowMapper, Object...) queryForSingle} or
+     *  or
      * {@link #executeOperation(String, Object...) executeOperation}
      *
      * @param operation
@@ -183,9 +183,18 @@ public class Database {
     public void doInTransaction(Runnable operation) {
         try (Connection connection = dataSource.getConnection()) {
             threadConnection.set(connection);
+            connection.setAutoCommit(false);
+            boolean complete = false;
             try {
                 operation.run();
+                complete = true;
             } finally {
+                if (complete) {
+                    connection.commit();
+                } else {
+                    connection.rollback();
+                }
+                connection.setAutoCommit(true);
                 threadConnection.set(null);
             }
         } catch (SQLException e) {
