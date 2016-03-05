@@ -199,7 +199,9 @@ public class Database {
                 operation.run();
                 connection.commit();
             } catch (Exception e) {
-                threadConnection.get().rollback();
+                if(threadConnection.get() != null){
+                    threadConnection.get().rollback();
+                }
                 throw ExceptionUtil.soften(e);
             } finally {
                 threadConnection.set(null);

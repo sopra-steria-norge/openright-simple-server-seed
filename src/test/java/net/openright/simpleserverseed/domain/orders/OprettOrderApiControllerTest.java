@@ -26,6 +26,7 @@ public class OprettOrderApiControllerTest extends InMemTestClass {
     public void validCouponReducePrice() throws Exception {
         int amount = 4;
         String coupon = "hei";
+        double priceReduction = 0.5;
         CoupongValidatorGateway mockCoupongValidatorGateway = mockExternalDependency();
         when(mockCoupongValidatorGateway.validate(anyString())).thenReturn(true);
         JSONObject sampleProduct = sampleProduct();
@@ -36,7 +37,27 @@ public class OprettOrderApiControllerTest extends InMemTestClass {
 
         Order actual = ordersRepository.retrieve(Long.parseLong(orderId));
         assertOrdersAreEqual(actual, sampleOrder);
-        assertThat(actual.getTotalAmount()).isEqualTo(sampleProduct.getDouble("price") * 4 / 2);
+        assertThat(actual.getTotalAmount()).isEqualTo(sampleProduct.getDouble("price") * amount * priceReduction);
+        verify(mockCoupongValidatorGateway, times(1)).validate(coupon);
+    }
+
+    @Test
+    public void noChangeIfInvalidCoupon() throws Exception {
+        int amount = 4;
+        String coupon = "hei";
+        CoupongValidatorGateway mockCoupongValidatorGateway = mockExternalDependency();
+        when(mockCoupongValidatorGateway.validate(anyString())).thenReturn(false);
+        JSONObject sampleProduct = sampleProduct();
+        String productId = storeProduct(sampleProduct);
+        JSONObject sampleOrder = sampleOrder(coupon, productId, "" + amount);
+
+        try {
+            createResourceInTransaction(sampleOrder);
+            fail();
+        } catch (RequestException e){
+            assertThat(e.getMessage()).isEqualTo("Invalid code");
+        }
+        assertThat(ordersRepository.list()).isEmpty();
         verify(mockCoupongValidatorGateway, times(1)).validate(coupon);
     }
 
