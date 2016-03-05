@@ -26,7 +26,7 @@ public class WebTestUtil {
         Path driverFile = Paths.get("target", "chromedriver.exe");
         if (Files.notExists(driverFile)) {
             URL chromeDriverUrl = new URL("http://chromedriver.storage.googleapis.com/");
-            String chromeDriverVersion = IOUtil.toString(new URL(chromeDriverUrl, "LATEST_RELEASE"));
+            String chromeDriverVersion = IOUtil.toString(new URL(chromeDriverUrl, "LATEST_RELEASE")).trim();
 
             URL latestDriverVersion = new URL(chromeDriverUrl, chromeDriverVersion + "/chromedriver_win32.zip");
             Path zipFile = IOUtil.copy(latestDriverVersion, Paths.get("target/"));
