@@ -1,5 +1,7 @@
 package net.openright.simpleserverseed.domain.products;
 
+import org.jsonbuddy.JsonObject;
+
 import java.util.Objects;
 
 public class Product {
@@ -9,6 +11,14 @@ public class Product {
     private String description;
     private boolean active = true;
     private double price;
+
+    static Product fromJson(JsonObject jsonObject) {
+        Product product = new Product();
+        product.setTitle(jsonObject.requiredString("title"));
+        product.setPrice(jsonObject.requiredDouble("price"));
+        product.setDescription(jsonObject.requiredString("description"));
+        return product;
+    }
 
     public Long getId() {
         return id;
@@ -72,4 +82,11 @@ public class Product {
     }
 
 
+    JsonObject toJson() {
+        return new JsonObject()
+            .put("id", getId())
+            .put("title", getTitle())
+            .put("price", getPrice())
+            .put("description", getDescription());
+    }
 }

@@ -16,40 +16,24 @@ public class ProductsApiController implements ResourceApi {
     @Override
     public JsonObject listResources() {
         return new JsonObject()
-            .put("products", JsonArray.map(repository.list(), this::toJSON));
+            .put("products", JsonArray.map(repository.list(), net.openright.simpleserverseed.domain.products.Product::toJson));
     }
 
     @Override
     public JsonObject getResource(String id) {
-        return toJSON(repository.retrieve(Long.valueOf(id)));
+        return repository.retrieve(Long.valueOf(id)).toJson();
     }
 
     @Override
     public String createResource(JsonObject JsonObject) {
-        Product product = toProduct(JsonObject);
+        Product product = Product.fromJson(JsonObject);
         repository.insert(product);
         return String.valueOf(product.getId());
     }
 
     @Override
     public void updateResource(String id, JsonObject JsonObject) {
-        repository.update(Long.valueOf(id), toProduct(JsonObject));
-    }
-
-    private JsonObject toJSON(Product product) {
-        return new JsonObject()
-            .put("id", product.getId())
-            .put("title", product.getTitle())
-            .put("price", product.getPrice())
-            .put("description", product.getDescription());
-    }
-
-    private Product toProduct(JsonObject jsonObject) {
-        Product product = new Product();
-        product.setTitle(jsonObject.requiredString("title"));
-        product.setPrice(jsonObject.requiredDouble("price"));
-        product.setDescription(jsonObject.requiredString("description"));
-        return product;
+        repository.update(Long.valueOf(id), Product.fromJson(JsonObject));
     }
 
 }

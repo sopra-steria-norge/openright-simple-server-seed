@@ -56,6 +56,45 @@ public class OrderWebTest {
     }
 
     @Test
+    public void shouldSeeCurrentProducts() throws Exception {
+        Product order = ProductRepositoryTest.sampleProduct();
+        productRepository.insert(order);
+        browser.get(server.getURI().toString() + "#products/list");
+
+        List<String> orders = browser.findElement(By.id("products"))
+                .findElements(By.tagName("li"))
+                .stream().map(WebElement::getText).collect(Collectors.toList());
+
+        assertThat(orders).contains("Product: " + order.getTitle());
+    }
+
+    @Test
+    public void shouldAddProduct() throws Exception {
+        Product newProduct = ProductRepositoryTest.sampleProduct();
+
+        browser.findElement(By.linkText("Products")).click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("addProduct")));
+        browser.findElement(By.id("addProduct")).click();
+
+        WebElement titleField = browser.findElement(By.name("product[title]"));
+        titleField.clear();
+        titleField.sendKeys(newProduct.getTitle());
+        browser.findElement(By.name("product[price]"))
+                .sendKeys(String.valueOf(newProduct.getPrice()));
+        browser.findElement(By.name("product[description]"))
+                .sendKeys(String.valueOf(newProduct.getDescription()));
+        titleField.submit();
+
+        browser.findElement(By.id("products"));
+
+        Product product = productRepository.list().stream()
+                .filter(p -> p.getTitle().equals(newProduct.getTitle()))
+                .findFirst().get();
+        assertThat(product)
+                .isEqualToIgnoringGivenFields(newProduct, "id");
+    }
+
+    @Test
     public void shouldSeeCurrentOrders() throws Exception {
         Order order = OrderRepositoryTest.sampleOrder();
         orderRepository.insert(order);
@@ -76,32 +115,6 @@ public class OrderWebTest {
         wait.until(ExpectedConditions.visibilityOf(notification));
         assertThat(notification.getAttribute("class")).contains("warning");
         assertThat(notification.findElement(By.className("title")).getText()).isEqualTo("Not found");
-    }
-
-    @Test
-    public void shouldAddProduct() throws Exception {
-        Product newProduct = ProductRepositoryTest.sampleProduct();
-
-        browser.findElement(By.linkText("Products")).click();
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("addProduct")));
-        browser.findElement(By.id("addProduct")).click();
-
-        WebElement titleField = browser.findElement(By.name("product[title]"));
-        titleField.clear();
-        titleField.sendKeys(newProduct.getTitle());
-        browser.findElement(By.name("product[price]"))
-            .sendKeys(String.valueOf(newProduct.getPrice()));
-        browser.findElement(By.name("product[description]"))
-            .sendKeys(String.valueOf(newProduct.getDescription()));
-        titleField.submit();
-
-        browser.findElement(By.id("products"));
-
-        Product product = productRepository.list().stream()
-                .filter(p -> p.getTitle().equals(newProduct.getTitle()))
-                .findFirst().get();
-        assertThat(product)
-            .isEqualToIgnoringGivenFields(newProduct, "id");
     }
 
     @Test

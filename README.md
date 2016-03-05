@@ -1,5 +1,5 @@
 Sopra Steria reference Java architecture
-================================
+========================================
 
 A senior developer should master the total technologies to create and run a complete, if simple, application.
 The Openright Seed project aims to teach you everything you need to accomplish this.
@@ -21,6 +21,9 @@ A running version of the code can be examined at http://openright-orders.herokua
 * The application should promote cross-tier understanding
 * The application should answer deployment considerations
 
+Lessons:
+--------
+
 The application can be used to illustrate the following lessons:
 
 * Operations: Create a portable, complete, self-executable Jar-file by use of the shade-maven-plugin
@@ -35,14 +38,6 @@ The application can be used to illustrate the following lessons:
 * Backend: Parsing JSON with JSON-buddy
 * Backend: Developing and testing Repositories
 * Operations: Managing migrations with Flyway
-
-Natural growth:
-
-* Replace templates with React
-* Replace SQL/JDBC code with openright-fluent-jdbc
-* Introduce Gateways to communicate with other applications (like Repositories)
-* Introduce Services to reuse functionality between controllers and to reduce complexity in endpoints
-
 
 
 ![Alt text](http://g.gravizo.com/g?
@@ -84,7 +79,8 @@ Natural growth:
   )
 
 Getting started developing
---------------------------------
+--------------------------
+
 ### Prerequisites
 
 * A git client (for Windows, we recommend [TortoiseGit](https://code.google.com/p/tortoisegit/) and [Msysgit](https://msysgit.github.io/))

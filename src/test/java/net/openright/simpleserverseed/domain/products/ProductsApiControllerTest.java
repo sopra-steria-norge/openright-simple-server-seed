@@ -12,12 +12,15 @@ public class ProductsApiControllerTest {
     private final ProductsApiController controller = new ProductsApiController(config);
 
     @Test
+    public void shouldConvertFromJson() {
+        Product product = ProductRepositoryTest.sampleProduct();
+        assertThat(Product.fromJson(product.toJson())).isEqualToComparingFieldByField(product);
+    }
+
+    @Test
     public void shouldListInsertedProducts() {
         Product product = ProductRepositoryTest.sampleProduct();
-        JsonObject productJson = new JsonObject()
-                .put("title", product.getTitle())
-                .put("description", product.getDescription())
-                .put("price", product.getPrice());
+        JsonObject productJson = product.toJson();
 
         String id = controller.createResource(productJson);
         productJson.put("id", Integer.parseInt(id));
@@ -29,10 +32,7 @@ public class ProductsApiControllerTest {
     @Test
     public void shouldRetrieveUpdatedValues() {
         Product product = ProductRepositoryTest.sampleProduct();
-        JsonObject productJson = new JsonObject()
-                .put("title", product.getTitle())
-                .put("description", product.getDescription())
-                .put("price", product.getPrice());
+        JsonObject productJson = product.toJson();
 
         String id = controller.createResource(productJson);
         productJson.put("id", Integer.parseInt(id));
