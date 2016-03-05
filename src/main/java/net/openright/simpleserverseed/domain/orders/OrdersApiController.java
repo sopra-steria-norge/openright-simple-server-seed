@@ -65,7 +65,7 @@ public class OrdersApiController implements ResourceApi {
         repository.update(Long.parseLong(id), toOrder(jsonObject));
     }
 
-    private Order toOrder(JSONObject jsonObject) {
+    Order toOrder(JSONObject jsonObject) {
         Order order = new Order(jsonObject.getString("title"));
 
         JSONArray jsonArray = jsonObject.getJSONArray("orderlines");
