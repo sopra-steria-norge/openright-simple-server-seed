@@ -4,6 +4,7 @@ import net.openright.infrastructure.util.IOUtil;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 
 import java.io.IOException;
 import java.net.URL;
@@ -17,6 +18,8 @@ public class WebTestUtil {
             return createFirefoxDriver();
         case "org.openqa.selenium.chrome.ChromeDriver":
             return createChromeDriver();
+        case "org.openqa.selenium.ie.InternetExplorerDriver":
+            return createMsieDriver();
         default:
             return createFirefoxDriver();
         }
@@ -36,29 +39,27 @@ public class WebTestUtil {
         return new ChromeDriver();
     }
 
-    /*
     public static InternetExplorerDriver createMsieDriver() throws IOException {
         Path driverFile = Paths.get("target", "IEDriverServer.exe");
         if (Files.notExists(driverFile)) {
             URL msieDriverUrl = new URL("http://selenium-release.storage.googleapis.com/");
 
-            List<String> msieVersions = new ArrayList<>();
-            JSONObject storageContents = XML.toJSONObject(IOUtil.toString(msieDriverUrl));
-            JsonArray jsonArray = storageContents.getJSONObject("ListBucketResult").getJsonArray("Contents");
-            for (int i = 0; i < jsonArray.length(); i++) {
-                String file = jsonArray.getJSONObject(i).getString("Key");
-                if (file.contains("IEDriver")) {
-                    msieVersions.add(file);
-                }
-            }
-            String latestFile = msieVersions.stream().max(String::compareTo).get();
+            /*
+            String latestFile = Xml.read(IOUtil.toString(msieDriverUrl))
+                    .find("ListBucketResult", "Contents", "Key")
+                    .texts()
+                    .stream()
+                    .filter(s -> s.contains("IEDriver"))
+                    .max(String::compareTo)
+                    .get();*/
+            String latestFile = "2.52/IEDriverServer_x64_2.52.1.zip";
 
             Path zipFile = IOUtil.copy(new URL(msieDriverUrl, latestFile), Paths.get("target/"));
             extractZipEntry(zipFile, driverFile);
         }
         System.setProperty("webdriver.ie.driver", driverFile.toString());
         return new InternetExplorerDriver();
-    }*/
+    }
 
     public static WebDriver createFirefoxDriver() {
         return new FirefoxDriver();
