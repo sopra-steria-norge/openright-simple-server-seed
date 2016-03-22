@@ -27,7 +27,10 @@ public class SlackAppender extends AsyncAppender {
     private String slackLogWebhook;
     private Layout<ILoggingEvent> layout;
 
-    public SlackAppender() {
+    @Override
+    public void start() {
+        super.start();
+
         UnsynchronizedAppenderBase<ILoggingEvent> postAppender = new UnsynchronizedAppenderBase<ILoggingEvent>() {
             @Override
             protected void append(ILoggingEvent eventObject) {
