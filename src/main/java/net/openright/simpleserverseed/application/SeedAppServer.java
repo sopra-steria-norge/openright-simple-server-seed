@@ -2,6 +2,7 @@ package net.openright.simpleserverseed.application;
 
 import net.openright.infrastructure.server.EmbeddedWebAppContext;
 import net.openright.infrastructure.server.ServerUtil;
+import net.openright.infrastructure.server.ShowLastLogMessagesHandles;
 import net.openright.infrastructure.server.StatusHandler;
 import net.openright.infrastructure.util.IOUtil;
 import net.openright.infrastructure.util.LogUtil;
@@ -57,6 +58,7 @@ public class SeedAppServer {
         handlers.addHandler(new ShutdownHandler("sgds", false, true));
         handlers.addHandler(new EmbeddedWebAppContext("/seedapp"));
         handlers.addHandler(new StatusHandler());
+        handlers.addHandler(new ShowLastLogMessagesHandles("/log"));
         handlers.addHandler(new MovedContextHandler(null, "/", "/seedapp"));
 
         return ServerUtil.createStatisticsHandler(

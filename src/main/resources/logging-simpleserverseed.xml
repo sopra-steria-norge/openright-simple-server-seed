@@ -31,7 +31,8 @@
 	</appender>
 
 	<logger name="net.openright.simpleserverseed" level="debug" />
-
+    <logger name="org.eclipse.jetty.server.RequestLog" level="debug" />
+    
 	<logger name="org.eclipse.jetty" level="warn" />
 	<logger name="com.zaxxer.hikari" level="warn" />
 	<logger name="org.flywaydb" level="warn" />
