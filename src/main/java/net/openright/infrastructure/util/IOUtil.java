@@ -40,6 +40,14 @@ public class IOUtil {
         }
     }
 
+    public static String toString(HttpURLConnection connection) {
+        try (InputStream inputStream = connection.getInputStream()) {
+            return toString(inputStream);
+        } catch (IOException e) {
+            throw soften(e);
+        }
+    }
+
     public static String toString(InputStream content) {
         return toString(new InputStreamReader(content));
     }
@@ -110,12 +118,16 @@ public class IOUtil {
             HttpURLConnection connection = (HttpURLConnection)uri.toURL().openConnection();
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
-            try (Writer writer = new OutputStreamWriter(connection.getOutputStream())) {
-                writer.write(text);
-            }
+            copy(text, connection);
             return connection.getResponseCode();
         } catch (IOException e) {
             throw soften(e);
+        }
+    }
+
+    public static void copy(String text, HttpURLConnection connection) throws IOException {
+        try (Writer writer = new OutputStreamWriter(connection.getOutputStream())) {
+            writer.write(text);
         }
     }
 

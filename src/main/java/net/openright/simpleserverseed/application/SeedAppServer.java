@@ -24,11 +24,13 @@ public class SeedAppServer {
     }
 
     public static void main(String[] args) throws Exception {
+        SeedAppConfigFile config = new SeedAppConfigFile();
+
         new File("logs").mkdirs();
-        LogUtil.setupLogging("logging-simpleserverseed.xml");
+        LogUtil.setupLogging(config);
         IOUtil.extractResourceFile("seedapp.properties");
 
-        SeedAppServer server = new SeedAppServer(new SeedAppConfigFile());
+        SeedAppServer server = new SeedAppServer(config);
         server.start();
 
         if (System.getProperty("startBrowser") != null) {
@@ -47,7 +49,7 @@ public class SeedAppServer {
         server.setHandler(createHandlers());
         server.start();
 
-        log.info("Started server " + server.getURI());
+        log.warn("Started server " + server.getURI());
     }
 
     private Handler createHandlers() {

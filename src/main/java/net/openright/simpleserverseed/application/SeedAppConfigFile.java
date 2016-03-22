@@ -58,4 +58,12 @@ public class SeedAppConfigFile extends AppConfigFile implements SeedAppConfig {
             throw ExceptionUtil.soften(e);
         }
     }
+
+    public String getLogConfig() {
+        return getProperty("seed.log.config", "logging-simpleserverseed.xml");
+    }
+
+    public String getSlackLogWebhook() {
+        return getProperty("seed.log.slackWebhook", null);
+    }
 }
